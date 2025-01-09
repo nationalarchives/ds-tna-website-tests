@@ -1,0 +1,34 @@
+name: Test
+
+inputs:
+  domain:
+    required: true
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/iron
+    - name: Install test dependencies
+      run: |
+        cd test
+        npm ci
+        npx playwright install --with-deps
+      shell: bash
+    - name: Wait for service
+      uses: nev7n/wait_for_response@v1
+      with:
+        url: ${{ inputs.domain }}
+    - name: Run tests
+      run: |
+        cd test
+        TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test
+      shell: bash
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: test/playwright-report/
+        retention-days: 30

@@ -1,0 +1,20 @@
+name: Run tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      domain:
+        type: string
+        description: Domain to test (no trailing slash)
+        required: true
+        default: "https://www.nationalarchives.gov.uk"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test
+        uses: ./.github/actions/test
+        with:
+          domain: ${{ inputs.domain }}
