@@ -18,7 +18,7 @@ test("article page", async ({ page }) => {
 
 test("focused article page", async ({ page }) => {
   await page.goto(
-    "/explore-the-collection/stories/lady-malcolm-servants-balls/",
+    "/explore-the-collection/stories/the-bethnal-green-tube-shelter-disaster/",
   );
   await validateHtml(page);
 });
