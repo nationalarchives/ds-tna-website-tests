@@ -6,5 +6,3 @@ test("explore the collection home page", async ({ page }) => {
   await expect(page.locator("h1")).toHaveText(/Explore the collection/);
   await validateHtml(page);
 });
-
-
