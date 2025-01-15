@@ -6,7 +6,7 @@ const config: ConfigData = {
   rules: {
     "attribute-empty-style": ["warn", { style: "omit" }],
     "attribute-boolean-style": ["warn", { style: "omit" }],
-    "no-trailing-whitespace": "warn",
+    "no-trailing-whitespace": "off",
   },
 };
 
