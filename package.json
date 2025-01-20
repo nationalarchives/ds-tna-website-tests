@@ -5,7 +5,8 @@
     "test:staging": "TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk npx playwright test --ui",
     "test:production": "TEST_DOMAIN=https://www.nationalarchives.gov.uk npx playwright test --ui"
   },
-  "devDependencies": {
+  "dependencies": {
+    "@axe-core/playwright": "^4.10.1",
     "@playwright/test": "^1.45.2",
     "@types/node": "^22.5.0",
     "html-validate": "^9.1.3"
