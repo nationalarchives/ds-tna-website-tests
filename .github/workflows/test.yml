@@ -59,11 +59,13 @@ jobs:
         id: report
         run: |
           touch report.txt
-          echo "Domain tested: ${{ inputs.domain }}" >> report.txt
+          echo "- ✅ **${{ needs.test.outputs.pass_count }}** tests passed" >> report.txt
           echo >> report.txt
-          echo "| ✅ Passed | ❌ Failed | 🙈 Skipped | 🤕 Flaky |" >> report.txt
-          echo "| - | - | - | - |" >> report.txt
-          echo "| **${{ needs.test.outputs.pass_count }}** | **${{ needs.test.outputs.fail_count }}** | **${{ needs.test.outputs.skip_count }}** | **${{ needs.test.outputs.flake_count }}** |" >> report.txt
+          echo "- ❌ **${{ needs.test.outputs.fail_count }}** tests failed" >> report.txt
+          echo >> report.txt
+          echo "- 🙈 **${{ needs.test.outputs.skip_count }}** tests skipped" >> report.txt
+          echo >> report.txt
+          echo "- 🤕 **${{ needs.test.outputs.flake_count }}** flaky tests" >> report.txt
           echo >> report.txt
           echo "⏰ **${{ needs.test.outputs.duration }}** seconds" >> report.txt
           echo >> report.txt
@@ -75,7 +77,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_TITLE: "TNA Website E2E Test Results"
+          SLACK_TITLE: "TNA Website E2E Test Results for ${{ inputs.domain }}"
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_ICON: "https://raw.githubusercontent.com/nationalarchives/tna-frontend/main/src/nationalarchives/assets/images/apple-touch-icon.png"
           SLACK_ICON_EMOJI: ":test_tube:"
