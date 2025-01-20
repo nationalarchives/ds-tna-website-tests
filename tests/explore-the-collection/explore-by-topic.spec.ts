@@ -1,5 +1,5 @@
 import { test } from "@playwright/test";
-import validateHtml from "../../lib/validate-html";
+import validateHtml from "../lib/validate-html";
 
 test("explore by topic", async ({ page }) => {
   await page.goto("/explore-the-collection/explore-by-topic/");

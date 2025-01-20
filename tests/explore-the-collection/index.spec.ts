@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import validateHtml from "../../lib/validate-html";
+import validateHtml from "../lib/validate-html";
 
 test("explore the collection without a trailing slash", async ({ page }) => {
   page.on("response", (response) => {
