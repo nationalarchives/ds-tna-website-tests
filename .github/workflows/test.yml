@@ -55,12 +55,19 @@ jobs:
       - name: Create report summary
         id: report
         run: |
-          echo 'REPORT="✅ ${{ needs.test.outputs.pass_count }} passed\n❌ ${{ needs.test.outputs.fail_count }} failed\n🤕 ${{ needs.test.outputs.flake_count }} flaky\n⏰ ${{ needs.test.outputs.duration }} seconds"' >> "$GITHUB_OUTPUT"
+          echo "REPORT=✅ ${{ needs.test.outputs.pass_count }} passed
+          ❌ ${{ needs.test.outputs.fail_count }} failed
+          🤕 ${{ needs.test.outputs.flake_count }} flaky
+          ⏰ ${{ needs.test.outputs.duration }} seconds
+          [See full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> "$GITHUB_OUTPUT"
       - uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_TITLE: "TNA Website E2E Test Results"
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_ICON: "https://raw.githubusercontent.com/nationalarchives/tna-frontend/main/src/nationalarchives/assets/images/apple-touch-icon.png"
+          SLACK_ICON_EMOJI: ":test_tube:"
           MSG_MINIMAL: true
-          SLACK_COLOR: ${{ job.status }}
+          SLACK_COLOR: "${{ needs.test.outputs.fail_count == '0' && 'good' || 'danger' }}"
+          ENABLE_ESCAPES: true
+          SLACKIFY_MARKDOWN: true
           SLACK_MESSAGE: ${{ steps.report.outputs.REPORT }}
