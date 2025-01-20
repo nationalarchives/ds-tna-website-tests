@@ -56,12 +56,15 @@ jobs:
         id: report
         run: |
           touch report.txt
+          echo "Domain: ${{ inputs.domain }}" >> report.txt
+          echo >> report.txt
           echo "- ✅ ${{ needs.test.outputs.pass_count }} passed" >> report.txt
           echo "- ❌ ${{ needs.test.outputs.fail_count }} failed" >> report.txt
+          echo "- 🙈 ${{ needs.test.outputs.skip_count }} skipped" >> report.txt
           echo "- 🤕 ${{ needs.test.outputs.flake_count }} flaky" >> report.txt
           echo "- ⏰ ${{ needs.test.outputs.duration }} seconds" >> report.txt
           echo >> report.txt
-          echo "[See full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> report.txt
+          echo "[See full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [Tests to fix](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}%20.fixme&type=code)" >> report.txt
           {
             echo 'REPORT<<EOF'
             cat report.txt
