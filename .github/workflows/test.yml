@@ -25,14 +25,42 @@ jobs:
         run: sudo apt-get install jq
       - name: Run tests
         run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test
-      - name: Send report summary
+      - name: Report summary
         if: always()
+        id: report-summary
         run: |
           PASS_COUNT=$(jq '(.stats.expected)' test-results.json)
           FAIL_COUNT=$(jq '(.stats.unexpected)' test-results.json)
           SKIP_COUNT=$(jq '(.stats.skipped)' test-results.json)
           FLAKE_COUNT=$(jq '(.stats.flaky)' test-results.json)
-          DURATION=$(jq '(.stats.duration/100|tonumber|floor/10)' test-results.json)s
-          echo "✅ $PASS_COUNT passed"
-          echo "❌ $FAIL_COUNT failed"
-          echo "🤕 $FLAKE_COUNT flaky"
+          DURATION=$(jq '(.stats.duration/100|tonumber|floor/10)' test-results.json)
+          echo "PASS_COUNT=$PASS_COUNT" >> "$GITHUB_OUTPUT"
+          echo "FAIL_COUNT=$FAIL_COUNT" >> "$GITHUB_OUTPUT"
+          echo "SKIP_COUNT=$SKIP_COUNT" >> "$GITHUB_OUTPUT"
+          echo "FLAKE_COUNT=$FLAKE_COUNT" >> "$GITHUB_OUTPUT"
+          echo "DURATION=$DURATION" >> "$GITHUB_OUTPUT"
+    outputs:
+      pass_count: ${{ steps.report-summary.outputs.PASS_COUNT }}
+      fail_count: ${{ steps.report-summary.outputs.FAIL_COUNT }}
+      skip_count: ${{ steps.report-summary.outputs.SKIP_COUNT }}
+      flake_count: ${{ steps.report-summary.outputs.FLAKE_COUNT }}
+      duration: ${{ steps.report-summary.outputs.DURATION }}
+
+  notify-slack:
+    runs-on: ubuntu-latest
+    needs: test
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create report summary
+        id: report
+        run: |
+          echo 'REPORT="✅ ${{ needs.test.outputs.pass_count }} passed\n❌ ${{ needs.test.outputs.fail_count }} failed\n🤕 ${{ needs.test.outputs.flake_count }} flaky\n⏰ ${{ needs.test.outputs.duration }} seconds"' >> "$GITHUB_OUTPUT"
+      - uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_TITLE: "TNA Website E2E Test Results"
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_ICON: "https://raw.githubusercontent.com/nationalarchives/tna-frontend/main/src/nationalarchives/assets/images/apple-touch-icon.png"
+          MSG_MINIMAL: true
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: ${{ steps.report.outputs.REPORT }}
