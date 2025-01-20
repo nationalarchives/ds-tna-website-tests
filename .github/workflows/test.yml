@@ -1,6 +1,9 @@
 name: Run tests
 
 on:
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
     inputs:
       domain:
@@ -33,7 +36,7 @@ jobs:
           FAIL_COUNT=$(jq '(.stats.unexpected)' test-results.json)
           SKIP_COUNT=$(jq '(.stats.skipped)' test-results.json)
           FLAKE_COUNT=$(jq '(.stats.flaky)' test-results.json)
-          DURATION=$(jq '(.stats.duration/100|tonumber|floor/10)' test-results.json)
+          DURATION=$(jq '(.stats.duration/1000|tonumber|floor)' test-results.json)
           echo "PASS_COUNT=$PASS_COUNT" >> "$GITHUB_OUTPUT"
           echo "FAIL_COUNT=$FAIL_COUNT" >> "$GITHUB_OUTPUT"
           echo "SKIP_COUNT=$SKIP_COUNT" >> "$GITHUB_OUTPUT"
@@ -56,15 +59,15 @@ jobs:
         id: report
         run: |
           touch report.txt
-          echo "Domain: ${{ inputs.domain }}" >> report.txt
+          echo "Domain tested: ${{ inputs.domain }}" >> report.txt
           echo >> report.txt
-          echo "- ✅ ${{ needs.test.outputs.pass_count }} passed" >> report.txt
-          echo "- ❌ ${{ needs.test.outputs.fail_count }} failed" >> report.txt
-          echo "- 🙈 ${{ needs.test.outputs.skip_count }} skipped" >> report.txt
-          echo "- 🤕 ${{ needs.test.outputs.flake_count }} flaky" >> report.txt
-          echo "- ⏰ ${{ needs.test.outputs.duration }} seconds" >> report.txt
+          echo "| ✅ Passed | ❌ Failed | 🙈 Skipped | 🤕 Flaky |" >> report.txt
+          echo "| - | - | - | - |" >> report.txt
+          echo "| **${{ needs.test.outputs.pass_count }}** | **${{ needs.test.outputs.fail_count }}** | **${{ needs.test.outputs.skip_count }}** | **${{ needs.test.outputs.flake_count }}** |" >> report.txt
           echo >> report.txt
-          echo "[See full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [Tests to fix](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}%20.fixme&type=code)" >> report.txt
+          echo "⏰ **${{ needs.test.outputs.duration }}** seconds" >> report.txt
+          echo >> report.txt
+          echo "[Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [Tests to fix](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}%20.fixme&type=code)" >> report.txt
           {
             echo 'REPORT<<EOF'
             cat report.txt
