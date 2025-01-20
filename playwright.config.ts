@@ -6,7 +6,12 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI ? "github" : "list",
+  reporter: process.env.CI
+    ? [
+        ["@estruyf/github-actions-reporter"],
+        ["json", { outputFile: "test-results.json" }],
+      ]
+    : "list",
   use: {
     baseURL: process.env.TEST_DOMAIN || "https://www.nationalarchives.gov.uk",
     trace: "on-first-retry",

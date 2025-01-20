@@ -23,3 +23,15 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run tests
         run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test
+      - name: Install jq
+        run: sudo apt-get install jq
+      - name: Send report summary
+        run: |
+          PASS_COUNT=$(jq '(.stats.expected)' test-results.json)
+          FAIL_COUNT=$(jq '(.stats.unexpected)' test-results.json)
+          SKIP_COUNT=$(jq '(.stats.skipped)' test-results.json)
+          FLAKE_COUNT=$(jq '(.stats.flaky)' test-results.json)
+          DURATION=$(jq '(.stats.duration/100|tonumber|floor/10)' test-results.json)s
+          echo "✅ $PASS_COUNT passed"
+          echo "❌ $FAIL_COUNT failed"
+          echo "🤕 $FLAKE_COUNT flaky"
