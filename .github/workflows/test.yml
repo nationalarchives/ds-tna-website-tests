@@ -59,7 +59,7 @@ jobs:
         id: report
         run: |
           touch report.txt
-          echo "Domain tested: ${{ inputs.domain }}" >> report.txt
+          echo "Domain tested: **${{ inputs.domain }}**" >> report.txt
           echo >> report.txt
           echo "✅ **${{ needs.test.outputs.pass_count }}** tests passed" >> report.txt
           echo >> report.txt
