@@ -21,11 +21,12 @@ jobs:
         run: npm ci
       - name: Install Playwright
         run: npx playwright install --with-deps
-      - name: Run tests
-        run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test
       - name: Install jq
         run: sudo apt-get install jq
+      - name: Run tests
+        run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test
       - name: Send report summary
+        if: always()
         run: |
           PASS_COUNT=$(jq '(.stats.expected)' test-results.json)
           FAIL_COUNT=$(jq '(.stats.unexpected)' test-results.json)
