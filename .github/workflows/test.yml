@@ -59,17 +59,21 @@ jobs:
         id: report
         run: |
           touch report.txt
-          echo "- ✅ **${{ needs.test.outputs.pass_count }}** tests passed" >> report.txt
+          echo "Domain tested: ${{ inputs.domain }}" >> report.txt
           echo >> report.txt
-          echo "- ❌ **${{ needs.test.outputs.fail_count }}** tests failed" >> report.txt
+          echo "✅ **${{ needs.test.outputs.pass_count }}** tests passed" >> report.txt
           echo >> report.txt
-          echo "- 🙈 **${{ needs.test.outputs.skip_count }}** tests skipped" >> report.txt
+          echo "❌ **${{ needs.test.outputs.fail_count }}** tests failed" >> report.txt
           echo >> report.txt
-          echo "- 🤕 **${{ needs.test.outputs.flake_count }}** flaky tests" >> report.txt
+          echo "🙈 **${{ needs.test.outputs.skip_count }}** tests skipped" >> report.txt
           echo >> report.txt
-          echo "⏰ **${{ needs.test.outputs.duration }}** seconds" >> report.txt
+          echo "🤕 **${{ needs.test.outputs.flake_count }}** flaky tests" >> report.txt
           echo >> report.txt
-          echo "[Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [Tests to fix](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}%20.fixme&type=code)" >> report.txt
+          echo "⏰ Time taken: **${{ needs.test.outputs.duration }}** seconds" >> report.txt
+          echo >> report.txt
+          echo "![Pie chart of test passes and fails](https://quickchart.io/sandbox/#%7B%22chart%22%3A%22%5Cn%5Cn%7B%5Cn%20%20type%3A%20'pie'%2C%5Cn%20%20data%3A%20%7B%5Cn%20%20%20%20datasets%3A%20%5B%5Cn%20%20%20%20%20%20%7B%5Cn%20%20%20%20%20%20%20%20data%3A%20%5B${{ needs.test.outputs.pass_count }}%2C%20${{ needs.test.outputs.fail_count }}%2C%20${{ needs.test.outputs.skip_count }}%5D%2C%5Cn%20%20%20%20%20%20%20%20backgroundColor%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20'green'%2C%5Cn%20%20%20%20%20%20%20%20%20%20'red'%2C%5Cn%20%20%20%20%20%20%20%20%20%20'yellow'%2C%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%5D%2C%5Cn%20%20%20%20labels%3A%20%5B'Passed'%2C%20'Failed'%2C%20'Skipped'%5D%2C%5Cn%20%20%7D%2C%5Cn%7D%5Cn%22%2C%22width%22%3A500%2C%22height%22%3A300%2C%22version%22%3A%222%22%2C%22backgroundColor%22%3A%22%23fff%22%7D)" >> report.txt
+          echo >> report.txt
+          echo "[Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [Skipped tests](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}%20.fixme&type=code)" >> report.txt
           {
             echo 'REPORT<<EOF'
             cat report.txt
@@ -77,7 +81,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_TITLE: "TNA Website E2E Test Results for ${{ inputs.domain }}"
+          SLACK_TITLE: "TNA Website E2E Test Results"
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_ICON: "https://raw.githubusercontent.com/nationalarchives/tna-frontend/main/src/nationalarchives/assets/images/apple-touch-icon.png"
           SLACK_ICON_EMOJI: ":test_tube:"
