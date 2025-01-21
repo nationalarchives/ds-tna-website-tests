@@ -1,5 +1,7 @@
 # The National Archives website tests
 
+[![Last test run](https://img.shields.io/github/actions/workflow/status/nationalarchives/ds-tna-website-tests/test.yml?style=flat-square&branch=main&label=latest%20run)](https://github.com/nationalarchives/ds-tna-website-tests/actions/workflows/test.yml)
+
 ## Quickstart
 
 ```sh
