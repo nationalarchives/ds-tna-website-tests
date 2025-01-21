@@ -8,7 +8,7 @@ test("explore by topic", async ({ page }) => {
   await checkAccessibility(page);
 });
 
-test.fixme("topic page", async ({ page }) => {
+test("topic page", async ({ page }) => {
   await page.goto("/explore-the-collection/explore-by-topic/arts-and-culture/");
   await validateHtml(page);
   await checkAccessibility(page);
