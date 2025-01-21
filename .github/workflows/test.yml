@@ -11,6 +11,11 @@ on:
         description: Domain to test (no trailing slash)
         required: true
         default: "https://www.nationalarchives.gov.uk"
+      notify-slack:
+        type: boolean
+        description: Send test results to Slack
+        required: true
+        default: true
 
 jobs:
   test:
@@ -52,7 +57,7 @@ jobs:
   notify-slack:
     runs-on: ubuntu-latest
     needs: test
-    if: always()
+    if: always() && inputs.notify-slack
     steps:
       - uses: actions/checkout@v4
       - name: Create report summary
