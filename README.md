@@ -1,4 +1,4 @@
-# Website E2E Playwright tests
+# The National Archives website tests
 
 ## Quickstart
 
