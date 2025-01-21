@@ -1,9 +1,10 @@
 import { test, expect, Cookie, Page } from "@playwright/test";
 
-const oldPagePath = "/";
 const newPagePath = "/explore-the-collection/";
-const newCookieBannerSelector = ".tna-cookie-banner";
-const oldCookieBannerSelector = "#ds-cookie-consent-banner";
+const getCookieBanner = (page: Page) =>
+  page.getByRole("region", { name: "Cookies on The National Archives" });
+const oldPagePath = "/";
+const oldCookieBanner = (page: Page) => getCookieBanner(page);
 const cookiePreferencesSetKey = "dontShowCookieNotice";
 
 const getCookieDomainFromBaseUrl: (baseURL: string | undefined) => string = (
@@ -40,60 +41,60 @@ test.afterEach(async ({ context }) => {
 test.describe("no existing cookies", () => {
   test("don't interact on new page then visit old page", async ({ page }) => {
     await page.goto(newPagePath);
-    await expect(page.locator(newCookieBannerSelector)).toBeVisible();
+    await expect(getCookieBanner(page)).toBeVisible();
     await page.goto(oldPagePath);
-    await expect(page.locator(oldCookieBannerSelector)).toBeVisible();
+    await expect(oldCookieBanner(page)).toBeVisible();
   });
 
   test("accept on new page then visit old page", async ({ page }) => {
     await page.goto(newPagePath);
-    await expect(page.locator(newCookieBannerSelector)).toBeVisible();
-    await page.locator('button:text("Accept cookies")').click();
+    await expect(getCookieBanner(page)).toBeVisible();
+    await page.getByRole("button", { name: "Accept cookies" }).click();
     await page.goto(oldPagePath);
-    await expect(page.locator(oldCookieBannerSelector)).not.toBeVisible();
+    await expect(oldCookieBanner(page)).not.toBeVisible();
   });
 
   test("reject on new page then visit old page", async ({ page }) => {
     await page.goto(newPagePath);
-    await expect(page.locator(newCookieBannerSelector)).toBeVisible();
-    await page.locator('button:text("Reject cookies")').click();
+    await expect(getCookieBanner(page)).toBeVisible();
+    await page.getByRole("button", { name: "Reject cookies" }).click();
     await page.goto(oldPagePath);
-    await expect(page.locator(oldCookieBannerSelector)).not.toBeVisible();
+    await expect(oldCookieBanner(page)).not.toBeVisible();
   });
 
   test("don't interact on new page, don't interact on old page then return to new page", async ({
     page,
   }) => {
     await page.goto(newPagePath);
-    await expect(page.locator(newCookieBannerSelector)).toBeVisible();
+    await expect(getCookieBanner(page)).toBeVisible();
     await page.goto(oldPagePath);
-    await expect(page.locator(oldCookieBannerSelector)).toBeVisible();
+    await expect(oldCookieBanner(page)).toBeVisible();
     await page.goto(newPagePath);
-    await expect(page.locator(newCookieBannerSelector)).toBeVisible();
+    await expect(getCookieBanner(page)).toBeVisible();
   });
 
   test("visit new page, accept on old page then return to new page", async ({
     page,
   }) => {
     await page.goto(newPagePath);
-    await expect(page.locator(newCookieBannerSelector)).toBeVisible();
+    await expect(getCookieBanner(page)).toBeVisible();
     await page.goto(oldPagePath);
-    await expect(page.locator(oldCookieBannerSelector)).toBeVisible();
-    await page.locator('button:text("Accept cookies")').click();
+    await expect(oldCookieBanner(page)).toBeVisible();
+    await page.getByRole("button", { name: "Accept cookies" }).click();
     await page.goto(newPagePath);
-    await expect(page.locator(newCookieBannerSelector)).not.toBeVisible();
+    await expect(getCookieBanner(page)).not.toBeVisible();
   });
 
   test("visit new page, reject on old page then return to new page", async ({
     page,
   }) => {
     await page.goto(newPagePath);
-    await expect(page.locator(newCookieBannerSelector)).toBeVisible();
+    await expect(getCookieBanner(page)).toBeVisible();
     await page.goto(oldPagePath);
-    await expect(page.locator(oldCookieBannerSelector)).toBeVisible();
-    await page.locator('button:text("Reject cookies")').click();
+    await expect(oldCookieBanner(page)).toBeVisible();
+    await page.getByRole("button", { name: "Reject cookies" }).click();
     await page.goto(newPagePath);
-    await expect(page.locator(newCookieBannerSelector)).not.toBeVisible();
+    await expect(getCookieBanner(page)).not.toBeVisible();
   });
 
   test.describe("with cookie preferences set", () => {
@@ -110,12 +111,12 @@ test.describe("no existing cookies", () => {
 
     test.fixme("visit new page", async ({ page }) => {
       await page.goto(newPagePath);
-      await expect(page.locator(newCookieBannerSelector)).toBeVisible();
+      await expect(getCookieBanner(page)).toBeVisible();
     });
 
     test.fixme("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
-      await expect(page.locator(oldCookieBannerSelector)).toBeVisible();
+      await expect(oldCookieBanner(page)).toBeVisible();
     });
   });
 });
@@ -131,7 +132,7 @@ test.describe("partial existing cookies", () => {
       },
     ]);
     await page.goto(newPagePath);
-    await expect(page.locator(newCookieBannerSelector)).toBeVisible();
+    await expect(getCookieBanner(page)).toBeVisible();
   });
 
   test("visit old page", async ({ page, context, baseURL }) => {
@@ -144,7 +145,7 @@ test.describe("partial existing cookies", () => {
       },
     ]);
     await page.goto(oldPagePath);
-    await expect(page.locator(oldCookieBannerSelector)).toBeVisible();
+    await expect(oldCookieBanner(page)).toBeVisible();
   });
 
   test.describe("with cookie preferences set", () => {
@@ -161,12 +162,12 @@ test.describe("partial existing cookies", () => {
 
     test.fixme("visit new page", async ({ page }) => {
       await page.goto(newPagePath);
-      await expect(page.locator(newCookieBannerSelector)).toBeVisible();
+      await expect(getCookieBanner(page)).toBeVisible();
     });
 
     test.fixme("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
-      await expect(page.locator(oldCookieBannerSelector)).toBeVisible();
+      await expect(oldCookieBanner(page)).toBeVisible();
     });
   });
 });
@@ -185,12 +186,12 @@ test.describe("malformed cookies", () => {
 
   test("visit new page", async ({ page }) => {
     await page.goto(newPagePath);
-    await expect(page.locator(newCookieBannerSelector)).toBeVisible();
+    await expect(getCookieBanner(page)).toBeVisible();
   });
 
   test("visit old page", async ({ page }) => {
     await page.goto(oldPagePath);
-    await expect(page.locator(oldCookieBannerSelector)).toBeVisible();
+    await expect(oldCookieBanner(page)).toBeVisible();
   });
 
   test.describe("with cookie preferences set", () => {
@@ -207,12 +208,12 @@ test.describe("malformed cookies", () => {
 
     test.fixme("visit new page", async ({ page }) => {
       await page.goto(newPagePath);
-      await expect(page.locator(newCookieBannerSelector)).toBeVisible();
+      await expect(getCookieBanner(page)).toBeVisible();
     });
 
     test.fixme("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
-      await expect(page.locator(oldCookieBannerSelector)).toBeVisible();
+      await expect(oldCookieBanner(page)).toBeVisible();
     });
   });
 });
