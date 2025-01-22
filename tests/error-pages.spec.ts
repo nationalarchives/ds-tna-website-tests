@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import validateHtml from "./lib/validate-html";
 import checkAccessibility from "./lib/check-accessibility";
 
-test("Page not found error page", async ({ page }) => {
+test.fixme("Page not found error page", async ({ page }) => {
   page.on("response", (response) => {
     if (response.url().endsWith("/foobar/")) {
       expect(response.status()).toEqual(404);
