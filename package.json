@@ -1,6 +1,7 @@
 {
   "scripts": {
     "lint:fix": "npx prettier --write .",
+    "test:local:frontend": "TEST_DOMAIN=http://localhost:65535 npx playwright test --ui",
     "test:develop": "TEST_DOMAIN=https://dev-www.nationalarchives.gov.uk npx playwright test --ui",
     "test:staging": "TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk npx playwright test --ui",
     "test:production": "TEST_DOMAIN=https://www.nationalarchives.gov.uk npx playwright test --ui"
