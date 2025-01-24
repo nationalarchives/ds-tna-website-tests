@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.fixme("/sitemaps/ redirect to XML sitemap", async ({ page }) => {
+test.fixme("redirect /sitemaps/ to main XML sitemap", async ({ page }) => {
   page.on("response", async (response) => {});
   const response = await page.goto("/sitemaps/");
   const contentType = await response?.headerValue("content-type");
