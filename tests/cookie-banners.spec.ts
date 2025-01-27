@@ -97,7 +97,7 @@ test.describe("no existing cookies", () => {
     await expect(getCookieBanner(page)).not.toBeVisible();
   });
 
-  test.describe("with cookie preferences set", () => {
+  test.describe("with cookie preferences set @dev", () => {
     test.beforeEach(async ({ context, baseURL }) => {
       await context.addCookies([
         {
@@ -109,12 +109,12 @@ test.describe("no existing cookies", () => {
       ]);
     });
 
-    test.fixme("visit new page", async ({ page }) => {
+    test("visit new page", async ({ page }) => {
       await page.goto(newPagePath);
       await expect(getCookieBanner(page)).toBeVisible();
     });
 
-    test.fixme("visit old page", async ({ page }) => {
+    test("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
       await expect(oldCookieBanner(page)).toBeVisible();
     });
@@ -148,7 +148,7 @@ test.describe("partial existing cookies", () => {
     await expect(oldCookieBanner(page)).toBeVisible();
   });
 
-  test.describe("with cookie preferences set", () => {
+  test.describe("with cookie preferences set @dev", () => {
     test.beforeEach(async ({ context, baseURL }) => {
       await context.addCookies([
         {
@@ -160,12 +160,12 @@ test.describe("partial existing cookies", () => {
       ]);
     });
 
-    test.fixme("visit new page", async ({ page }) => {
+    test("visit new page", async ({ page }) => {
       await page.goto(newPagePath);
       await expect(getCookieBanner(page)).toBeVisible();
     });
 
-    test.fixme("visit old page", async ({ page }) => {
+    test("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
       await expect(oldCookieBanner(page)).toBeVisible();
     });
@@ -194,7 +194,7 @@ test.describe("malformed cookies", () => {
     await expect(oldCookieBanner(page)).toBeVisible();
   });
 
-  test.describe("with cookie preferences set", () => {
+  test.describe("with cookie preferences set @dev", () => {
     test.beforeEach(async ({ context, baseURL }) => {
       await context.addCookies([
         {
@@ -206,12 +206,12 @@ test.describe("malformed cookies", () => {
       ]);
     });
 
-    test.fixme("visit new page", async ({ page }) => {
+    test("visit new page", async ({ page }) => {
       await page.goto(newPagePath);
       await expect(getCookieBanner(page)).toBeVisible();
     });
 
-    test.fixme("visit old page", async ({ page }) => {
+    test("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
       await expect(oldCookieBanner(page)).toBeVisible();
     });

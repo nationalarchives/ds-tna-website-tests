@@ -27,3 +27,29 @@ npx playwright test --ui
 # Update the test snapshots
 npx playwright test --update-snapshots
 ```
+
+## Writing tests
+
+### Single-broswer tests
+
+For tests that _shouldn't_ change between browsers, wrap in a block to only test in Chromium:
+
+```js
+test.describe("chromium only", () => {
+  // Tests for Chromium
+});
+```
+
+These tests include checking redirects, content on the page, the validitiy of HTML or the automated accessibility tests.
+
+### Development tests
+
+While tests are in development, add the `@dev` tag to the end of the test name:
+
+```js
+test("test new unreleased feature @dev", async ({ page }) => {
+  // Test a new feature
+});
+```
+
+Once the feature is live, remove the `@dev` tag.

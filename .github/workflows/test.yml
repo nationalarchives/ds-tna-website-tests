@@ -31,8 +31,8 @@ jobs:
         run: npx playwright install --with-deps
       - name: Install jq
         run: sudo apt-get install jq
-      - name: Run tests
-        run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test
+      - name: Run tests (excluding @dev)
+        run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test --grep-invert "@dev"
       - name: Report summary
         if: always()
         id: report-summary
@@ -78,7 +78,7 @@ jobs:
           echo >> report.txt
           # echo "![Pie chart of test passes and fails](https://quickchart.io/chart/render/zm-389d4f02-077c-47a0-a7a7-0692945ff00d?data1=${{ needs.test.outputs.pass_count }},${{ needs.test.outputs.fail_count }},${{ needs.test.outputs.skip_count }})" >> report.txt
           # echo >> report.txt
-          echo "[Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [Skipped tests](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}%20.fixme&type=code)" >> report.txt
+          echo "[Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [Skipped tests](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}%20.fixme&type=code) | [Tests still in development](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}%20@dev&type=code)" >> report.txt
           {
             echo 'REPORT<<EOF'
             cat report.txt
