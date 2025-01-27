@@ -35,11 +35,23 @@ npx playwright test --grep-invert "@dev"
 
 ### Single-broswer tests
 
-For tests that _shouldn't_ change between browsers, wrap in a block to only test in Chromium:
+For tests that _shouldn't_ change between browsers, wrap in a block to only test in Chromium or skip the test conditionally:
 
 ```js
+// Skip all tests in a describe()
 test.describe("chromium only", () => {
+  test.skip(
+    ({ browserName }) => browserName !== "chromium",
+    "Test for Chromium only",
+  );
+
   // Tests for Chromium
+});
+
+// Skip a single test
+test("skip this test", async ({ page, browserName }) => {
+  test.skip(browserName !== "chromium", "chromium only");
+  // Test content for Chromium
 });
 ```
 
@@ -51,6 +63,12 @@ While tests are in development, add the `@dev` tag to the end of the test name:
 
 ```js
 test("test new unreleased feature @dev", async ({ page }) => {
+  // Test a new feature
+});
+
+// OR
+
+test("test new unreleased feature", { tag: "@dev" }, async ({ page }) => {
   // Test a new feature
 });
 ```

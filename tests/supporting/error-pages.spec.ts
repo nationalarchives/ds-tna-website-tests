@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import validateHtml from "./lib/validate-html";
-import checkAccessibility from "./lib/check-accessibility";
+import validateHtml from "../lib/validate-html";
+import checkAccessibility from "../lib/check-accessibility";
 
 test.describe("chromium only", () => {
   test.skip(
@@ -8,7 +8,7 @@ test.describe("chromium only", () => {
     "Test for Chromium only",
   );
 
-  test("Page not found error page @dev", async ({ page }) => {
+  test("Page not found error page", { tag: "@dev" }, async ({ page }) => {
     page.on("response", (response) => {
       if (response.url().endsWith("/foobar/")) {
         expect(response.status()).toEqual(404);

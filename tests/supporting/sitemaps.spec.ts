@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("chromium only @dev", () => {
+test.describe("chromium only", { tag: "@dev" }, () => {
   test.skip(
     ({ browserName }) => browserName !== "chromium",
     "Test for Chromium only",
