@@ -78,7 +78,7 @@ jobs:
           echo >> report.txt
           # echo "![Pie chart of test passes and fails](https://quickchart.io/chart/render/zm-389d4f02-077c-47a0-a7a7-0692945ff00d?data1=${{ needs.test.outputs.pass_count }},${{ needs.test.outputs.fail_count }},${{ needs.test.outputs.skip_count }})" >> report.txt
           # echo >> report.txt
-          echo "[Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [Skipped and development tests](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}+%28%40dev+OR+.fixme%29+language%3ATypeScript&type=code&l=TypeScript)" >> report.txt
+          echo "[📋 Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [𝍌 Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [🧪 Skipped and development tests](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}+%28%40dev+OR+.fixme%29+language%3ATypeScript&type=code&l=TypeScript)" >> report.txt
           {
             echo 'REPORT<<EOF'
             cat report.txt
