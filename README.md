@@ -26,6 +26,9 @@ npx playwright test --ui
 
 # Update the test snapshots
 npx playwright test --update-snapshots
+
+# Ignore dev tests
+npx playwright test --grep-invert "@dev"
 ```
 
 ## Writing tests
