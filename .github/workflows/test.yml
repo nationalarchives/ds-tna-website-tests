@@ -72,7 +72,7 @@ jobs:
   notify-slack:
     runs-on: ubuntu-latest
     needs: test
-    if: always() && inputs.notify-slack
+    if: always() && inputs.notify-slack && needs.test.outputs.pass_count
     steps:
       - uses: actions/checkout@v4
       - name: Create report summary
