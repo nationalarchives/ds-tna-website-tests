@@ -41,7 +41,7 @@ jobs:
         run: npx playwright install --with-deps
       - name: Install jq
         run: sudo apt-get install jq
-      - name: Run tests
+      - name: Run tests (including @dev)
         if: ${{ inputs.include-dev == 'true' }}
         run: TEST_DOMAIN=${{ steps.santisie-domain.outputs.DOMAIN }} CI=true npx playwright test
       - name: Run tests (excluding @dev)
