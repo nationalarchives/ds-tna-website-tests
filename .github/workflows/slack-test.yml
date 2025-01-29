@@ -1,5 +1,7 @@
 name: Test Slack
 
+# https://github.com/slackapi/slack-github-action?tab=readme-ov-file#technique-2-slack-api-method
+
 on:
   workflow_dispatch:
 
@@ -18,10 +20,10 @@ jobs:
             text: "Deployment started :eyes:"
             attachments:
               - color: "dbab09"
-              fields:
-                - title: "Status"
-                short: true
-                value: "In Progress"
+                fields:
+                  - title: "Status"
+                    short: true
+                    value: "In Progress"
     outputs:
       ts: ${{ steps.launch_sequence.outputs.ts }}
 
@@ -42,7 +44,7 @@ jobs:
             text: "Deployment finished! :rocket:"
             attachments:
               - color: "28a745"
-              fields:
-                - title: "Status"
-                short: true
-                value: "Completed"
+                fields:
+                  - title: "Status"
+                    short: true
+                    value: "Completed"
