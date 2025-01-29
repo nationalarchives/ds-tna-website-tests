@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const browserIndependentTests = "browser-independent/**/*.spec.ts";
+
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
@@ -21,22 +23,37 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      testIgnore: browserIndependentTests,
     },
     {
       name: "firefox",
       use: { ...devices["Desktop Firefox"] },
+      testIgnore: browserIndependentTests,
     },
     {
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
+      testIgnore: browserIndependentTests,
     },
     {
       name: "Mobile Chrome",
       use: { ...devices["Pixel 7"] },
+      testIgnore: browserIndependentTests,
     },
     {
       name: "Mobile Safari",
       use: { ...devices["iPhone 15"] },
+      testIgnore: browserIndependentTests,
+    },
+    {
+      name: "Browser independent",
+      use: { ...devices["Desktop Chrome"] },
+      testMatch: browserIndependentTests,
+    },
+    {
+      name: "Browser independent mobile",
+      use: { ...devices["Pixel 7"] },
+      testMatch: browserIndependentTests,
     },
   ],
 });

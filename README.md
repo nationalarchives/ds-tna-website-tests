@@ -35,25 +35,7 @@ npx playwright test --grep-invert "@dev"
 
 ### Single-broswer tests
 
-For tests that _shouldn't_ change between browsers, wrap in a block to only test in Chromium or skip the test conditionally:
-
-```js
-// Skip all tests in a describe()
-test.describe("chromium only", () => {
-  test.skip(
-    ({ browserName }) => browserName !== "chromium",
-    "Test for Chromium only",
-  );
-
-  // Tests for Chromium
-});
-
-// Skip a single test
-test("skip this test", async ({ page, browserName }) => {
-  test.skip(browserName !== "chromium", "chromium only");
-  // Test content for Chromium
-});
-```
+For tests that _shouldn't_ change between browsers, place the tests in the `tests/browser-independent` directory. These tests will only be run against Chrome on desktop and mobile.
 
 These tests include checking redirects, content on the page, the validitiy of HTML or the automated accessibility tests.
 

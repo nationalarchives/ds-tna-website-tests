@@ -1,6 +1,6 @@
 import { test } from "@playwright/test";
-import validateHtml from "./lib/validate-html";
-import checkAccessibility from "./lib/check-accessibility";
+import validateHtml from "../lib/validate-html";
+import checkAccessibility from "../lib/check-accessibility";
 
 const urlsToTest = [
   "/explore-the-collection/",
@@ -28,11 +28,6 @@ const devUrlsToTest = [
 ];
 
 test.describe("html validity and axe accessibility check", () => {
-  test.skip(
-    ({ browserName }) => browserName !== "chromium",
-    "Test for Chromium only",
-  );
-
   urlsToTest.forEach((url) => {
     test(url, async ({ page }) => {
       await page.goto(url);
@@ -51,11 +46,6 @@ test.describe("html validity and axe accessibility check", () => {
 });
 
 test.describe("html validity and axe accessibility check without js or css", () => {
-  test.skip(
-    ({ browserName }) => browserName !== "chromium",
-    "Test for Chromium only",
-  );
-
   urlsToTest.forEach((url) => {
     test(`${url}`, async ({ page, context }) => {
       await context.route("**", (route) => {
