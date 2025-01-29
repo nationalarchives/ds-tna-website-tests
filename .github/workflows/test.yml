@@ -37,10 +37,10 @@ jobs:
       - name: Install jq
         run: sudo apt-get install jq
       - name: Run tests
-        if: inputs.include-dev
+        if: ${{ inputs.include-dev }}
         run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test
       - name: Run tests (excluding @dev)
-        if: !inputs.include-dev
+        if: ${{ !inputs.include-dev }}
         run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test --grep-invert "@dev"
       - name: Report summary
         if: always()
