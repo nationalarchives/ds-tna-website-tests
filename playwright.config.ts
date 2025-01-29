@@ -8,6 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI
     ? [
+        ["dot"],
         ["@estruyf/github-actions-reporter"],
         ["json", { outputFile: "test-results.json" }],
       ]
