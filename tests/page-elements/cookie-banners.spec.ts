@@ -12,10 +12,8 @@ const getCookieDomainFromBaseUrl: (baseURL: string | undefined) => string = (
 ) => {
   const cookieDomains = {
     "https://www.nationalarchives.gov.uk": ".nationalarchives.gov.uk",
-    "https://staging-www.nationalarchives.gov.uk":
-      "staging-www.nationalarchives.gov.uk",
-    "https://dev-www.nationalarchives.gov.uk":
-      "dev-www.nationalarchives.gov.uk",
+    "https://staging-www.nationalarchives.gov.uk": ".nationalarchives.gov.uk",
+    "https://dev-www.nationalarchives.gov.uk": ".nationalarchives.gov.uk",
     "http://localhost:65535": "localhost:65535",
     // TODO: Remove dblclk.dev once moved fully to AWS
     "https://tna.dblclk.dev": ".dblclk.dev",
