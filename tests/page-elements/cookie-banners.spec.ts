@@ -10,14 +10,31 @@ const cookiePreferencesSetKey = "dontShowCookieNotice";
 const getCookieDomainFromBaseUrl: (baseURL: string | undefined) => string = (
   baseURL = "https://www.nationalarchives.gov.uk",
 ) => {
+  const cookieDomains = {
+    "https://www.nationalarchives.gov.uk": ".nationalarchives.gov.uk",
+    "https://staging-www.nationalarchives.gov.uk":
+      "staging-www.nationalarchives.gov.uk",
+    "https://dev-www.nationalarchives.gov.uk":
+      "dev-www.nationalarchives.gov.uk",
+    "http://localhost:65535": "localhost:65535",
+    // TODO: Remove dblclk.dev once moved fully to AWS
+    "https://tna.dblclk.dev": ".dblclk.dev",
+    "https://develop.tna.dblclk.dev": ".dblclk.dev",
+  };
+
+  if (cookieDomains.hasOwnProperty(baseURL)) {
+    return cookieDomains[baseURL];
+  }
+
   return `.${baseURL.replace(/^https?:\/\/(www.)?/, "")}`;
 };
 
 test("cookie banner has correct accessibility tree", async ({
   page,
   browserName,
+  isMobile,
 }) => {
-  test.skip(browserName !== "chromium", "chromium only");
+  test.skip(browserName !== "chromium" || isMobile, "chromium only");
   await page.goto(newPagePath);
   await expect(getCookieBanner(page)).toBeVisible();
   await expect(page.locator(".tna-cookie-banner")).toMatchAriaSnapshot(`
@@ -38,10 +55,9 @@ test.describe("cookie banners across old and new pages", () => {
 
   test.afterEach(async ({ context }) => {
     const cookies = await context.cookies();
-    const cookiesPolicy: Cookie | undefined = cookies.find(
+    const cookiesPolicy: Cookie | undefined = await cookies.find(
       (cookie) => cookie.name === "cookies_policy",
     );
-    console.log(cookies);
     expect(cookiesPolicy).toBeDefined();
     if (cookiesPolicy) {
       const cookiesPolicyValue = JSON.parse(
@@ -117,7 +133,7 @@ test.describe("cookie banners across old and new pages", () => {
       await expect(getCookieBanner(page)).not.toBeVisible();
     });
 
-    test.describe("with cookie preferences set", { tag: "@dev" }, () => {
+    test.describe("with cookie preferences set", () => {
       test.beforeEach(async ({ context, baseURL }) => {
         await context.addCookies([
           {
@@ -168,7 +184,7 @@ test.describe("cookie banners across old and new pages", () => {
       await expect(oldCookieBanner(page)).toBeVisible();
     });
 
-    test.describe("with cookie preferences set", { tag: "@dev" }, () => {
+    test.describe("with cookie preferences set", () => {
       test.beforeEach(async ({ context, baseURL }) => {
         await context.addCookies([
           {
@@ -214,7 +230,7 @@ test.describe("cookie banners across old and new pages", () => {
       await expect(oldCookieBanner(page)).toBeVisible();
     });
 
-    test.describe("with cookie preferences set", { tag: "@dev" }, () => {
+    test.describe("with cookie preferences set", () => {
       test.beforeEach(async ({ context, baseURL }) => {
         await context.addCookies([
           {

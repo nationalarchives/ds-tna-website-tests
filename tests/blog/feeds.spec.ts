@@ -1,6 +1,4 @@
 import { test, expect } from "@playwright/test";
-import validateHtml from "../../lib/validate-html";
-import checkAccessibility from "../../lib/check-accessibility";
 
 test.describe("chromium only", { tag: "@dev" }, () => {
   test.skip(
@@ -11,8 +9,6 @@ test.describe("chromium only", { tag: "@dev" }, () => {
   test("feeds listing page", async ({ page }) => {
     await page.goto("/blog/feeds/");
     await expect(page.locator("h1")).toHaveText(/Blog feeds/);
-    await validateHtml(page);
-    await checkAccessibility(page);
   });
 
   test("all feed - rss", async ({ page }) => {

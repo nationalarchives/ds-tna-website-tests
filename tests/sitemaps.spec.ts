@@ -7,7 +7,6 @@ test.describe("chromium only", { tag: "@dev" }, () => {
   );
 
   test("redirect /sitemaps/ to main XML sitemap", async ({ page }) => {
-    page.on("response", async (response) => {});
     const response = await page.goto("/sitemaps/");
     const contentType = await response?.headerValue("content-type");
     expect(contentType).toEqual("application/xml; charset=utf-8");
