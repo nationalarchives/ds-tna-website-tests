@@ -11,6 +11,11 @@ on:
         description: Domain to test (no trailing slash)
         required: true
         default: "https://www.nationalarchives.gov.uk"
+      include-dev:
+        type: boolean
+        description: Include @dev tests
+        required: true
+        default: false
       notify-slack:
         type: boolean
         description: Send test results to Slack
@@ -31,7 +36,11 @@ jobs:
         run: npx playwright install --with-deps
       - name: Install jq
         run: sudo apt-get install jq
+      - name: Run tests
+        if: inputs.include-dev
+        run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test
       - name: Run tests (excluding @dev)
+        if: !inputs.include-dev
         run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test --grep-invert "@dev"
       - name: Report summary
         if: always()
