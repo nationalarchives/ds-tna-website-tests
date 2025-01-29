@@ -8,9 +8,9 @@ on:
     inputs:
       domain:
         type: string
-        description: Domain to test (no trailing slash)
+        description: Domain to test
         required: true
-        default: "https://www.nationalarchives.gov.uk"
+        default: "https://www.nationalarchives.gov.uk/"
       include-dev:
         type: boolean
         description: Include @dev tests
@@ -27,6 +27,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Santisie domain
+        id: santisie-domain
+        run: |
+          DOMAIN=$(echo "${{ inputs.domain }}" | sed 's:/*$::')
+          echo "DOMAIN=$DOMAIN" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@v4
         with:
           node-version: lts/jod
@@ -37,11 +42,11 @@ jobs:
       - name: Install jq
         run: sudo apt-get install jq
       - name: Run tests
-        if: ${{ inputs.include-dev }}
-        run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test
+        if: ${{ inputs.include-dev == 'true' }}
+        run: TEST_DOMAIN=${{ steps.santisie-domain.outputs.DOMAIN }} CI=true npx playwright test
       - name: Run tests (excluding @dev)
-        if: ${{ !inputs.include-dev }}
-        run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test --grep-invert "@dev"
+        if: ${{ !inputs.include-dev != 'true' }}
+        run: TEST_DOMAIN=${{ steps.santisie-domain.outputs.DOMAIN }} CI=true npx playwright test --grep-invert "@dev"
       - name: Report summary
         if: always()
         id: report-summary
@@ -62,6 +67,7 @@ jobs:
       skip_count: ${{ steps.report-summary.outputs.SKIP_COUNT }}
       flake_count: ${{ steps.report-summary.outputs.FLAKE_COUNT }}
       duration: ${{ steps.report-summary.outputs.DURATION }}
+      domain: ${{ steps.santisie-domain.outputs.DOMAIN }}
 
   notify-slack:
     runs-on: ubuntu-latest
@@ -73,7 +79,7 @@ jobs:
         id: report
         run: |
           touch report.txt
-          echo "Domain: **${{ inputs.domain }}**" >> report.txt
+          echo "Domain: **${{ needs.test.outputs.domain }}**" >> report.txt
           echo >> report.txt
           echo "✅ **${{ needs.test.outputs.pass_count }}** tests passed" >> report.txt
           echo >> report.txt

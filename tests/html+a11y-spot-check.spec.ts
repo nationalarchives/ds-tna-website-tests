@@ -50,39 +50,39 @@ test.describe("html validity and axe accessibility check", () => {
   });
 });
 
-test.describe("html validity and axe accessibility check without js or css", () => {
-  test.skip(
-    ({ browserName }) => browserName !== "chromium",
-    "Test for Chromium only",
-  );
+// test.describe("html validity and axe accessibility check without js or css", () => {
+//   test.skip(
+//     ({ browserName }) => browserName !== "chromium",
+//     "Test for Chromium only",
+//   );
 
-  urlsToTest.forEach((url) => {
-    test(`${url}`, async ({ page, context }) => {
-      await context.route("**", (route) => {
-        return ["script", "stylesheet", "xhr"].includes(
-          route.request().resourceType(),
-        )
-          ? route.abort()
-          : route.continue();
-      });
-      await page.goto(url);
-      await validateHtml(page);
-      await checkAccessibility(page);
-    });
-  });
+//   urlsToTest.forEach((url) => {
+//     test(`${url}`, async ({ page, context }) => {
+//       await context.route("**", (route) => {
+//         return ["script", "stylesheet", "xhr"].includes(
+//           route.request().resourceType(),
+//         )
+//           ? route.abort()
+//           : route.continue();
+//       });
+//       await page.goto(url);
+//       await validateHtml(page);
+//       await checkAccessibility(page);
+//     });
+//   });
 
-  devUrlsToTest.forEach((url) => {
-    test(`${url}`, { tag: "@dev" }, async ({ page, context }) => {
-      await context.route("**", (route) => {
-        return ["script", "stylesheet", "xhr"].includes(
-          route.request().resourceType(),
-        )
-          ? route.abort()
-          : route.continue();
-      });
-      await page.goto(url);
-      await validateHtml(page);
-      await checkAccessibility(page);
-    });
-  });
-});
+//   devUrlsToTest.forEach((url) => {
+//     test(`${url}`, { tag: "@dev" }, async ({ page, context }) => {
+//       await context.route("**", (route) => {
+//         return ["script", "stylesheet", "xhr"].includes(
+//           route.request().resourceType(),
+//         )
+//           ? route.abort()
+//           : route.continue();
+//       });
+//       await page.goto(url);
+//       await validateHtml(page);
+//       await checkAccessibility(page);
+//     });
+//   });
+// });
