@@ -21,6 +21,8 @@ on:
         description: Send test results to Slack
         required: true
         default: true
+  schedule:
+    - cron: "0 4 * * *" # Every day at 04:00
 
 jobs:
   test:
