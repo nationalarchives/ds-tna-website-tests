@@ -25,6 +25,7 @@ jobs:
         if: ${{ !cancelled() }}
         uses: ./.github/actions/send-slack-report
         with:
+          webhook: ${{ secrets.SLACK_WEBHOOK }}
           domain: ${{ steps.playwright-tests.outputs.domain }}
           included-tests: ${{ env.INCLUDE_TESTS }}
           excluded-tests: ${{ env.EXCLUDE_TESTS }}

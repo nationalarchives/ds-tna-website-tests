@@ -1,6 +1,10 @@
 name: Send test report to Slack
 
 inputs:
+  webhook:
+    type: string
+    description: The Slack webhook URL to use
+    required: true
   domain:
     type: string
     description: Domain tested
@@ -67,7 +71,7 @@ runs:
     - uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_TITLE: ${{ inputs.message-title }}
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_WEBHOOK: ${{ inputs.webhook }}
         SLACK_ICON: https://raw.githubusercontent.com/nationalarchives/tna-frontend/main/src/nationalarchives/assets/images/apple-touch-icon.png
         SLACK_ICON_EMOJI: ":test_tube:"
         MSG_MINIMAL: true

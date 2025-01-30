@@ -40,6 +40,7 @@ jobs:
         if: ${{ !cancelled() && inputs.notify-slack }}
         uses: ./.github/actions/send-slack-report
         with:
+          webhook: ${{ secrets.SLACK_WEBHOOK }}
           domain: ${{ steps.playwright-tests.outputs.domain }}
           included-tests: ${{ inputs.include-tests }}
           excluded-tests: ${{ inputs.exclude-tests }}
