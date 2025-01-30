@@ -1,0 +1,64 @@
+name: Manual test run
+
+on:
+  workflow_dispatch:
+    inputs:
+      domain:
+        type: string
+        description: Domain to test
+        required: true
+        default: "https://www.nationalarchives.gov.uk/"
+      include-tests:
+        type: string
+        description: Test tags to run, separated with a pipe "|" (leave blank to run all tests)
+        required: false
+        default: ""
+      exclude-tests:
+        type: string
+        description: Test tags to exclude, separated with a pipe "|"
+        required: false
+        default: "@dev"
+      notify-slack:
+        type: boolean
+        description: Send test results to Slack
+        required: true
+        default: true
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests
+        id: playwright-tests
+        uses: ./.github/actions/playwright-tests/action.yml
+        with:
+          domain: ${{ inputs.domain }}
+          include-tests: ${{ inputs.include-tests }}
+          exclude-tests: ${{ inputs.exclude-tests }}
+    outputs:
+      pass-count: ${{ steps.playwright-tests.outputs.pass-count }}
+      fail-count: ${{ steps.playwright-tests.outputs.fail-count }}
+      skip-count: ${{ steps.playwright-tests.outputs.skip-count }}
+      flake-count: ${{ steps.playwright-tests.outputs.flake-count }}
+      duration: ${{ steps.playwright-tests.outputs.duration }}
+      domain: ${{ steps.playwright-tests.outputs.domain }}
+
+  notify-slack:
+    runs-on: ubuntu-latest
+    needs: run-tests
+    if: ${{ !cancelled() && inputs.notify-slack }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Send report to Slack
+        id: run-tests
+        uses: ./.github/actions/tests/action.yml
+        with:
+          domain: ${{ needs.run-tests.outputs.domain }}
+          included-tests: ${{ inputs.include-tests }}
+          excluded-tests: ${{ inputs.exclude-tests }}
+          pass-count: ${{ needs.run-tests.outputs.pass-count }}
+          fail-count: ${{ needs.run-tests.outputs.fail-count }}
+          skip-count: ${{ needs.run-tests.outputs.skip-count }}
+          flake-count: ${{ needs.run-tests.outputs.flake-count }}
+          duration: ${{ needs.run-tests.outputs.duration }}

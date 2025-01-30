@@ -1,0 +1,77 @@
+name: Send test report to Slack
+
+inputs:
+  domain:
+    type: string
+    description: Domain tested
+    required: true
+  included-tests:
+    type: string
+    description: Included test tags
+    required: false
+  excluded-tests:
+    type: string
+    description: Excluded test tags
+    required: false
+  pass-count:
+    type: string
+    description: The number of passed tests
+    required: true
+  fail-count:
+    type: string
+    description: The number of failed tests
+    required: true
+  skip-count:
+    type: string
+    description: The number of skipped tests
+    required: true
+  flake-count:
+    type: string
+    description: The number of flaky tests
+    required: true
+  duration:
+    type: string
+    description: The number of seconds the test suite took to run
+    required: true
+  message-title:
+    type: string
+    description: The title of the Slack message
+    required: false
+    default: TNA Website Test Results
+
+runs:
+  using: composite
+  steps:
+    - name: Create report summary
+      id: report
+      run: |
+        touch report.txt
+        echo "Domain: **${{ inputs.domain }}**" >> report.txt
+        echo >> report.txt
+        [[ -n "${{ inputs.included-tests }}" ]] && echo "- Included: \`${{ inputs.included-tests }}\`" >> report.txt
+        [[ -n "${{ inputs.excluded-tests }}" ]] && echo "- Excluded: \`${{ inputs.excluded-tests }}\`" >> report.txt
+        echo >> report.txt
+        echo >> report.txt && echo "✅ **${{ inputs.pass-count }}** tests passed" >> report.txt
+        echo >> report.txt && echo "❌ **${{ inputs.fail-count }}** tests failed" >> report.txt
+        [[ "${{ inputs.skip-count }}" -gt 0 ]] && echo >> report.txt && echo "🙈 **${{ inputs.skip-count }}** tests skipped" >> report.txt
+        [[ "${{ inputs.flake-count }}" -gt 0 ]] && echo >> report.txt && echo "🤕 **${{ inputs.flake-count }}** flaky tests" >> report.txt
+        echo >> report.txt && echo "⏰ Time taken: **${{ inputs.duration }}** seconds" >> report.txt
+        echo >> report.txt && echo "[📋 Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [𝍌 Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [🧪 Development tests](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}+%28%40dev%29+language%3ATypeScript&type=code&l=TypeScript)" >> report.txt
+        cat report.txt
+        {
+          echo 'REPORT<<EOF'
+          cat report.txt
+          echo EOF
+        } >> "$GITHUB_OUTPUT"
+      shell: bash
+    - uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_TITLE: ${{ inputs.message-title }}
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_ICON: https://raw.githubusercontent.com/nationalarchives/tna-frontend/main/src/nationalarchives/assets/images/apple-touch-icon.png
+        SLACK_ICON_EMOJI: ":test_tube:"
+        MSG_MINIMAL: true
+        SLACK_COLOR: ${{ inputs.fail-count == '0' && 'good' || 'danger' }}
+        ENABLE_ESCAPES: true
+        SLACKIFY_MARKDOWN: true
+        SLACK_MESSAGE: ${{ steps.report.outputs.REPORT }}
