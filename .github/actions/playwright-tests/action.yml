@@ -1,16 +1,16 @@
 name: Run website Playwright tests
 
 inputs:
-  base-domain:
+  domain:
     type: string
     description: Domain to test
     required: true
-  include-test-tags:
+  include-tests:
     type: string
     description: Test tags to run
     required: false
     default: ""
-  exclude-test-tags:
+  exclude-tests:
     type: string
     description: Test tags to exclude
     required: false
@@ -54,11 +54,11 @@ runs:
     - name: Santisie domain
       id: santisie-domain
       run: |
-        DOMAIN=$(echo "${{ inputs.base-domain }}" | sed 's:/*$::')
+        DOMAIN=$(echo "${{ inputs.domain }}" | sed 's:/*$::')
         echo "DOMAIN=$DOMAIN" >> "$GITHUB_OUTPUT"
       shell: bash
     - name: Run tests
-      run: TEST_DOMAIN=${{ steps.santisie-domain.outputs.DOMAIN }} CI=true npx playwright test --grep "${{ inputs.include-test-tags }}" --grep-invert "${{ inputs.exclude-test-tags }}"
+      run: TEST_DOMAIN=${{ steps.santisie-domain.outputs.DOMAIN }} CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       shell: bash
     - name: Report summary
       if: always()
