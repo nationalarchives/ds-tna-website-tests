@@ -1,18 +1,19 @@
 {
   "scripts": {
+    "postinstall": "npx playwright install --with-deps",
     "lint:fix": "npx prettier --write .",
-    "update-snapshots": "docker run -it -v $(pwd):/src --rm --ipc=host mcr.microsoft.com/playwright:v1.50.0-noble /bin/bash -c \"cd /src; npm i; npx playwright test --update-snapshots\"",
+    "update-snapshots": "docker run -it -v $(pwd):/src --rm --ipc=host mcr.microsoft.com/playwright:v1.50.0 /bin/bash -c \"cd /src; npm i; npx playwright test --update-snapshots\"",
     "test:local:frontend": "TEST_DOMAIN=http://localhost:65535 npx playwright test --ui",
     "test:dblclk:develop": "TEST_DOMAIN=https://develop.tna.dblclk.dev npx playwright test --ui",
     "test:dblclk:staging": "TEST_DOMAIN=https://tna.dblclk.dev npx playwright test --ui",
     "test:develop": "TEST_DOMAIN=https://dev-www.nationalarchives.gov.uk npx playwright test --ui",
     "test:staging": "TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk npx playwright test --ui",
-    "test:production": "TEST_DOMAIN=https://www.nationalarchives.gov.uk npx playwright test --ui"
+    "test:production": "npx playwright test --ui"
   },
   "dependencies": {
     "@axe-core/playwright": "^4.10.1",
     "@estruyf/github-actions-reporter": "^1.9.2",
-    "@playwright/test": "^1.45.2",
+    "@playwright/test": "^1.50.0",
     "@types/node": "^22.5.0",
     "html-validate": "^9.1.3"
   }

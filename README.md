@@ -8,10 +8,7 @@
 # Install dependencies
 npm install
 
-# Install Playwright browsers
-npx playwright install --with-deps
-
-# Run the tests against the live site
+# Run the tests against www.nationalarchives.gov.uk
 npm run test:production
 ```
 
@@ -31,3 +28,13 @@ These tests include checking redirects, content on the page, the validitiy of HT
 | `@smoke` | Smoke tests to check the most basic site functionality                         |
 | `@ui`    | Tests for the UI which handle display and interaction                          |
 | `@a11y`  | Automated accessibility tests                                                  |
+
+## Updating Playwright
+
+```sh
+# Install the latest version of Playwright
+npm install @playwright/test@latest`
+
+# Install Playwright browsers
+npx playwright install --with-deps
+```
