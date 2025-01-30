@@ -36,29 +36,15 @@ jobs:
           domain: ${{ inputs.domain }}
           include-tests: ${{ inputs.include-tests }}
           exclude-tests: ${{ inputs.exclude-tests }}
-    outputs:
-      pass-count: ${{ steps.playwright-tests.outputs.pass-count }}
-      fail-count: ${{ steps.playwright-tests.outputs.fail-count }}
-      skip-count: ${{ steps.playwright-tests.outputs.skip-count }}
-      flake-count: ${{ steps.playwright-tests.outputs.flake-count }}
-      duration: ${{ steps.playwright-tests.outputs.duration }}
-      domain: ${{ steps.playwright-tests.outputs.domain }}
-
-  notify-slack:
-    runs-on: ubuntu-latest
-    needs: run-tests
-    if: ${{ !cancelled() && inputs.notify-slack }}
-    steps:
-      - uses: actions/checkout@v4
       - name: Send report to Slack
-        id: run-tests
-        uses: ./.github/actions/tests
+        if: ${{ !cancelled() && inputs.notify-slack }}
+        uses: ./.github/actions/send-report-to-slack
         with:
-          domain: ${{ needs.run-tests.outputs.domain }}
+          domain: ${{ steps.playwright-tests.outputs.domain }}
           included-tests: ${{ inputs.include-tests }}
           excluded-tests: ${{ inputs.exclude-tests }}
-          pass-count: ${{ needs.run-tests.outputs.pass-count }}
-          fail-count: ${{ needs.run-tests.outputs.fail-count }}
-          skip-count: ${{ needs.run-tests.outputs.skip-count }}
-          flake-count: ${{ needs.run-tests.outputs.flake-count }}
-          duration: ${{ needs.run-tests.outputs.duration }}
+          pass-count: ${{ steps.playwright-tests.outputs.pass-count }}
+          fail-count: ${{ steps.playwright-tests.outputs.fail-count }}
+          skip-count: ${{ steps.playwright-tests.outputs.skip-count }}
+          flake-count: ${{ steps.playwright-tests.outputs.flake-count }}
+          duration: ${{ steps.playwright-tests.outputs.duration }}

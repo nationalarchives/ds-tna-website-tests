@@ -21,30 +21,16 @@ jobs:
           domain: ${{ env.DOMAIN }}
           include-tests: ${{ env.INCLUDE_TESTS }}
           exclude-tests: ${{ env.EXCLUDE_TESTS }}
-    outputs:
-      pass-count: ${{ steps.playwright-tests.outputs.pass-count }}
-      fail-count: ${{ steps.playwright-tests.outputs.fail-count }}
-      skip-count: ${{ steps.playwright-tests.outputs.skip-count }}
-      flake-count: ${{ steps.playwright-tests.outputs.flake-count }}
-      duration: ${{ steps.playwright-tests.outputs.duration }}
-      domain: ${{ steps.playwright-tests.outputs.domain }}
-
-  notify-slack:
-    runs-on: ubuntu-latest
-    needs: run-tests
-    if: ${{ !cancelled() }}
-    steps:
-      - uses: actions/checkout@v4
       - name: Send report to Slack
-        id: run-tests
-        uses: ./.github/actions/tests
+        if: ${{ !cancelled() }}
+        uses: ./.github/actions/send-report-to-slack
         with:
-          domain: ${{ needs.run-tests.outputs.domain }}
+          domain: ${{ steps.playwright-tests.outputs.domain }}
           included-tests: ${{ env.INCLUDE_TESTS }}
           excluded-tests: ${{ env.EXCLUDE_TESTS }}
-          pass-count: ${{ needs.run-tests.outputs.pass-count }}
-          fail-count: ${{ needs.run-tests.outputs.fail-count }}
-          skip-count: ${{ needs.run-tests.outputs.skip-count }}
-          flake-count: ${{ needs.run-tests.outputs.flake-count }}
-          duration: ${{ needs.run-tests.outputs.duration }}
+          pass-count: ${{ steps.playwright-tests.outputs.pass-count }}
+          fail-count: ${{ steps.playwright-tests.outputs.fail-count }}
+          skip-count: ${{ steps.playwright-tests.outputs.skip-count }}
+          flake-count: ${{ steps.playwright-tests.outputs.flake-count }}
+          duration: ${{ steps.playwright-tests.outputs.duration }}
           message-title: TNA Website Nightly Smoke Test Results
