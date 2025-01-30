@@ -38,7 +38,7 @@ jobs:
           exclude-tests: ${{ inputs.exclude-tests }}
       - name: Send report to Slack
         if: ${{ !cancelled() && inputs.notify-slack }}
-        uses: ./.github/actions/send-report-to-slack
+        uses: ./.github/actions/send-slack-report
         with:
           domain: ${{ steps.playwright-tests.outputs.domain }}
           included-tests: ${{ inputs.include-tests }}
