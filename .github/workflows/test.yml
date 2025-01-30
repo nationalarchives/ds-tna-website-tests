@@ -83,14 +83,15 @@ jobs:
         run: |
           touch report.txt
           echo "Domain: **${{ needs.test.outputs.domain }}**" >> report.txt
-          [[ ! -z "${{ inputs.include-tests }}" ]] && echo >> report.txt && echo "Included `${{ inputs.include-tests }}`" >> report.txt
-          [[ ! -z "${{ inputs.exclude-tests }}" ]] && echo >> report.txt && echo "Excluded `${{ inputs.exclude-tests }}`" >> report.txt
+          [[ ! -z "${{ inputs.include-tests }}" ]] && echo >> report.txt && echo "Included: `${{ inputs.include-tests }}`" >> report.txt
+          [[ ! -z "${{ inputs.exclude-tests }}" ]] && echo >> report.txt && echo "Excluded: '${{ inputs.exclude-tests }}'" >> report.txt
           echo >> report.txt && echo "✅ **${{ needs.test.outputs.pass_count }}** tests passed" >> report.txt
           echo >> report.txt && echo "❌ **${{ needs.test.outputs.fail_count }}** tests failed" >> report.txt
           [[ "${{ needs.test.outputs.skip_count }}" -gt 0 ]] && echo >> report.txt && echo "🙈 **${{ needs.test.outputs.skip_count }}** tests skipped" >> report.txt
           [[ "${{ needs.test.outputs.flake_count }}" -gt 0 ]] && echo >> report.txt && echo "🤕 **${{ needs.test.outputs.flake_count }}** flaky tests" >> report.txt
           echo >> report.txt && echo "⏰ Time taken: **${{ needs.test.outputs.duration }}** seconds" >> report.txt
           echo >> report.txt && echo "[📋 Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [𝍌 Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [🧪 Development tests](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}+%28%40dev%29+language%3ATypeScript&type=code&l=TypeScript)" >> report.txt
+          cat report.txt
           {
             echo 'REPORT<<EOF'
             cat report.txt
