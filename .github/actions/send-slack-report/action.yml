@@ -13,10 +13,12 @@ inputs:
     type: string
     description: Included test tags
     required: false
+    default: ""
   excluded-tests:
     type: string
     description: Excluded test tags
     required: false
+    default: ""
   pass-count:
     type: string
     description: The number of passed tests

@@ -9,10 +9,12 @@ inputs:
     type: string
     description: Test tags to run
     required: false
+    default: ""
   exclude-tests:
     type: string
     description: Test tags to exclude
     required: false
+    default: ""
 
 outputs:
   pass-count:
