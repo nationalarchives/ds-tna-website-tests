@@ -32,7 +32,7 @@ outputs:
     value: ${{ steps.report-summary.outputs.DURATION }}
   domain:
     description: The sanitised domain used
-    value: ${{ steps.santisie-domain.outputs.DURATION }}
+    value: ${{ steps.santisie-domain.outputs.DOMAIN }}
 
 runs:
   using: "composite"
