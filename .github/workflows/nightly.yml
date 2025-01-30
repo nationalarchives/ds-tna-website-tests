@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run tests
         id: playwright-tests
-        uses: ./.github/actions/playwright-tests/action.yml
+        uses: ./.github/actions/playwright-tests
         with:
           domain: ${{ env.DOMAIN }}
           include-tests: ${{ env.INCLUDE_TESTS }}
@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Send report to Slack
         id: run-tests
-        uses: ./.github/actions/tests/action.yml
+        uses: ./.github/actions/tests
         with:
           domain: ${{ needs.run-tests.outputs.domain }}
           included-tests: ${{ env.INCLUDE_TESTS }}
