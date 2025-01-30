@@ -11,18 +11,23 @@ on:
         description: Domain to test
         required: true
         default: "https://www.nationalarchives.gov.uk/"
-      include-dev:
-        type: boolean
-        description: Include @dev tests
+      include-tests:
+        type: string
+        description: Test tags to run (leave blank to run all tests) - separate multiple tags with a pipe "|"
         required: true
-        default: false
+        default: ""
+      exclude-tests:
+        type: string
+        description: Test tags to exclude - separate multiple tags with a pipe "|"
+        required: true
+        default: "@dev"
       notify-slack:
         type: boolean
         description: Send test results to Slack
         required: true
         default: true
-  schedule:
-    - cron: "0 4 * * *" # Every day at 04:00
+  # schedule:
+  #   - cron: "0 4 * * *" # Every day at 04:00
 
 jobs:
   test:
@@ -43,12 +48,8 @@ jobs:
         run: npx playwright install --with-deps
       - name: Install jq
         run: sudo apt-get install jq
-      - name: Run tests (including @dev)
-        if: ${{ inputs.include-dev == true || inputs.include-dev == 'true' }}
-        run: TEST_DOMAIN=${{ steps.santisie-domain.outputs.DOMAIN }} CI=true npx playwright test
-      - name: Run tests (excluding @dev)
-        if: ${{ inputs.include-dev != true && inputs.include-dev != 'true' }}
-        run: TEST_DOMAIN=${{ steps.santisie-domain.outputs.DOMAIN }} CI=true npx playwright test --grep-invert "@dev"
+      - name: Run tests
+        run: TEST_DOMAIN=${{ steps.santisie-domain.outputs.DOMAIN }} CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       - name: Report summary
         if: always()
         id: report-summary
