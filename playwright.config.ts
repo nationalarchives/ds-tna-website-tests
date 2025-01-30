@@ -1,6 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const browserIndependentTests = "browser-independent/**/*.spec.ts";
+const browserIndependentDesktopOnlyTests =
+  "browser-independent/desktop-only/**/*.spec.ts";
 
 export default defineConfig({
   testDir: "./tests",
@@ -54,6 +56,7 @@ export default defineConfig({
       name: "Browser independent mobile",
       use: { ...devices["Pixel 7"] },
       testMatch: browserIndependentTests,
+      testIgnore: browserIndependentDesktopOnlyTests,
     },
   ],
 });

@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
-import validateHtml from "../lib/validate-html";
-import checkAccessibility from "../lib/check-accessibility";
+import validateHtml from "../../lib/validate-html";
+import checkAccessibility from "../../lib/check-accessibility";
 
 test(
   "Page not found error page",
