@@ -1,6 +1,7 @@
 {
   "scripts": {
     "lint:fix": "npx prettier --write .",
+    "update-snapshots": "docker run -it -v $(pwd):/src --rm --ipc=host mcr.microsoft.com/playwright:v1.50.0-noble /bin/bash -c \"cd /src; npm i; npx playwright test --update-snapshots\"",
     "test:local:frontend": "TEST_DOMAIN=http://localhost:65535 npx playwright test --ui",
     "test:dblclk:develop": "TEST_DOMAIN=https://develop.tna.dblclk.dev npx playwright test --ui",
     "test:dblclk:staging": "TEST_DOMAIN=https://tna.dblclk.dev npx playwright test --ui",
