@@ -83,6 +83,8 @@ jobs:
         run: |
           touch report.txt
           echo "Domain: **${{ needs.test.outputs.domain }}**" >> report.txt
+          [[ -z "${{ inputs.include-tests }}" ]] && echo >> report.txt && echo "Included `${{ inputs.include-tests }}`" >> report.txt
+          [[ -z "${{ inputs.exclude-tests }}" ]] && echo >> report.txt && echo "Excluded `${{ inputs.exclude-tests }}`" >> report.txt
           echo >> report.txt && echo "✅ **${{ needs.test.outputs.pass_count }}** tests passed" >> report.txt
           echo >> report.txt && echo "❌ **${{ needs.test.outputs.fail_count }}** tests failed" >> report.txt
           [[ "${{ needs.test.outputs.skip_count }}" -gt 0 ]] && echo >> report.txt && echo "🙈 **${{ needs.test.outputs.skip_count }}** tests skipped" >> report.txt
