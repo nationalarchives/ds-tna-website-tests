@@ -56,7 +56,7 @@ runs:
         echo "DOMAIN=$DOMAIN" >> "$GITHUB_OUTPUT"
       shell: bash
     - name: Run tests
-      run: TEST_DOMAIN=${{ inputs.domain }} CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+      run: TEST_DOMAIN=${{ steps.santisie-domain.outputs.DOMAIN }} CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       shell: bash
     - name: Report summary
       if: always()
