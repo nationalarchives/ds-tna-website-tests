@@ -33,9 +33,9 @@ jobs:
         id: playwright-tests
         uses: ./.github/actions/playwright-tests
         with:
-          domain: ${{ inputs.domain }}
-          include-tests: ${{ inputs.include-tests }}
-          exclude-tests: ${{ inputs.exclude-tests }}
+          base-domain: ${{ inputs.domain }}
+          include-test-tags: ${{ inputs.include-tests }}
+          exclude-test-tags: ${{ inputs.exclude-tests }}
       - name: Send report to Slack
         if: ${{ !cancelled() && inputs.notify-slack }}
         uses: ./.github/actions/send-slack-report
