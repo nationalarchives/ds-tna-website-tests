@@ -38,3 +38,25 @@ npm install @playwright/test@latest`
 # Install Playwright browsers
 npx playwright install --with-deps
 ```
+
+## Running these tests from another repo
+
+[Create a PAT](https://github.com/settings/personal-access-tokens) with access to this repository (nationalarchives/ds-tna-website-tests).
+
+Ensure the permissions include:
+
+- **Actions**: Read and write
+- **Metadata**: Read-only
+
+Save the PAT in your repository secrets as `ACTIONS_GITHUB_TOKEN_TEST_RUNNER` and add the following to your GitHub workflow, updating the domain as necessary:
+
+```yaml
+test:
+  runs-on: ubuntu-latest
+  env:
+    GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN_TEST_RUNNER }}
+  steps:
+    - uses: actions/checkout@v4
+    - name: Run tests
+      run: gh workflow run manual.yml --repo nationalarchives/ds-tna-website-tests --raw-field domain=https://www.nationalarchives.gov.uk --raw-field notify-slack=true
+```
