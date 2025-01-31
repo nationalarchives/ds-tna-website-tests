@@ -7,7 +7,7 @@ on:
 env:
   DOMAIN: https://www.nationalarchives.gov.uk
   INCLUDE_TESTS: "@smoke"
-  EXCLUDE_TESTS: "@dev"
+  EXCLUDE_TESTS: "@wip"
 
 jobs:
   run-tests:

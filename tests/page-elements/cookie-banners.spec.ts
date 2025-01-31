@@ -27,16 +27,16 @@ const getCookieDomainFromBaseUrl: (baseURL: string | undefined) => string = (
   return `.${baseURL.replace(/^https?:\/\/(www.)?/, "")}`;
 };
 
-test.describe("cookie banners across old and new pages", { tag: "@ui" }, () => {
-  test.beforeEach(async ({ context }) => {
-    await context.clearCookies();
-  });
+test.beforeEach(async ({ context }) => {
+  await context.clearCookies();
+});
 
-  test.afterEach(async ({ context }) => {
-    const cookies = await context.cookies();
-    const cookiesPolicy: Cookie | undefined = await cookies.find(
-      (cookie) => cookie.name === "cookies_policy",
-    );
+test.afterEach(async ({ context, baseURL }) => {
+  const cookies = await context.cookies();
+  const cookiesPolicy: Cookie | undefined = await cookies.find(
+    (cookie) => cookie.name === "cookies_policy",
+  );
+  if (!(baseURL as string).includes("tna.dblclk.dev")) {
     expect(cookiesPolicy).toBeDefined();
     if (cookiesPolicy) {
       const cookiesPolicyValue = JSON.parse(
@@ -51,150 +51,84 @@ test.describe("cookie banners across old and new pages", { tag: "@ui" }, () => {
       expect(cookiesPolicyValue?.usage).toBeDefined();
       // expect(cookiesPolicyValue?.marketing).toBeDefined();
     }
+  }
+});
+
+test.describe("no existing cookies", { tag: "@ui" }, () => {
+  test("don't interact on new page then visit old page", async ({ page }) => {
+    await page.goto(newPagePath);
+    await expect(getCookieBanner(page)).toBeVisible();
+    await page.goto(oldPagePath);
+    await expect(oldCookieBanner(page)).toBeVisible();
   });
 
-  test.describe("no existing cookies", () => {
-    test("don't interact on new page then visit old page", async ({ page }) => {
-      await page.goto(newPagePath);
-      await expect(getCookieBanner(page)).toBeVisible();
-      await page.goto(oldPagePath);
-      await expect(oldCookieBanner(page)).toBeVisible();
-    });
-
-    test("accept on new page then visit old page", async ({ page }) => {
-      await page.goto(newPagePath);
-      await expect(getCookieBanner(page)).toBeVisible();
-      await page.getByRole("button", { name: "Accept cookies" }).click();
-      await page.goto(oldPagePath);
-      await expect(oldCookieBanner(page)).not.toBeVisible();
-    });
-
-    test("reject on new page then visit old page", async ({ page }) => {
-      await page.goto(newPagePath);
-      await expect(getCookieBanner(page)).toBeVisible();
-      await page.getByRole("button", { name: "Reject cookies" }).click();
-      await page.goto(oldPagePath);
-      await expect(oldCookieBanner(page)).not.toBeVisible();
-    });
-
-    test("don't interact on new page, don't interact on old page then return to new page", async ({
-      page,
-    }) => {
-      await page.goto(newPagePath);
-      await expect(getCookieBanner(page)).toBeVisible();
-      await page.goto(oldPagePath);
-      await expect(oldCookieBanner(page)).toBeVisible();
-      await page.goto(newPagePath);
-      await expect(getCookieBanner(page)).toBeVisible();
-    });
-
-    test("visit new page, accept on old page then return to new page", async ({
-      page,
-    }) => {
-      await page.goto(newPagePath);
-      await expect(getCookieBanner(page)).toBeVisible();
-      await page.goto(oldPagePath);
-      await expect(oldCookieBanner(page)).toBeVisible();
-      await page.getByRole("button", { name: "Accept cookies" }).click();
-      await page.goto(newPagePath);
-      await expect(getCookieBanner(page)).toBeVisible();
-    });
-
-    test("visit new page, reject on old page then return to new page", async ({
-      page,
-    }) => {
-      await page.goto(newPagePath);
-      await expect(getCookieBanner(page)).toBeVisible();
-      await page.goto(oldPagePath);
-      await expect(oldCookieBanner(page)).toBeVisible();
-      await page.getByRole("button", { name: "Reject cookies" }).click();
-      await page.goto(newPagePath);
-      await expect(getCookieBanner(page)).toBeVisible();
-    });
-
-    test.describe("with cookie preferences set", () => {
-      test.beforeEach(async ({ context, baseURL }) => {
-        await context.addCookies([
-          {
-            name: cookiePreferencesSetKey,
-            value: "true",
-            domain: getCookieDomainFromBaseUrl(baseURL),
-            path: "/",
-          },
-        ]);
-      });
-
-      test("visit new page", async ({ page }) => {
-        await page.goto(newPagePath);
-        await expect(getCookieBanner(page)).toBeVisible();
-      });
-
-      test("visit old page", async ({ page }) => {
-        await page.goto(oldPagePath);
-        // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
-        await expect(oldCookieBanner(page)).not.toBeVisible();
-      });
-    });
+  test("accept on new page then visit old page", async ({ page }) => {
+    await page.goto(newPagePath);
+    await expect(getCookieBanner(page)).toBeVisible();
+    await page.getByRole("button", { name: "Accept cookies" }).click();
+    await page.goto(oldPagePath);
+    await expect(oldCookieBanner(page)).not.toBeVisible();
   });
 
-  test.describe("partial existing cookies", () => {
-    test("visit new page", async ({ page, context, baseURL }) => {
-      await context.addCookies([
-        {
-          name: "cookies_policy",
-          value: "%7B%22usage%22%3Atrue%7D",
-          domain: getCookieDomainFromBaseUrl(baseURL),
-          path: "/",
-        },
-      ]);
-      await page.goto(newPagePath);
-      await expect(getCookieBanner(page)).toBeVisible();
-    });
-
-    test("visit old page", async ({ page, context, baseURL }) => {
-      await context.addCookies([
-        {
-          name: "cookies_policy",
-          value: "%7B%22usage%22%3Atrue%7D",
-          domain: getCookieDomainFromBaseUrl(baseURL),
-          path: "/",
-        },
-      ]);
-      await page.goto(oldPagePath);
-      await expect(oldCookieBanner(page)).toBeVisible();
-    });
-
-    test.describe("with cookie preferences set", () => {
-      test.beforeEach(async ({ context, baseURL }) => {
-        await context.addCookies([
-          {
-            name: cookiePreferencesSetKey,
-            value: "true",
-            domain: getCookieDomainFromBaseUrl(baseURL),
-            path: "/",
-          },
-        ]);
-      });
-
-      test("visit new page", async ({ page }) => {
-        await page.goto(newPagePath);
-        await expect(getCookieBanner(page)).toBeVisible();
-      });
-
-      test("visit old page", async ({ page }) => {
-        await page.goto(oldPagePath);
-        // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
-        await expect(oldCookieBanner(page)).not.toBeVisible();
-      });
-    });
+  test("reject on new page then visit old page", async ({ page }) => {
+    await page.goto(newPagePath);
+    await expect(getCookieBanner(page)).toBeVisible();
+    await page.getByRole("button", { name: "Reject cookies" }).click();
+    await page.goto(oldPagePath);
+    await expect(oldCookieBanner(page)).not.toBeVisible();
   });
 
-  test.describe("malformed cookies", () => {
+  test("don't interact on new page, don't interact on old page then return to new page", async ({
+    page,
+  }) => {
+    await page.goto(newPagePath);
+    await expect(getCookieBanner(page)).toBeVisible();
+    await page.goto(oldPagePath);
+    await expect(oldCookieBanner(page)).toBeVisible();
+    await page.goto(newPagePath);
+    await expect(getCookieBanner(page)).toBeVisible();
+  });
+
+  test("visit new page, accept on old page then return to new page", async ({
+    page,
+    baseURL,
+  }) => {
+    test.skip(
+      (baseURL as string).includes("tna.dblclk.dev"),
+      "no old pages available on tna.dblclk.dev",
+    );
+    await page.goto(newPagePath);
+    await expect(getCookieBanner(page)).toBeVisible();
+    await page.goto(oldPagePath);
+    await expect(oldCookieBanner(page)).toBeVisible();
+    await page.getByRole("button", { name: "Accept cookies" }).click();
+    await page.goto(newPagePath);
+    await expect(getCookieBanner(page)).toBeVisible();
+  });
+
+  test("visit new page, reject on old page then return to new page", async ({
+    page,
+    baseURL,
+  }) => {
+    test.skip(
+      (baseURL as string).includes("tna.dblclk.dev"),
+      "no old pages available on tna.dblclk.dev",
+    );
+    await page.goto(newPagePath);
+    await expect(getCookieBanner(page)).toBeVisible();
+    await page.goto(oldPagePath);
+    await expect(oldCookieBanner(page)).toBeVisible();
+    await page.getByRole("button", { name: "Reject cookies" }).click();
+    await page.goto(newPagePath);
+    await expect(getCookieBanner(page)).toBeVisible();
+  });
+
+  test.describe("with cookie preferences set", () => {
     test.beforeEach(async ({ context, baseURL }) => {
       await context.addCookies([
         {
-          name: "cookies_policy",
-          value: "foobar",
+          name: cookiePreferencesSetKey,
+          value: "true",
           domain: getCookieDomainFromBaseUrl(baseURL),
           path: "/",
         },
@@ -206,33 +140,121 @@ test.describe("cookie banners across old and new pages", { tag: "@ui" }, () => {
       await expect(getCookieBanner(page)).toBeVisible();
     });
 
-    test("visit old page", async ({ page }) => {
+    test("visit old page", async ({ page, baseURL }) => {
+      test.skip(
+        (baseURL as string).includes("tna.dblclk.dev"),
+        "no old pages available on tna.dblclk.dev",
+      );
       await page.goto(oldPagePath);
-      await expect(oldCookieBanner(page)).toBeVisible();
+      // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
+      await expect(oldCookieBanner(page)).not.toBeVisible();
+    });
+  });
+});
+
+test.describe("partial existing cookies", { tag: "@ui" }, () => {
+  test("visit new page", async ({ page, context, baseURL }) => {
+    await context.addCookies([
+      {
+        name: "cookies_policy",
+        value: "%7B%22usage%22%3Atrue%7D",
+        domain: getCookieDomainFromBaseUrl(baseURL),
+        path: "/",
+      },
+    ]);
+    await page.goto(newPagePath);
+    await expect(getCookieBanner(page)).toBeVisible();
+  });
+
+  test("visit old page", async ({ page, context, baseURL }) => {
+    await context.addCookies([
+      {
+        name: "cookies_policy",
+        value: "%7B%22usage%22%3Atrue%7D",
+        domain: getCookieDomainFromBaseUrl(baseURL),
+        path: "/",
+      },
+    ]);
+    await page.goto(oldPagePath);
+    await expect(oldCookieBanner(page)).toBeVisible();
+  });
+
+  test.describe("with cookie preferences set", () => {
+    test.beforeEach(async ({ context, baseURL }) => {
+      await context.addCookies([
+        {
+          name: cookiePreferencesSetKey,
+          value: "true",
+          domain: getCookieDomainFromBaseUrl(baseURL),
+          path: "/",
+        },
+      ]);
     });
 
-    test.describe("with cookie preferences set", () => {
-      test.beforeEach(async ({ context, baseURL }) => {
-        await context.addCookies([
-          {
-            name: cookiePreferencesSetKey,
-            value: "true",
-            domain: getCookieDomainFromBaseUrl(baseURL),
-            path: "/",
-          },
-        ]);
-      });
+    test("visit new page", async ({ page }) => {
+      await page.goto(newPagePath);
+      await expect(getCookieBanner(page)).toBeVisible();
+    });
 
-      test("visit new page", async ({ page }) => {
-        await page.goto(newPagePath);
-        await expect(getCookieBanner(page)).toBeVisible();
-      });
+    test("visit old page", async ({ page, baseURL }) => {
+      test.skip(
+        (baseURL as string).includes("tna.dblclk.dev"),
+        "no old pages available on tna.dblclk.dev",
+      );
+      await page.goto(oldPagePath);
+      // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
+      await expect(oldCookieBanner(page)).not.toBeVisible();
+    });
+  });
+});
 
-      test("visit old page", async ({ page }) => {
-        await page.goto(oldPagePath);
-        // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
-        await expect(oldCookieBanner(page)).not.toBeVisible();
-      });
+test.describe("malformed cookies", { tag: "@ui" }, () => {
+  test.beforeEach(async ({ context, baseURL }) => {
+    await context.addCookies([
+      {
+        name: "cookies_policy",
+        value: "foobar",
+        domain: getCookieDomainFromBaseUrl(baseURL),
+        path: "/",
+      },
+    ]);
+  });
+
+  test("visit new page", async ({ page }) => {
+    await page.goto(newPagePath);
+    await expect(getCookieBanner(page)).toBeVisible();
+  });
+
+  test("visit old page", async ({ page }) => {
+    await page.goto(oldPagePath);
+    await expect(oldCookieBanner(page)).toBeVisible();
+  });
+
+  test.describe("with cookie preferences set", () => {
+    test.beforeEach(async ({ context, baseURL }) => {
+      await context.addCookies([
+        {
+          name: cookiePreferencesSetKey,
+          value: "true",
+          domain: getCookieDomainFromBaseUrl(baseURL),
+          path: "/",
+        },
+      ]);
+    });
+
+    test("visit new page", async ({ page }) => {
+      await page.goto(newPagePath);
+      await expect(getCookieBanner(page)).toBeVisible();
+    });
+
+    test("visit old page", async ({ page, baseURL }) => {
+      test.skip(
+        (baseURL as string).includes("tna.dblclk.dev"),
+        "no old pages available on tna.dblclk.dev",
+      );
+      await page.goto(oldPagePath);
+      // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
+      await expect(oldCookieBanner(page)).not.toBeVisible();
     });
   });
 });

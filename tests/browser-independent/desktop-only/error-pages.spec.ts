@@ -4,7 +4,7 @@ import checkAccessibility from "../../lib/check-accessibility";
 
 test(
   "Page not found error page",
-  { tag: ["@dev", "@smoke", "@ui"] },
+  { tag: ["@wip", "@smoke", "@ui"] },
   async ({ page }) => {
     page.on("response", (response) => {
       if (response.url().endsWith("/foobar/")) {

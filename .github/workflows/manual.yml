@@ -17,7 +17,7 @@ on:
         type: string
         description: Test tags to exclude, separated with a pipe "|"
         required: false
-        default: "@dev"
+        default: "@wip"
       notify-slack:
         type: boolean
         description: Send test results to Slack

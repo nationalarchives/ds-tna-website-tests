@@ -22,12 +22,12 @@ These tests include checking redirects, content on the page, the validitiy of HT
 
 ### Tags
 
-| Tag      | Purpose                                                                        |
-| -------- | ------------------------------------------------------------------------------ |
-| `@dev`   | Tests still in development that probably won't work on the production site yet |
-| `@smoke` | Smoke tests to check the most basic site functionality                         |
-| `@ui`    | Tests for the UI which handle display and interaction                          |
-| `@a11y`  | Automated accessibility tests                                                  |
+| Tag      | Purpose                                                   |
+| -------- | --------------------------------------------------------- |
+| `@wip`   | Tests that probably won't work on the production site yet |
+| `@smoke` | Smoke tests to check the most basic site functionality    |
+| `@ui`    | Tests for the UI which handle display and interaction     |
+| `@a11y`  | Automated accessibility tests                             |
 
 ## Updating Playwright
 
