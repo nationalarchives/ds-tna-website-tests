@@ -2,7 +2,7 @@ name: Nightly production smoke tests
 
 on:
   schedule:
-    - cron: "0 4 * * *" # Every day at 04:00
+    - cron: "0 4 * * 2-5"  # 04:00 Tue-Fri
 
 env:
   DOMAIN: https://www.nationalarchives.gov.uk
