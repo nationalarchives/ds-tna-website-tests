@@ -61,8 +61,9 @@ runs:
         echo >> report.txt && echo "❌ **${{ inputs.fail-count }}** tests failed" >> report.txt
         [[ "${{ inputs.skip-count }}" -gt 0 ]] && echo >> report.txt && echo "🙈 **${{ inputs.skip-count }}** tests skipped" >> report.txt
         [[ "${{ inputs.flake-count }}" -gt 0 ]] && echo >> report.txt && echo "🤕 **${{ inputs.flake-count }}** flaky tests" >> report.txt
-        echo >> report.txt && echo "⏰ Time taken: **${{ inputs.duration }}** seconds" >> report.txt
-        echo >> report.txt && echo "[📋 Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [𝍌 Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [🧪 Development tests](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}+%28%40dev%29+language%3ATypeScript&type=code&l=TypeScript)" >> report.txt
+        TIME_TAKEN = date -u -d @"${{ inputs.duration }}" +"%T"
+        echo >> report.txt && echo "Time taken: **$TIME_TAKEN**" >> report.txt
+        echo >> report.txt && echo "[Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [Development tests](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}+%28%40dev%29+language%3ATypeScript&type=code&l=TypeScript)" >> report.txt
         cat report.txt
         {
           echo 'REPORT<<EOF'
