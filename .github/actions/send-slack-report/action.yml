@@ -68,7 +68,7 @@ runs:
         [[ "${{ inputs.flake-count }}" -gt 0 ]] && echo >> report.txt && echo "🤕 **${{ inputs.flake-count }}** flaky tests" >> report.txt
         TIME_TAKEN=$(date -u -d @"${{ inputs.duration }}" +"%T")
         echo >> report.txt && echo "Time taken: **$TIME_TAKEN**" >> report.txt
-        [[ -n "${{ inputs.description }}" ]] && echo >> report.txt && echo "${{ inputs.description }}" >> report.txt
+        [[ -n "${{ inputs.description }}" ]] && echo >> report.txt && echo "> ${{ inputs.description }}" >> report.txt
         echo >> report.txt && echo "[Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [Development tests](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}+%28%40dev%29+language%3ATypeScript&type=code&l=TypeScript)" >> report.txt
         cat report.txt
         {
