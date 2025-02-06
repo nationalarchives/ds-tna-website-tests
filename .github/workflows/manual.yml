@@ -23,6 +23,11 @@ on:
         description: Send test results to Slack
         required: true
         default: true
+      description:
+        type: string
+        description: A description to add to the Slack report
+        required: false
+        default: ""
 
 jobs:
   run-tests:
@@ -49,3 +54,4 @@ jobs:
           skip-count: ${{ steps.playwright-tests.outputs.skip-count }}
           flake-count: ${{ steps.playwright-tests.outputs.flake-count }}
           duration: ${{ steps.playwright-tests.outputs.duration }}
+          description: ${{ inputs.description }}
