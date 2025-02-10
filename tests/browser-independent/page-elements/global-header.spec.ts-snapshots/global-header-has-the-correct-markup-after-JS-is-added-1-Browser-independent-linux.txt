@@ -1,5 +1,20 @@
 
-        <div class="tna-container tna-global-header__main">
+      <div class="tna-phase-banner tna-background-contrast">
+        <div class="tna-container">
+          <div class="tna-column tna-column--full-tiny">
+            <span class="tna-phase-banner__phase">
+              Beta
+            </span>
+          </div>
+          <div class="tna-column tna-column--flex-1 tna-column--full-tiny">
+            <p class="tna-phase-banner__message">
+              This is a new service. Help us improve it and <a href="https://www.smartsurvey.co.uk/s/DN07V0/?area=header&amp;source=http://tna.dblclk.dev/explore-the-collection/" target="_blank" rel="noreferrer nofollow">give your feedback (opens in new tab)</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tna-container tna-global-header__main">
           <div class="tna-column tna-column--flex-1 tna-column--order-2">
             <span class="tna-global-header__logo-wrapper">
       <a href="/" class="tna-global-header__logo tna-global-header__logo--link" title="The National Archives home page" aria-label="The National Archives home page">          <span class="tna-logo tna-logo--adornable">
