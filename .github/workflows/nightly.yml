@@ -1,8 +1,9 @@
 name: Nightly production smoke tests
 
 on:
-  schedule:
-    - cron: "0 4 * * 2-5"  # 04:00 Tue-Fri
+  # schedule:
+  #   - cron: "0 4 * * 2-5"  # 04:00 Tue-Fri
+  workflow_dispatch:
 
 env:
   DOMAIN: https://www.nationalarchives.gov.uk
