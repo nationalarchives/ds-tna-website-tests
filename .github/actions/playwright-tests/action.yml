@@ -48,11 +48,6 @@ runs:
     # - name: Install Playwright
     #   run: npx playwright install --with-deps
     #   shell: bash
-    - name: Install Playwright
-      id: install-playwright
-      uses: ../install-playwright
-      with:
-        browsers: chromium webkit firefox
     - name: Install jq
       run: sudo apt-get install jq
       shell: bash
