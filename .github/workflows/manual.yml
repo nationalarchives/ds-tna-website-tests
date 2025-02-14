@@ -18,9 +18,14 @@ on:
         description: Test tags to exclude, separated with a pipe "|"
         required: false
         default: "@wip"
-      notify-slack:
+      notify-slack-on-pass:
         type: boolean
-        description: Send test results to Slack
+        description: Send test results to Slack upon success
+        required: true
+        default: true
+      notify-slack-on-fail:
+        type: boolean
+        description: Send test results to Slack upon failure
         required: true
         default: true
       description:
@@ -42,7 +47,7 @@ jobs:
           include-tests: ${{ inputs.include-tests }}
           exclude-tests: ${{ inputs.exclude-tests }}
       - name: Send report to Slack
-        if: always() && inputs.notify-slack
+        if: (success() && inputs.notify-slack-on-pass) || (failure() && inputs.notify-slack-on-fail)
         uses: ./.github/actions/send-slack-report
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK }}
