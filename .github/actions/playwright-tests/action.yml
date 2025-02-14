@@ -45,9 +45,14 @@ runs:
     - name: Install test dependencies
       run: npm ci
       shell: bash
+    # - name: Install Playwright
+    #   run: npx playwright install --with-deps
+    #   shell: bash
     - name: Install Playwright
-      run: npx playwright install --with-deps
-      shell: bash
+      id: install-playwright
+      uses: ../install-playwright
+      with:
+        browsers: chromium webkit firefox
     - name: Install jq
       run: sudo apt-get install jq
       shell: bash
