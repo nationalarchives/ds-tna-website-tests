@@ -42,12 +42,31 @@ runs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/jod
-    - name: Install test dependencies
-      run: npm install
-      shell: bash
+    # - name: Install test dependencies
+    #   run: npm ci
+    #   shell: bash
     # - name: Install Playwright
     #   run: npx playwright install --with-deps
     #   shell: bash
+    - name: Get installed Playwright version
+      id: playwright-version
+      run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
+      shell: bash
+    - name: Cache playwright binaries
+      uses: actions/cache@v3
+      id: playwright-cache
+      with:
+        path: |
+          ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+    - run: npm ci
+      shell: bash
+    - run: npx playwright install --with-deps
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+      shell: bash
+    - run: npx playwright install-deps
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+      shell: bash
     - name: Install jq
       run: sudo apt-get install jq
       shell: bash

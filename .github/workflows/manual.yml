@@ -39,11 +39,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Playwright
-        id: install-playwright
-        uses: ./.github/actions/install-playwright
-        with:
-          browsers: chromium webkit firefox
       - name: Run tests
         id: playwright-tests
         uses: ./.github/actions/playwright-tests
