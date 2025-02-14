@@ -22,6 +22,8 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Install test dependencies
+      run: npm ci
     - name: Get Playwright version
       uses: actions/github-script@v7
       id: version

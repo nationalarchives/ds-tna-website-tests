@@ -43,7 +43,7 @@ runs:
       with:
         node-version: lts/jod
     - name: Install test dependencies
-      run: npm ci
+      run: npm install
       shell: bash
     # - name: Install Playwright
     #   run: npx playwright install --with-deps
