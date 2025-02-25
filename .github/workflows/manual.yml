@@ -15,9 +15,9 @@ on:
         default: ""
       exclude-tests:
         type: string
-        description: Test tags to exclude, separated with a pipe "|"
+        description: Test tags to exclude, separated with a pipe "|" (use @wip to exclude work in progress tests)
         required: false
-        default: "@wip"
+        default: ""
       notify-slack-on-pass:
         type: boolean
         description: Send test results to Slack upon success
