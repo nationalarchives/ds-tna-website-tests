@@ -1,31 +1,12 @@
 import { test, expect, Cookie, Page } from "@playwright/test";
+import { cookiePreferencesSetKey } from "../../playwright.config";
+import getCookieDomainFromBaseUrl from "../lib/domains.ts";
 
 const newPagePath = "/explore-the-collection/";
 const getCookieBanner = (page: Page) =>
   page.getByRole("region", { name: "Cookies on The National Archives" });
 const oldPagePath = "/";
 const oldCookieBanner = (page: Page) => getCookieBanner(page);
-const cookiePreferencesSetKey = "dontShowCookieNotice";
-
-const getCookieDomainFromBaseUrl: (baseURL: string | undefined) => string = (
-  baseURL = "https://www.nationalarchives.gov.uk",
-) => {
-  const cookieDomains = {
-    "https://www.nationalarchives.gov.uk": ".nationalarchives.gov.uk",
-    "https://staging-www.nationalarchives.gov.uk": ".nationalarchives.gov.uk",
-    "https://dev-www.nationalarchives.gov.uk": ".nationalarchives.gov.uk",
-    "http://localhost:65535": "localhost:65535",
-    // TODO: Remove dblclk.dev once moved fully to AWS
-    "https://tna.dblclk.dev": ".dblclk.dev",
-    "https://develop.tna.dblclk.dev": ".dblclk.dev",
-  };
-
-  if (cookieDomains.hasOwnProperty(baseURL)) {
-    return cookieDomains[baseURL];
-  }
-
-  return `.${baseURL.replace(/^https?:\/\/(www.)?/, "")}`;
-};
 
 test.beforeEach(async ({ context }) => {
   await context.clearCookies();

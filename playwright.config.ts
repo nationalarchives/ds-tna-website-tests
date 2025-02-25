@@ -4,6 +4,8 @@ const browserIndependentTests = "browser-independent/**/*.spec.ts";
 const browserIndependentDesktopOnlyTests =
   "browser-independent/desktop-only/**/*.spec.ts";
 
+export const cookiePreferencesSetKey = "dontShowCookieNotice";
+
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,

@@ -23,7 +23,7 @@ jobs:
           include-tests: ${{ env.INCLUDE_TESTS }}
           exclude-tests: ${{ env.EXCLUDE_TESTS }}
       - name: Send report to Slack
-        if: '!cancelled()'
+        if: success() || failure()
         uses: ./.github/actions/send-slack-report
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK }}
