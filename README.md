@@ -29,6 +29,14 @@ These tests include checking redirects, content on the page, the validitiy of HT
 | `@ui`    | Tests for the UI which handle display and interaction     |
 | `@a11y`  | Automated accessibility tests                             |
 
+### Updating snapshots
+
+The snapshots are created by a Linux distro so they can be checked in GitHub Actions.
+
+If you are running Linux, you can update the snapshots by running `npx playwright test --update-snapshots`.
+
+If you are not running Linux, you can update them using the `mcr.microsoft.com/playwright` Docker image with `npm run update-snapshots`.
+
 ## Updating Playwright
 
 ```sh
