@@ -20,12 +20,12 @@ on:
         default: ""
       notify-slack-on-pass:
         type: boolean
-        description: Send test results to Slack upon success
+        description: Send successful test results to Slack
         required: true
         default: true
       notify-slack-on-fail:
         type: boolean
-        description: Send test results to Slack upon failure
+        description: Send test failure results to Slack
         required: true
         default: true
       description:
