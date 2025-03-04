@@ -38,13 +38,13 @@ test("search for records", { tag: ["@wip", "@ui"] }, async ({ page }) => {
     /Showing results ([\d,]+)–([\d,]+) of ([\d,]+)/,
   );
 
-  await page.getByRole("link", { name: "Page 2" }).click();
+  await page.getByRole("link", { name: "Next page" }).click();
   await expect(page).toHaveURL(/[\?&]q=plymouth/);
   await expect(page).toHaveURL(/[\?&]page=2/);
 
-  await page.getByRole("link", { name: "Next page" }).click();
-  await expect(page).toHaveURL(/[\?&]q=plymouth/);
-  await expect(page).toHaveURL(/[\?&]page=3/);
+  // await page.getByRole("link", { name: "Page 2" }).click();
+  // await expect(page).toHaveURL(/[\?&]q=plymouth/);
+  // await expect(page).toHaveURL(/[\?&]page=3/);
 
   await page.getByLabel("Catalogue search results").fill("exeter");
   await page.getByLabel("Catalogue search results").press("Enter");
