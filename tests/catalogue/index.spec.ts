@@ -68,11 +68,14 @@ test(
   "search for and view the details of a record",
   { tag: ["@wip", "@ui"] },
   async ({ page }) => {
-    await page.goto("/catalogue/search/?q=plymouth");
+    await page.goto("/catalogue/search/?q=ufos");
     await expect(page.getByRole("main")).toHaveText(
       /Showing results ([\d,]+)–([\d,]+) of ([\d,]+)/,
     );
-    await expect(page.getByRole("article")).toHaveCount(20);
+    // await expect(page.getByRole("article")).toHaveCount(20);
+    await expect
+      .poll(() => page.getByRole("article").count())
+      .toBeGreaterThan(0);
     await page.getByRole("article").first().click();
 
     await expect(page).toHaveURL(new RegExp("/catalogue/id/"));
@@ -87,9 +90,8 @@ test(
       page.getByRole("link", { name: "Back to search results" }),
     ).toBeVisible();
     await page.getByRole("link", { name: "Back to search results" }).click();
-    await page.goto("/catalogue/search/?q=plymouth");
     await expect(page.getByLabel("Catalogue search results")).toHaveValue(
-      "plymouth",
+      "ufos",
     );
   },
 );

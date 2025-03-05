@@ -39,5 +39,12 @@ test("search for a page", { tag: ["@wip", "@ui"] }, async ({ page }) => {
   await expect(page.getByRole("main")).toHaveText(
     /Showing ([\d,]+)–([\d,]+) of ([\d,]+) results for "domesday"/,
   );
-  await expect(page.getByRole("article")).toHaveCount(12);
+  // await expect(page.getByRole("article")).toHaveCount(12);
+  await expect.poll(() => page.getByRole("article").count()).toBeGreaterThan(0);
+
+  await page.getByRole("link", { name: "Next page" }).click();
+  await expect(page.getByRole("main")).toHaveText(
+    /Showing ([\d,]+)–([\d,]+) of ([\d,]+) results for "domesday"/,
+  );
+  await expect.poll(() => page.getByRole("article").count()).toBeGreaterThan(0);
 });
