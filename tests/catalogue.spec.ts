@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-import getCookieDomainFromBaseUrl from "../lib/domains.ts";
-import { cookiePreferencesSetKey } from "../../playwright.config";
+import getCookieDomainFromBaseUrl from "./lib/domains.ts";
+import { cookiePreferencesSetKey } from "../playwright.config.ts";
 
 test.beforeEach(async ({ context, baseURL }) => {
   await context.addCookies([
@@ -85,6 +85,11 @@ test(
       /Catalogue reference: [\w\d\/ ]+/,
     );
     await expect(page.locator("#record-details")).toBeVisible();
+    await expect(page.locator("#record-details-list")).toBeVisible();
+
+    await expect(page.locator(".record-hierarchy")).not.toBeVisible();
+    await page.getByRole("button", { name: "Catalogue hierarchy" }).click();
+    await expect(page.locator(".record-hierarchy")).toBeVisible();
 
     await expect(
       page.getByRole("link", { name: "Back to search results" }),

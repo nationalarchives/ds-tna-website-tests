@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { cookiePreferencesSetKey } from "../../playwright.config";
-import getCookieDomainFromBaseUrl from "../lib/domains.ts";
+import { cookiePreferencesSetKey } from "../playwright.config.ts";
+import getCookieDomainFromBaseUrl from "./lib/domains.ts";
 
 test.beforeEach(async ({ context, baseURL }) => {
   await context.addCookies([
