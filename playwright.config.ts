@@ -23,6 +23,18 @@ export default defineConfig({
     baseURL: process.env.TEST_DOMAIN || "https://www.nationalarchives.gov.uk",
     trace: "on-first-retry",
   },
+  snapshotPathTemplate:
+    "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}",
+  expect: {
+    toHaveScreenshot: {
+      pathTemplate:
+        "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}-{platform}{ext}",
+    },
+    toMatchAriaSnapshot: {
+      pathTemplate:
+        "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}",
+    },
+  },
   projects: [
     {
       name: "chromium",
