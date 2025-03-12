@@ -91,6 +91,18 @@ test(
     await page.getByRole("button", { name: "Catalogue hierarchy" }).click();
     await expect(page.locator(".record-hierarchy")).toBeVisible();
 
+    if (await page.locator(".record-details__description").count()) {
+      await expect(
+        page.locator(".record-details__description").first(),
+      ).toBeVisible();
+      await page
+        .getByRole("checkbox", { name: "Hide field descriptions" })
+        .click();
+      await expect(
+        page.locator(".record-details__description").first(),
+      ).not.toBeVisible();
+    }
+
     await expect(
       page.getByRole("link", { name: "Back to search results" }),
     ).toBeVisible();
