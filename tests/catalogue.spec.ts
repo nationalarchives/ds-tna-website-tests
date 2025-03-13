@@ -4,7 +4,7 @@ import acceptAllCookies from "./lib/accept-all-cookies.ts";
 
 acceptAllCookies();
 
-test("search for records", { tag: ["@wip", "@ui"] }, async ({ page }) => {
+test("search for records", { tag: ["@wip"] }, async ({ page }) => {
   await page.goto("/catalogue/");
   await expect(
     page.getByRole("region", { name: "Cookies on The National Archives" }),
@@ -40,7 +40,7 @@ test("search for records", { tag: ["@wip", "@ui"] }, async ({ page }) => {
 
 test(
   "view the details of a record from a search and return to the same search results",
-  { tag: ["@wip", "@ui"] },
+  { tag: ["@wip"] },
   async ({ page }) => {
     await page.goto("/catalogue/search/?q=ufos&display=grid");
     await page.getByRole("article").first().click();
@@ -63,7 +63,7 @@ test(
   },
 );
 
-test("record details page", { tag: ["@wip", "@ui"] }, async ({ page }) => {
+test("record details page", { tag: ["@wip"] }, async ({ page }) => {
   await page.goto("/catalogue/id/C4/");
 
   await expect(page.locator("h1")).not.toBeEmpty();
@@ -74,21 +74,17 @@ test("record details page", { tag: ["@wip", "@ui"] }, async ({ page }) => {
   await expect(page.locator("#record-details-list")).toBeVisible();
 });
 
-test(
-  "record details page accordion",
-  { tag: ["@wip", "@ui"] },
-  async ({ page }) => {
-    await page.goto("/catalogue/id/C4/");
+test("record details page accordion", { tag: ["@wip"] }, async ({ page }) => {
+  await page.goto("/catalogue/id/C4/");
 
-    await expect(page.locator(".record-hierarchy")).not.toBeVisible();
-    await page.getByRole("button", { name: "Catalogue hierarchy" }).click();
-    await expect(page.locator(".record-hierarchy")).toBeVisible();
-  },
-);
+  await expect(page.locator(".record-hierarchy")).not.toBeVisible();
+  await page.getByRole("button", { name: "Catalogue hierarchy" }).click();
+  await expect(page.locator(".record-hierarchy")).toBeVisible();
+});
 
 test(
   "record details page field descriptions",
-  { tag: ["@wip", "@ui"] },
+  { tag: ["@wip"] },
   async ({ page }) => {
     await page.goto("/catalogue/id/C4/");
 

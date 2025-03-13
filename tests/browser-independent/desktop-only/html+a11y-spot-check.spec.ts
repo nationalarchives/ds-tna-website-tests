@@ -29,7 +29,7 @@ const devUrlsToTest = [
 
 test.describe("html validity and axe accessibility check", () => {
   urlsToTest.forEach((url) => {
-    test(url, async ({ page }) => {
+    test(url, { tag: ["@a11y"] }, async ({ page }) => {
       await page.goto(url);
       await validateHtml(page);
       await checkAccessibility(page);
@@ -37,7 +37,7 @@ test.describe("html validity and axe accessibility check", () => {
   });
 
   devUrlsToTest.forEach((url) => {
-    test(url, { tag: ["@wip", "@ui", "@a11y"] }, async ({ page }) => {
+    test(url, { tag: ["@wip", "@a11y"] }, async ({ page }) => {
       await page.goto(url);
       await validateHtml(page);
       await checkAccessibility(page);
@@ -62,21 +62,17 @@ test.describe("html validity and axe accessibility check without js or css", () 
   });
 
   devUrlsToTest.forEach((url) => {
-    test(
-      `${url}`,
-      { tag: ["@wip", "@ui", "@a11y"] },
-      async ({ page, context }) => {
-        await context.route("**", (route) => {
-          return ["script", "stylesheet", "xhr"].includes(
-            route.request().resourceType(),
-          )
-            ? route.abort()
-            : route.continue();
-        });
-        await page.goto(url);
-        await validateHtml(page);
-        await checkAccessibility(page);
-      },
-    );
+    test(`${url}`, { tag: ["@wip", "@a11y"] }, async ({ page, context }) => {
+      await context.route("**", (route) => {
+        return ["script", "stylesheet", "xhr"].includes(
+          route.request().resourceType(),
+        )
+          ? route.abort()
+          : route.continue();
+      });
+      await page.goto(url);
+      await validateHtml(page);
+      await checkAccessibility(page);
+    });
   });
 });

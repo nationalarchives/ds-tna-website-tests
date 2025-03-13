@@ -26,7 +26,6 @@ These tests include checking redirects, content on the page, the validitiy of HT
 | -------- | --------------------------------------------------------- |
 | `@wip`   | Tests that probably won't work on the production site yet |
 | `@smoke` | Smoke tests to check the most basic site functionality    |
-| `@ui`    | Tests for the UI which handle display and interaction     |
 | `@a11y`  | Automated accessibility tests                             |
 
 ### Updating snapshots

@@ -3,7 +3,7 @@ import acceptAllCookies from "./lib/accept-all-cookies.ts";
 
 acceptAllCookies();
 
-test("search for a page", { tag: ["@wip", "@ui"] }, async ({ page }) => {
+test("search for a page", { tag: ["@wip"] }, async ({ page }) => {
   await page.goto("/search/");
   await expect(
     page.getByRole("region", { name: "Cookies on The National Archives" }),

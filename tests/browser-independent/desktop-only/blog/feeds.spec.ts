@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("feeds listing page", { tag: ["@wip", "@ui"] }, async ({ page }) => {
+test("feeds listing page", { tag: ["@wip"] }, async ({ page }) => {
   await page.goto("/blogs/feeds/");
   await expect(page.locator("h1")).toHaveText(/Blog feeds/);
 });

@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test(
   "global header can be interacted with and has the correct accessibility tree",
-  { tag: ["@ui", "@a11y"] },
+  { tag: ["@a11y"] },
   async ({ page, isMobile }) => {
     await page.goto("/explore-the-collection/"); // TODO: Change to homepage once updated
     const header = await page.locator(".tna-global-header");

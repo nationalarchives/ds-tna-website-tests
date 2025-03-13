@@ -35,7 +35,7 @@ test.afterEach(async ({ context, baseURL }) => {
   }
 });
 
-test.describe("no existing cookies", { tag: "@ui" }, () => {
+test.describe("no existing cookies", () => {
   test("don't interact on new page then visit old page", async ({ page }) => {
     await page.goto(newPagePath);
     await expect(getCookieBanner(page)).toBeVisible();
@@ -133,7 +133,7 @@ test.describe("no existing cookies", { tag: "@ui" }, () => {
   });
 });
 
-test.describe("partial existing cookies", { tag: "@ui" }, () => {
+test.describe("partial existing cookies", () => {
   test("visit new page", async ({ page, context, baseURL }) => {
     await context.addCookies([
       {
@@ -189,7 +189,7 @@ test.describe("partial existing cookies", { tag: "@ui" }, () => {
   });
 });
 
-test.describe("malformed cookies", { tag: "@ui" }, () => {
+test.describe("malformed cookies", () => {
   test.beforeEach(async ({ context, baseURL }) => {
     await context.addCookies([
       {
