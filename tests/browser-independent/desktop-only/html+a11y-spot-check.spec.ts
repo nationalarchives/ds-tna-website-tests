@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import validateHtml from "../../lib/validate-html";
 import checkAccessibility from "../../lib/check-accessibility";
 
@@ -7,11 +7,12 @@ const urlsToTest = [
   "/explore-the-collection/stories/",
   "/explore-the-collection/stories/?page=2",
   "/explore-the-collection/stories/robert-wedderburn/",
-  "/explore-the-collection/stories/the-bethnal-green-tube-shelter-disaster/",
+  "/explore-the-collection/stories/william-shakespeare/",
   "/explore-the-collection/stories/sir-henry-coles-rat/",
   "/explore-the-collection/explore-by-topic/",
   "/explore-the-collection/explore-by-topic/arts-and-culture/",
-  "/explore-the-collection/second-world-war/second-world-war-propaganda-posters/",
+  "/explore-the-collection/explore-by-time-period/second-world-war/",
+  "/explore-the-collection/explore-by-time-period/second-world-war/second-world-war-propaganda-posters/",
   "/people/",
   "/people/vicky-iglikowski-broad/",
   "/people/vicky-iglikowski-broad/?page=1",
@@ -55,7 +56,9 @@ test.describe("html validity and axe accessibility check without js or css", () 
           ? route.abort()
           : route.continue();
       });
-      await page.goto(url);
+      const response = await page.goto(url);
+      const status = await response?.status();
+      expect(status).toEqual(200);
       await validateHtml(page);
       await checkAccessibility(page);
     });
@@ -70,7 +73,9 @@ test.describe("html validity and axe accessibility check without js or css", () 
           ? route.abort()
           : route.continue();
       });
-      await page.goto(url);
+      const response = await page.goto(url);
+      const status = await response?.status();
+      expect(status).toEqual(200);
       await validateHtml(page);
       await checkAccessibility(page);
     });
