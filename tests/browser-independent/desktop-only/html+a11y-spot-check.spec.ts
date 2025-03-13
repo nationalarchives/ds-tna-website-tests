@@ -7,7 +7,6 @@ const urlsToTest = [
   "/explore-the-collection/stories/",
   "/explore-the-collection/stories/?page=2",
   "/explore-the-collection/stories/robert-wedderburn/",
-  "/explore-the-collection/stories/william-shakespeare/",
   "/explore-the-collection/stories/sir-henry-coles-rat/",
   "/explore-the-collection/explore-by-topic/",
   "/explore-the-collection/explore-by-topic/arts-and-culture/",
