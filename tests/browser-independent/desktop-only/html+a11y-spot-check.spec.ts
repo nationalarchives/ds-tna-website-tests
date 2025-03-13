@@ -19,7 +19,7 @@ const urlsToTest = [
 ];
 
 const devUrlsToTest = [
-  "/blog/",
+  "/blogs/",
   "/blogs/feeds/",
   "/about-us/",
   "/about-us/our-role/",
