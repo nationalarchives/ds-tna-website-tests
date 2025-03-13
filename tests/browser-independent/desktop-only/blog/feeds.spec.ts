@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test("feeds listing page", { tag: ["@wip", "@ui"] }, async ({ page }) => {
-  await page.goto("/blog/feeds/");
+  await page.goto("/blogs/feeds/");
   await expect(page.locator("h1")).toHaveText(/Blog feeds/);
 });
 
@@ -10,7 +10,7 @@ test("all feed - rss", { tag: ["@wip", "@smoke"] }, async ({ page }) => {
     const contentType = await response.headerValue("content-type");
     expect(contentType).toEqual("text/xml; charset=utf-8");
   });
-  await page.goto("/blog/feeds/all/");
+  await page.goto("/blogs/feeds/all/");
 });
 
 test("all feed - atom", { tag: "@wip" }, async ({ page }) => {
@@ -18,7 +18,7 @@ test("all feed - atom", { tag: "@wip" }, async ({ page }) => {
     const contentType = await response.headerValue("content-type");
     expect(contentType).toEqual("text/xml; charset=utf-8");
   });
-  await page.goto("/blog/feeds/all/?format=atom");
+  await page.goto("/blogs/feeds/all/?format=atom");
 });
 
 test("explore the collection feed - rss", { tag: "@wip" }, async ({ page }) => {
@@ -26,7 +26,7 @@ test("explore the collection feed - rss", { tag: "@wip" }, async ({ page }) => {
     const contentType = await response.headerValue("content-type");
     expect(contentType).toEqual("text/xml; charset=utf-8");
   });
-  await page.goto("/blog/feeds/427/");
+  await page.goto("/blogs/feeds/427/");
 });
 
 test(
@@ -37,6 +37,6 @@ test(
       const contentType = await response.headerValue("content-type");
       expect(contentType).toEqual("text/xml; charset=utf-8");
     });
-    await page.goto("/blog/feeds/427/?format=atom");
+    await page.goto("/blogs/feeds/427/?format=atom");
   },
 );

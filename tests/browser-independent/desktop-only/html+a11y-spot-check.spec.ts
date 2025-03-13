@@ -20,7 +20,7 @@ const urlsToTest = [
 
 const devUrlsToTest = [
   "/blog/",
-  "/blog/feeds/",
+  "/blogs/feeds/",
   "/about-us/",
   "/about-us/our-role/",
   "/about-us/our-role/annual-report-and-accounts-202324/",
