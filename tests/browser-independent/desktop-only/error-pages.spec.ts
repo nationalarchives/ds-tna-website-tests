@@ -19,6 +19,14 @@ test(
     await expect(
       page.getByRole("main").getByRole("link", { name: "contact us" }),
     ).toBeVisible();
+    await expect(
+      page
+        .getByRole("main")
+        .getByRole("link", { name: "archived version of this page" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("main").getByRole("link", { name: "Discovery" }),
+    ).toBeVisible();
     await validateHtml(page);
     await checkAccessibility(page);
   },

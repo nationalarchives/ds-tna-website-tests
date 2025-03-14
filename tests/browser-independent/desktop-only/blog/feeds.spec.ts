@@ -6,37 +6,48 @@ test("feeds listing page", { tag: ["@wip"] }, async ({ page }) => {
 });
 
 test("all feed - rss", { tag: ["@wip", "@smoke"] }, async ({ page }) => {
-  page.on("response", async (response) => {
-    const contentType = await response.headerValue("content-type");
-    expect(contentType).toEqual("text/xml; charset=utf-8");
-  });
-  await page.goto("/blogs/feeds/all/");
+  const response = await page.goto("/blogs/feeds/all/");
+  const status = await response?.status();
+  expect(status).toEqual(200);
+  const contentType = await response?.headerValue("content-type");
+  expect(contentType).toEqual("text/xml; charset=utf-8");
 });
 
 test("all feed - atom", { tag: "@wip" }, async ({ page }) => {
-  page.on("response", async (response) => {
-    const contentType = await response.headerValue("content-type");
-    expect(contentType).toEqual("text/xml; charset=utf-8");
-  });
-  await page.goto("/blogs/feeds/all/?format=atom");
+  const response = await page.goto("/blogs/feeds/all/?format=atom");
+  const status = await response?.status();
+  expect(status).toEqual(200);
+  const contentType = await response?.headerValue("content-type");
+  expect(contentType).toEqual("text/xml; charset=utf-8");
 });
 
 test("explore the collection feed - rss", { tag: "@wip" }, async ({ page }) => {
-  page.on("response", async (response) => {
-    const contentType = await response.headerValue("content-type");
-    expect(contentType).toEqual("text/xml; charset=utf-8");
-  });
-  await page.goto("/blogs/feeds/427/");
+  const response = await page.goto("/blogs/feeds/427/");
+  const status = await response?.status();
+  expect(status).toEqual(200);
+  const contentType = await response?.headerValue("content-type");
+  expect(contentType).toEqual("text/xml; charset=utf-8");
 });
 
 test(
   "explore the collection feed - atom",
   { tag: "@wip" },
   async ({ page }) => {
-    page.on("response", async (response) => {
-      const contentType = await response.headerValue("content-type");
-      expect(contentType).toEqual("text/xml; charset=utf-8");
-    });
-    await page.goto("/blogs/feeds/427/?format=atom");
+    const response = await page.goto("/blogs/feeds/427/?format=atom");
+    const status = await response?.status();
+    expect(status).toEqual(200);
+    const contentType = await response?.headerValue("content-type");
+    expect(contentType).toEqual("text/xml; charset=utf-8");
   },
 );
+
+test("non-existant feed", { tag: "@wip" }, async ({ page }) => {
+  const response = await page.goto("/blogs/feeds/0/");
+  const status = await response?.status();
+  expect(status).toEqual(404);
+  const contentType = await response?.headerValue("content-type");
+  expect(contentType).toEqual("text/html; charset=utf-8");
+  await expect(
+    page.getByRole("main").getByRole("heading", { name: "Page not found" }),
+  ).toBeVisible();
+});
