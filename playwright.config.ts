@@ -21,6 +21,7 @@ export default defineConfig({
     : "list",
   use: {
     baseURL: process.env.TEST_DOMAIN || "https://www.nationalarchives.gov.uk",
+    ignoreHTTPSErrors: process.env.TEST_DOMAIN === "https://localhost",
     trace: "on-first-retry",
   },
   snapshotPathTemplate:
