@@ -40,7 +40,7 @@ If you are not running Linux, you can update them using the `mcr.microsoft.com/p
 
 ```sh
 # Install the latest version of Playwright
-npm install @playwright/test@latest`
+npm install @playwright/test@latest
 
 # Install Playwright browsers
 npx playwright install --with-deps
