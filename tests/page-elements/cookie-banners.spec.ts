@@ -35,7 +35,7 @@ test.afterEach(async ({ context, baseURL }) => {
   }
 });
 
-test.describe("no existing cookies", () => {
+test.describe("no existing cookies", { tag: ["@require-wordpress"] }, () => {
   test("don't interact on new page then visit old page", async ({ page }) => {
     await page.goto(newPagePath);
     await expect(getCookieBanner(page)).toBeVisible();
@@ -133,63 +133,67 @@ test.describe("no existing cookies", () => {
   });
 });
 
-test.describe("partial existing cookies", () => {
-  test("visit new page", async ({ page, context, baseURL }) => {
-    await context.addCookies([
-      {
-        name: "cookies_policy",
-        value: "%7B%22usage%22%3Atrue%7D",
-        domain: getCookieDomainFromBaseUrl(baseURL),
-        path: "/",
-      },
-    ]);
-    await page.goto(newPagePath);
-    await expect(getCookieBanner(page)).toBeVisible();
-  });
-
-  test("visit old page", async ({ page, context, baseURL }) => {
-    await context.addCookies([
-      {
-        name: "cookies_policy",
-        value: "%7B%22usage%22%3Atrue%7D",
-        domain: getCookieDomainFromBaseUrl(baseURL),
-        path: "/",
-      },
-    ]);
-    await page.goto(oldPagePath);
-    await expect(oldCookieBanner(page)).toBeVisible();
-  });
-
-  test.describe("with cookie preferences set", () => {
-    test.beforeEach(async ({ context, baseURL }) => {
+test.describe(
+  "partial existing cookies",
+  { tag: ["@require-wordpress"] },
+  () => {
+    test("visit new page", async ({ page, context, baseURL }) => {
       await context.addCookies([
         {
-          name: cookiePreferencesSetKey,
-          value: "true",
+          name: "cookies_policy",
+          value: "%7B%22usage%22%3Atrue%7D",
           domain: getCookieDomainFromBaseUrl(baseURL),
           path: "/",
         },
       ]);
-    });
-
-    test("visit new page", async ({ page }) => {
       await page.goto(newPagePath);
       await expect(getCookieBanner(page)).toBeVisible();
     });
 
-    test("visit old page", async ({ page, baseURL }) => {
-      test.skip(
-        (baseURL as string).includes("tna.dblclk.dev"),
-        "no old pages available on tna.dblclk.dev",
-      );
+    test("visit old page", async ({ page, context, baseURL }) => {
+      await context.addCookies([
+        {
+          name: "cookies_policy",
+          value: "%7B%22usage%22%3Atrue%7D",
+          domain: getCookieDomainFromBaseUrl(baseURL),
+          path: "/",
+        },
+      ]);
       await page.goto(oldPagePath);
-      // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
-      await expect(oldCookieBanner(page)).not.toBeVisible();
+      await expect(oldCookieBanner(page)).toBeVisible();
     });
-  });
-});
 
-test.describe("malformed cookies", () => {
+    test.describe("with cookie preferences set", () => {
+      test.beforeEach(async ({ context, baseURL }) => {
+        await context.addCookies([
+          {
+            name: cookiePreferencesSetKey,
+            value: "true",
+            domain: getCookieDomainFromBaseUrl(baseURL),
+            path: "/",
+          },
+        ]);
+      });
+
+      test("visit new page", async ({ page }) => {
+        await page.goto(newPagePath);
+        await expect(getCookieBanner(page)).toBeVisible();
+      });
+
+      test("visit old page", async ({ page, baseURL }) => {
+        test.skip(
+          (baseURL as string).includes("tna.dblclk.dev"),
+          "no old pages available on tna.dblclk.dev",
+        );
+        await page.goto(oldPagePath);
+        // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
+        await expect(oldCookieBanner(page)).not.toBeVisible();
+      });
+    });
+  },
+);
+
+test.describe("malformed cookies", { tag: ["@require-wordpress"] }, () => {
   test.beforeEach(async ({ context, baseURL }) => {
     await context.addCookies([
       {
