@@ -6,25 +6,30 @@ const browserIndependentDesktopOnlyTests =
 
 export const cookiePreferencesSetKey = "dontShowCookieNotice";
 
+const extraHTTPHeaders = {};
+if (process.env.ACCESS_HEADER) {
+  extraHTTPHeaders["X-Access-Header"] = process.env.ACCESS_HEADER;
+}
+
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  // workers: process.env.CI ? 1 : undefined,
+  retries: 2,
   reporter: process.env.CI
     ? [
         ["dot"],
         ["@estruyf/github-actions-reporter"],
         ["json", { outputFile: "test-results.json" }],
       ]
-    : "list",
+    : "line",
   use: {
     baseURL: process.env.TEST_DOMAIN || "https://www.nationalarchives.gov.uk",
     ignoreHTTPSErrors: ["https://localhost", "https://nginx"].includes(
       process.env.TEST_DOMAIN || "",
     ),
     trace: "on-first-retry",
+    extraHTTPHeaders,
   },
   snapshotPathTemplate:
     "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}",

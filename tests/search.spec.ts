@@ -13,19 +13,19 @@ test("search for a page", { tag: ["@wip"] }, async ({ page }) => {
   );
   await page
     .getByLabel("Search The National Archives website")
-    .fill("domesday");
+    .fill("explore the collection");
   await page.getByRole("button", { name: "Search" }).click();
 
-  await expect(page).toHaveURL(/\/search\/\?q=domesday/);
+  await expect(page).toHaveURL(/\/search\/\?q=explore\+the\+collection/);
   await expect(page.getByRole("main")).toHaveText(
-    /Showing ([\d,]+)–([\d,]+) of ([\d,]+) results for "domesday"/,
+    /Showing ([\d,]+)–([\d,]+) of ([\d,]+) results for "explore the collection"/,
   );
   // await expect(page.getByRole("article")).toHaveCount(12);
   await expect.poll(() => page.getByRole("article").count()).toBeGreaterThan(0);
 
   await page.getByRole("link", { name: "Next page" }).click();
   await expect(page.getByRole("main")).toHaveText(
-    /Showing ([\d,]+)–([\d,]+) of ([\d,]+) results for "domesday"/,
+    /Showing ([\d,]+)–([\d,]+) of ([\d,]+) results for "explore the collection"/,
   );
   await expect.poll(() => page.getByRole("article").count()).toBeGreaterThan(0);
 });
