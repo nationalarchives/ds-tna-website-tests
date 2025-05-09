@@ -9,9 +9,9 @@ test("search for records", { tag: ["@wip"] }, async ({ page }) => {
   await expect(
     page.getByRole("region", { name: "Cookies on The National Archives" }),
   ).not.toBeVisible();
-  await expect(page.locator("h1")).toHaveText(/Welcome to the catalogue/);
+  await expect(page.locator("h1")).toHaveText(/Search our catalogue/);
 
-  await page.getByLabel("Search the catalogue").fill("plymouth");
+  await page.getByLabel("Search by keyword, place, person, or catalogue reference").fill("plymouth");
   await page.getByRole("button", { name: "Search" }).click();
 
   await expect(page).toHaveURL(/[\?&]q=plymouth/);
