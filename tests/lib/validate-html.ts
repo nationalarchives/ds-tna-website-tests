@@ -4,11 +4,11 @@ import { HtmlValidate, ConfigData } from "html-validate";
 const config: ConfigData = {
   extends: ["html-validate:recommended"],
   rules: {
-    // "attribute-empty-style": ["warn", { style: "omit" }],
     "attribute-empty-style": ["off", { style: "omit" }],
-    // "attribute-boolean-style": ["warn", { style: "omit" }],
     "attribute-boolean-style": ["off", { style: "omit" }],
+    "no-inline-style": "warn", // video.js
     "no-trailing-whitespace": "off",
+    "prefer-native-element": "warn", // video.js
   },
 };
 

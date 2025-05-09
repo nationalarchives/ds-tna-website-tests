@@ -15,7 +15,7 @@ const urlsToTest = [
   "/people/",
   "/people/vicky-iglikowski-broad/",
   "/people/vicky-iglikowski-broad/?page=1",
-  // "/mi5-official-secrets/",  // TODO: Issues with HTML validation of video.js player
+  "/mi5-official-secrets/",
 ];
 
 const devUrlsToTest = [
