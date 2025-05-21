@@ -42,9 +42,11 @@ jobs:
       - name: Get test header value
         run: |
           if [[ "${{ inputs.domain }}" == *"dev-www.nationalarchives.gov.uk"* ]]; then
-            echo "TEST_HEADER=${{ secrets.TEST_HEADER_DEV }}" >> $GITHUB_ENV
+            echo "Using dev header..."
+            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_ACCESS_HEADER_DEV }}" >> $GITHUB_ENV
           elif [[ "${{ inputs.domain }}" == *"staging-www.nationalarchives.gov.uk"* ]]; then
-            echo "TEST_HEADER=${{ secrets.TEST_HEADER_STAGING }}" >> $GITHUB_ENV
+            echo "Using staging header..."
+            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_ACCESS_HEADER_STAGING }}" >> $GITHUB_ENV
           fi
       - name: Run tests
         id: playwright-tests
@@ -53,7 +55,6 @@ jobs:
           domain: ${{ inputs.domain }}
           include-tests: ${{ inputs.include-tests }}
           exclude-tests: ${{ inputs.exclude-tests }}
-          test-header: ${{ env.TEST_HEADER }}
       - name: Send report to Slack
         if: (success() && inputs.notify-slack-on-pass) || (failure() && inputs.notify-slack-on-fail)
         uses: ./.github/actions/send-slack-report
