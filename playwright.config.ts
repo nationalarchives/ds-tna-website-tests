@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+require("dotenv").config();
+
 const browserIndependentTests = "browser-independent/**/*.spec.ts";
 const browserIndependentDesktopOnlyTests =
   "browser-independent/desktop-only/**/*.spec.ts";
@@ -8,7 +10,7 @@ export const cookiePreferencesSetKey = "dontShowCookieNotice";
 
 const extraHTTPHeaders = {};
 if (process.env.ACCESS_HEADER) {
-  extraHTTPHeaders["X-Access-Header"] = process.env.ACCESS_HEADER;
+  extraHTTPHeaders["x-site-test"] = process.env.ACCESS_HEADER;
 }
 
 export default defineConfig({

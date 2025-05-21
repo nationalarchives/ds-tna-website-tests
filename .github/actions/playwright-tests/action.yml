@@ -15,6 +15,11 @@ inputs:
     description: Test tags to exclude
     required: false
     default: ""
+  test-header:
+    type: string
+    description: x-site-test header value
+    required: false
+    default: ""
 
 outputs:
   pass-count:
@@ -71,8 +76,15 @@ runs:
         DOMAIN=$(echo "${{ inputs.domain }}" | sed 's:/*$::')
         echo "DOMAIN=$DOMAIN" >> "$GITHUB_OUTPUT"
       shell: bash
+    - name: Set up .env
+      run: |
+        touch .env
+        echo "TEST_DOMAIN=${{ steps.santisie-domain.outputs.DOMAIN }}" >> .env
+        echo "TEST_HEADER=${{ inputs.test-header }}" >> .env
+        echo "CI=true" >> .env
+      shell: bash
     - name: Run tests
-      run: TEST_DOMAIN=${{ steps.santisie-domain.outputs.DOMAIN }} CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+      run: npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       shell: bash
     - name: Report summary
       if: always()
