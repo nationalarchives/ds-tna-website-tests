@@ -43,10 +43,10 @@ jobs:
         run: |
           if [[ "${{ inputs.domain }}" == *"dev-www.nationalarchives.gov.uk"* ]]; then
             echo "Using dev header..."
-            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_ACCESS_HEADER_DEV }}" >> $GITHUB_ENV
+            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_DEV }}" >> $GITHUB_ENV
           elif [[ "${{ inputs.domain }}" == *"staging-www.nationalarchives.gov.uk"* ]]; then
             echo "Using staging header..."
-            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_ACCESS_HEADER_STAGING }}" >> $GITHUB_ENV
+            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_STAGING }}" >> $GITHUB_ENV
           fi
       - name: Run tests
         id: playwright-tests
