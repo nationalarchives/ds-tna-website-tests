@@ -76,15 +76,8 @@ runs:
         DOMAIN=$(echo "${{ inputs.domain }}" | sed 's:/*$::')
         echo "DOMAIN=$DOMAIN" >> "$GITHUB_OUTPUT"
       shell: bash
-    - name: Set up .env
-      run: |
-        touch .env
-        echo "TEST_DOMAIN=${{ steps.santisie-domain.outputs.DOMAIN }}" >> .env
-        echo "TEST_HEADER=${{ inputs.test-header }}" >> .env
-        echo "CI=true" >> .env
-      shell: bash
     - name: Run tests
-      run: npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+      run: TEST_DOMAIN="${{ steps.santisie-domain.outputs.DOMAIN }}" TEST_HEADER="${{ env.TEST_HEADER }}" CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       shell: bash
     - name: Report summary
       if: always()
