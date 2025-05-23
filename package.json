@@ -6,8 +6,8 @@
     "test:develop": "npx playwright install && TEST_DOMAIN=https://dev-www.nationalarchives.gov.uk npx playwright test --ui --grep-invert \"@wip\"",
     "test:staging": "npx playwright install && TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk npx playwright test --ui --grep-invert \"@wip\"",
     "test:production": "npx playwright install && npx playwright test --ui --grep-invert \"@wip\"",
-    "test:dblclk_develop": "npx playwright install && TEST_DOMAIN=https://develop.tna.dblclk.dev npx playwright test --ui",
-    "test:dblclk_staging": "npx playwright install && TEST_DOMAIN=https://tna.dblclk.dev npx playwright test --ui"
+    "test:dblclk_develop": "npx playwright install && TEST_DOMAIN=https://develop.tna.dblclk.dev npx playwright test --ui --grep-invert \"@require-wordpress\"",
+    "test:dblclk_staging": "npx playwright install && TEST_DOMAIN=https://tna.dblclk.dev npx playwright test --ui --grep-invert \"@require-wordpress\""
   },
   "dependencies": {
     "@axe-core/playwright": "^4.10.1",
