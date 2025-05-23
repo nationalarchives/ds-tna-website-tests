@@ -12,6 +12,7 @@ const urlsToTest = [
   "/explore-the-collection/explore-by-topic/arts-and-culture/",
   "/explore-the-collection/explore-by-time-period/second-world-war/",
   "/explore-the-collection/explore-by-time-period/second-world-war/second-world-war-propaganda-posters/",
+  "/explore-the-collection/search/",
   "/people/",
   "/people/vicky-iglikowski-broad/",
   "/people/vicky-iglikowski-broad/?page=1",

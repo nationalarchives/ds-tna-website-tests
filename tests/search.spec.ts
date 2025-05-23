@@ -20,12 +20,15 @@ test("search for a page", { tag: ["@wip"] }, async ({ page }) => {
   await expect(page.getByRole("main")).toHaveText(
     /Showing ([\d,]+)–([\d,]+) of ([\d,]+) results for "explore the collection"/,
   );
-  // await expect(page.getByRole("article")).toHaveCount(12);
-  await expect.poll(() => page.getByRole("article").count()).toBeGreaterThan(0);
+  await expect((await page.getByRole("article").all()).length).toBeGreaterThan(
+    0,
+  );
 
   await page.getByRole("link", { name: "Next page" }).click();
   await expect(page.getByRole("main")).toHaveText(
     /Showing ([\d,]+)–([\d,]+) of ([\d,]+) results for "explore the collection"/,
   );
-  await expect.poll(() => page.getByRole("article").count()).toBeGreaterThan(0);
+  await expect((await page.getByRole("article").all()).length).toBeGreaterThan(
+    0,
+  );
 });
