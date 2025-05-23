@@ -4,9 +4,9 @@
     "lint:fix": "npx prettier --write .",
     "update-snapshots": "docker run -it -v $(pwd):/src --rm --ipc=host mcr.microsoft.com/playwright:v1.50.0 /bin/bash -c \"cd /src; npm i; npx playwright test --update-snapshots\"",
     "test:localhost": "npx playwright install && TEST_DOMAIN=https://localhost npx playwright test --ui",
-    "test:develop": "npx playwright install && TEST_DOMAIN=https://dev-www.nationalarchives.gov.uk npx playwright test --ui",
-    "test:staging": "npx playwright install && TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk npx playwright test --ui",
-    "test:production": "npx playwright install && npx playwright test --ui",
+    "test:develop": "npx playwright install && TEST_DOMAIN=https://dev-www.nationalarchives.gov.uk npx playwright test --ui --grep-invert \"@wip\"",
+    "test:staging": "npx playwright install && TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk npx playwright test --ui --grep-invert \"@wip\"",
+    "test:production": "npx playwright install && npx playwright test --ui --grep-invert \"@wip\"",
     "test:dblclk_develop": "npx playwright install && TEST_DOMAIN=https://develop.tna.dblclk.dev npx playwright test --ui",
     "test:dblclk_staging": "npx playwright install && TEST_DOMAIN=https://tna.dblclk.dev npx playwright test --ui"
   },
