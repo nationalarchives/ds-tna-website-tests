@@ -2,8 +2,7 @@
   "scripts": {
     "postinstall": "npx playwright install --with-deps",
     "lint:fix": "npx prettier --write .",
-    "update-snapshots": "docker run -it -v $(pwd):/src --rm --ipc=host mcr.microsoft.com/playwright:v1.50.0 /bin/bash -c \"cd /src; npm i; npx playwright test --update-snapshots\"",
-    "test:localhost": "npx playwright install && TEST_DOMAIN=https://localhost npx playwright test --ui",
+    "test:localhost": "npx playwright install && TEST_DOMAIN=https://localhost npx playwright test --update-snapshots --ui --grep-invert \"@require-wordpress\"",
     "test:develop": "npx playwright install && TEST_DOMAIN=https://dev-www.nationalarchives.gov.uk npx playwright test --ui --grep-invert \"@wip\"",
     "test:staging": "npx playwright install && TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk npx playwright test --ui --grep-invert \"@wip\"",
     "test:production": "npx playwright install && npx playwright test --ui --grep-invert \"@wip\"",

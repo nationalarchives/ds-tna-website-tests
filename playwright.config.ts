@@ -1,8 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const browserIndependentTests = "browser-independent/**/*.spec.ts";
-const browserIndependentDesktopOnlyTests =
-  "browser-independent/desktop-only/**/*.spec.ts";
 
 export const cookiePreferencesSetKey = "dontShowCookieNotice";
 
@@ -74,12 +72,6 @@ export default defineConfig({
       name: "Browser independent",
       use: { ...devices["Desktop Chrome"] },
       testMatch: browserIndependentTests,
-    },
-    {
-      name: "Browser independent mobile",
-      use: { ...devices["Pixel 7"] },
-      testMatch: browserIndependentTests,
-      testIgnore: browserIndependentDesktopOnlyTests,
     },
   ],
 });

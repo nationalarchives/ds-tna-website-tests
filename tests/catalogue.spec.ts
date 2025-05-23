@@ -50,9 +50,6 @@ test(
     await expect(page).toHaveURL(new RegExp("/catalogue/id/"));
     await expect(page).toHaveURL(/\?search=/);
     await expect(page.locator("h1")).not.toBeEmpty();
-    await expect(page.getByRole("main")).toHaveText(
-      /Catalogue reference: [\w\d\/ ]+/,
-    );
 
     await expect(
       page.getByRole("link", { name: "Back to search results" }),

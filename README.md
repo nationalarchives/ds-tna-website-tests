@@ -22,19 +22,12 @@ These tests include checking redirects, content on the page, the validitiy of HT
 
 ### Tags
 
-| Tag      | Purpose                                                   |
-| -------- | --------------------------------------------------------- |
-| `@wip`   | Tests that probably won't work on the production site yet |
-| `@smoke` | Smoke tests to check the most basic site functionality    |
-| `@a11y`  | Automated accessibility tests                             |
-
-### Updating snapshots
-
-The snapshots are created by a Linux distro so they can be checked in GitHub Actions.
-
-If you are running Linux, you can update the snapshots by running `npx playwright test --update-snapshots`.
-
-If you are not running Linux, you can update them using the `mcr.microsoft.com/playwright` Docker image with `npm run update-snapshots`.
+| Tag                   | Purpose                                                   |
+| --------------------- | --------------------------------------------------------- |
+| `@wip`                | Tests that probably won't work on the production site yet |
+| `@smoke`              | Smoke tests to check the most basic site functionality    |
+| `@a11y`               | Automated accessibility tests                             |
+| `@requires-wordpress` | Requires WordPress to run (so cannot be tested locally)   |
 
 ## Updating Playwright
 

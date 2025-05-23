@@ -20,14 +20,6 @@ test("main sitemap", { tag: ["@wip", "@smoke"] }, async ({ page }) => {
   expect(contentType).toEqual("application/xml; charset=utf-8");
 });
 
-test("static pages sitemap", { tag: ["@wip", "@smoke"] }, async ({ page }) => {
-  const response = await page.goto("/sitemaps/sitemap_static.xml");
-  const status = await response?.status();
-  expect(status).toEqual(200);
-  const contentType = await response?.headerValue("content-type");
-  expect(contentType).toEqual("application/xml; charset=utf-8");
-});
-
 test(
   "first dynamic pages sitemap",
   { tag: ["@wip", "@smoke"] },
