@@ -6,7 +6,7 @@ export const cookiePreferencesSetKey = "dontShowCookieNotice";
 
 const extraHTTPHeaders = {};
 if (process.env.ACCESS_HEADER) {
-  extraHTTPHeaders["x-site-test"] = process.env.ACCESS_HEADER;
+  extraHTTPHeaders["x-external-access-key"] = process.env.ACCESS_HEADER;
 }
 
 export default defineConfig({
