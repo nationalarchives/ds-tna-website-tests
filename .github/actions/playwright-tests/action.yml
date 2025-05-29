@@ -70,6 +70,7 @@ runs:
       run: |
         DOMAIN=$(echo "${{ inputs.domain }}" | sed 's:/*$::')
         echo "DOMAIN=$DOMAIN" >> "$GITHUB_OUTPUT"
+        echo "Domain: $DOMAIN" >> $GITHUB_STEP_SUMMARY
       shell: bash
     - name: Run tests
       run: TEST_DOMAIN="${{ steps.santisie-domain.outputs.DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
