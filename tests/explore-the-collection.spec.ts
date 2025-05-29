@@ -74,11 +74,7 @@ test("search explore the collection", async ({ page }) => {
     page.getByRole("article").first().locator(".tna-card__meta"),
   ).not.toBeVisible();
   await page.getByLabel("Date published").click();
-  await page
-    .getByRole("search")
-    .filter({ hasText: "Search Explore the collection" })
-    .getByRole("button")
-    .click();
+  await page.getByRole("button", { name: "Update results" }).click();
   await expect(page.getByRole("main")).toHaveText(
     /Showing [\d,]+–[\d,]+ of [\d,]+ results for "victoria"/,
   );
