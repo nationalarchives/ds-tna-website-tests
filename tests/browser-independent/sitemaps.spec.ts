@@ -12,23 +12,31 @@ test(
   },
 );
 
-test("main sitemap", { tag: ["@wip", "@smoke"] }, async ({ page, baseURL }) => {
-  const response = await page.goto("/sitemap.xml");
-  const status = await response?.status();
-  expect(status).toEqual(200);
-  const contentType = await response?.headerValue("content-type");
-  expect(contentType).toEqual("application/xml; charset=utf-8");
-  const xmlContent = await response?.text();
-  expect(xmlContent).toContain(`<loc>${baseURL}/sitemaps/sitemap_1.xml</loc>`);
-  expect(xmlContent).toContain(
-    "<loc>https://www.nationalarchives.gov.uk/sitemap_index.xml</loc>",
-  );
-});
+test(
+  "main sitemap",
+  { tag: ["@wip", "@smoke"] },
+  async ({ page, context, baseURL }) => {
+    context.route("**/*.xsl", (route) => route.abort());
+    const response = await page.goto("/sitemap.xml");
+    const status = await response?.status();
+    expect(status).toEqual(200);
+    const contentType = await response?.headerValue("content-type");
+    expect(contentType).toEqual("application/xml; charset=utf-8");
+    const xmlContent = await response?.text();
+    expect(xmlContent).toContain(
+      `<loc>${baseURL}/sitemaps/sitemap_1.xml</loc>`,
+    );
+    expect(xmlContent).toContain(
+      "<loc>https://www.nationalarchives.gov.uk/sitemap_index.xml</loc>",
+    );
+  },
+);
 
 test(
   "first dynamic pages sitemap",
   { tag: ["@wip", "@smoke"] },
-  async ({ page, baseURL }) => {
+  async ({ page, context, baseURL }) => {
+    context.route("**/*.xsl", (route) => route.abort());
     const response = await page.goto("/sitemaps/sitemap_1.xml");
     const status = await response?.status();
     expect(status).toEqual(200);
@@ -56,7 +64,8 @@ test("non-existant Wagtail sitemap", { tag: "@wip" }, async ({ page }) => {
 test(
   "WordPress sitemap index",
   { tag: ["@wip", "@requires-wordpress"] },
-  async ({ page }) => {
+  async ({ page, context }) => {
+    context.route("**/*.xsl", (route) => route.abort());
     const response = await page.goto("/sitemap_index.xml");
     const status = await response?.status();
     expect(status).toEqual(200);
@@ -68,7 +77,8 @@ test(
 test(
   "WordPress page sitemap 1",
   { tag: ["@wip", "@requires-wordpress"] },
-  async ({ page }) => {
+  async ({ page, context }) => {
+    context.route("**/*.xsl", (route) => route.abort());
     const response = await page.goto("/page-sitemap.xml");
     const status = await response?.status();
     expect(status).toEqual(200);
