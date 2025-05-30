@@ -3,7 +3,7 @@ import validateHtml from "../lib/validate-html";
 import checkAccessibility from "../lib/check-accessibility";
 
 test(
-  "Page not found error page",
+  "page not found error page",
   { tag: ["@wip", "@smoke"] },
   async ({ page }) => {
     page.on("response", (response) => {
@@ -12,7 +12,7 @@ test(
       }
     });
     await page.goto("/foobar/");
-    await expect(page).toHaveTitle("The National Archives");
+    await expect(page).toHaveTitle("Page not found - The National Archives");
     await expect(
       page.getByRole("main").getByRole("heading", { name: "Page not found" }),
     ).toBeVisible();
