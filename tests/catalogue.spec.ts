@@ -4,6 +4,9 @@ import acceptAllCookies from "./lib/accept-all-cookies.ts";
 
 acceptAllCookies();
 
+// Increase the retry count for this test suite - Rosetta may be flaky
+test.describe.configure({ retries: 10 });
+
 test("search for records", { tag: ["@wip"] }, async ({ page }) => {
   await page.goto("/catalogue/");
   await expect(
