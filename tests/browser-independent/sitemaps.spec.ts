@@ -53,18 +53,26 @@ test("non-existant Wagtail sitemap", { tag: "@wip" }, async ({ page }) => {
   ).toBeVisible();
 });
 
-test("WordPress sitemap index", { tag: "@wip" }, async ({ page }) => {
-  const response = await page.goto("/sitemap_index.xml");
-  const status = await response?.status();
-  expect(status).toEqual(200);
-  const contentType = await response?.headerValue("content-type");
-  expect(contentType).toEqual("text/xml; charset=UTF-8");
-});
+test(
+  "WordPress sitemap index",
+  { tag: ["@wip", "@requires-wordpress"] },
+  async ({ page }) => {
+    const response = await page.goto("/sitemap_index.xml");
+    const status = await response?.status();
+    expect(status).toEqual(200);
+    const contentType = await response?.headerValue("content-type");
+    expect(contentType).toEqual("text/xml; charset=UTF-8");
+  },
+);
 
-test("WordPress page sitemap 1", { tag: "@wip" }, async ({ page }) => {
-  const response = await page.goto("/page-sitemap.xml");
-  const status = await response?.status();
-  expect(status).toEqual(200);
-  const contentType = await response?.headerValue("content-type");
-  expect(contentType).toEqual("text/xml; charset=UTF-8");
-});
+test(
+  "WordPress page sitemap 1",
+  { tag: ["@wip", "@requires-wordpress"] },
+  async ({ page }) => {
+    const response = await page.goto("/page-sitemap.xml");
+    const status = await response?.status();
+    expect(status).toEqual(200);
+    const contentType = await response?.headerValue("content-type");
+    expect(contentType).toEqual("text/xml; charset=UTF-8");
+  },
+);

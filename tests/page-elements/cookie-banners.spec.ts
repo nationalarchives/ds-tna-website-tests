@@ -35,7 +35,7 @@ test.afterEach(async ({ context, baseURL }) => {
   }
 });
 
-test.describe("no existing cookies", { tag: ["@require-wordpress"] }, () => {
+test.describe("no existing cookies", { tag: ["@requires-wordpress"] }, () => {
   test("don't interact on new page then visit old page", async ({ page }) => {
     await page.goto(newPagePath);
     await expect(getCookieBanner(page)).toBeVisible();
@@ -135,7 +135,7 @@ test.describe("no existing cookies", { tag: ["@require-wordpress"] }, () => {
 
 test.describe(
   "partial existing cookies",
-  { tag: ["@require-wordpress"] },
+  { tag: ["@requires-wordpress"] },
   () => {
     test("visit new page", async ({ page, context, baseURL }) => {
       await context.addCookies([
@@ -193,7 +193,7 @@ test.describe(
   },
 );
 
-test.describe("malformed cookies", { tag: ["@require-wordpress"] }, () => {
+test.describe("malformed cookies", { tag: ["@requires-wordpress"] }, () => {
   test.beforeEach(async ({ context, baseURL }) => {
     await context.addCookies([
       {
