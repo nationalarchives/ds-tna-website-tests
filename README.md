@@ -25,7 +25,6 @@ These tests include checking redirects, content on the page, the validitiy of HT
 | Tag                   | Purpose                                                   |
 | --------------------- | --------------------------------------------------------- |
 | `@wip`                | Tests that probably won't work on the production site yet |
-| `@smoke`              | Smoke tests to check the most basic site functionality    |
 | `@a11y`               | Automated accessibility tests                             |
 | `@requires-wordpress` | Requires WordPress to run (so cannot be tested locally)   |
 

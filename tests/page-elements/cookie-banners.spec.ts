@@ -12,26 +12,24 @@ test.beforeEach(async ({ context }) => {
   await context.clearCookies();
 });
 
-test.afterEach(async ({ context, baseURL }) => {
+test.afterEach(async ({ context }) => {
   const cookies = await context.cookies();
   const cookiesPolicy: Cookie | undefined = await cookies.find(
     (cookie) => cookie.name === "cookies_policy",
   );
-  if (!(baseURL as string).includes("tna.dblclk.dev")) {
-    expect(cookiesPolicy).toBeDefined();
-    if (cookiesPolicy) {
-      const cookiesPolicyValue = JSON.parse(
-        decodeURIComponent(cookiesPolicy.value),
-      );
-      expect(cookiesPolicyValue).toHaveProperty("essential");
-      expect(cookiesPolicyValue).toHaveProperty("settings");
-      expect(cookiesPolicyValue).toHaveProperty("usage");
-      // expect(cookiesPolicyValue).toHaveProperty("marketing");
-      expect(cookiesPolicyValue?.essential).toBeDefined();
-      expect(cookiesPolicyValue?.settings).toBeDefined();
-      expect(cookiesPolicyValue?.usage).toBeDefined();
-      // expect(cookiesPolicyValue?.marketing).toBeDefined();
-    }
+  expect(cookiesPolicy).toBeDefined();
+  if (cookiesPolicy) {
+    const cookiesPolicyValue = JSON.parse(
+      decodeURIComponent(cookiesPolicy.value),
+    );
+    expect(cookiesPolicyValue).toHaveProperty("essential");
+    expect(cookiesPolicyValue).toHaveProperty("settings");
+    expect(cookiesPolicyValue).toHaveProperty("usage");
+    // expect(cookiesPolicyValue).toHaveProperty("marketing");
+    expect(cookiesPolicyValue?.essential).toBeDefined();
+    expect(cookiesPolicyValue?.settings).toBeDefined();
+    expect(cookiesPolicyValue?.usage).toBeDefined();
+    // expect(cookiesPolicyValue?.marketing).toBeDefined();
   }
 });
 
@@ -74,10 +72,6 @@ test.describe("no existing cookies", { tag: ["@requires-wordpress"] }, () => {
     page,
     baseURL,
   }) => {
-    test.skip(
-      (baseURL as string).includes("tna.dblclk.dev"),
-      "no old pages available on tna.dblclk.dev",
-    );
     await page.goto(newPagePath);
     await expect(getCookieBanner(page)).toBeVisible();
     await page.goto(oldPagePath);
@@ -89,12 +83,7 @@ test.describe("no existing cookies", { tag: ["@requires-wordpress"] }, () => {
 
   test("visit new page, reject on old page then return to new page", async ({
     page,
-    baseURL,
   }) => {
-    test.skip(
-      (baseURL as string).includes("tna.dblclk.dev"),
-      "no old pages available on tna.dblclk.dev",
-    );
     await page.goto(newPagePath);
     await expect(getCookieBanner(page)).toBeVisible();
     await page.goto(oldPagePath);
@@ -121,11 +110,7 @@ test.describe("no existing cookies", { tag: ["@requires-wordpress"] }, () => {
       await expect(getCookieBanner(page)).toBeVisible();
     });
 
-    test("visit old page", async ({ page, baseURL }) => {
-      test.skip(
-        (baseURL as string).includes("tna.dblclk.dev"),
-        "no old pages available on tna.dblclk.dev",
-      );
+    test("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
       // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
       await expect(oldCookieBanner(page)).not.toBeVisible();
@@ -180,11 +165,7 @@ test.describe(
         await expect(getCookieBanner(page)).toBeVisible();
       });
 
-      test("visit old page", async ({ page, baseURL }) => {
-        test.skip(
-          (baseURL as string).includes("tna.dblclk.dev"),
-          "no old pages available on tna.dblclk.dev",
-        );
+      test("visit old page", async ({ page }) => {
         await page.goto(oldPagePath);
         // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
         await expect(oldCookieBanner(page)).not.toBeVisible();
@@ -232,11 +213,7 @@ test.describe("malformed cookies", { tag: ["@requires-wordpress"] }, () => {
       await expect(getCookieBanner(page)).toBeVisible();
     });
 
-    test("visit old page", async ({ page, baseURL }) => {
-      test.skip(
-        (baseURL as string).includes("tna.dblclk.dev"),
-        "no old pages available on tna.dblclk.dev",
-      );
+    test("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
       // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
       await expect(oldCookieBanner(page)).not.toBeVisible();
