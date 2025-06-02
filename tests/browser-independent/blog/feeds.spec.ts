@@ -5,7 +5,7 @@ test("feeds listing page", { tag: ["@wip"] }, async ({ page }) => {
   await expect(page.locator("h1")).toHaveText(/Blog feeds/);
 });
 
-test("all feed - rss", { tag: ["@wip", "@smoke"] }, async ({ page }) => {
+test("all feed - rss", { tag: ["@wip"] }, async ({ page }) => {
   const response = await page.goto("/blogs/feeds/all.xml");
   const status = await response?.status();
   expect(status).toEqual(200);

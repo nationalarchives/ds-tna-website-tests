@@ -1,56 +1,40 @@
 import { test, expect } from "@playwright/test";
 
-test(
-  "redirect /sitemaps/ to main XML sitemap",
-  { tag: ["@wip", "@smoke"] },
-  async ({ page }) => {
-    const response = await page.goto("/sitemaps/");
-    const status = await response?.status();
-    expect(status).toEqual(200);
-    const contentType = await response?.headerValue("content-type");
-    expect(contentType).toEqual("application/xml; charset=utf-8");
-  },
-);
+test("redirect /sitemaps/ to main XML sitemap", async ({ page }) => {
+  const response = await page.goto("/sitemaps/");
+  const status = await response?.status();
+  expect(status).toEqual(200);
+  const contentType = await response?.headerValue("content-type");
+  expect(contentType).toEqual("application/xml; charset=utf-8");
+});
 
-test(
-  "main sitemap",
-  { tag: ["@wip", "@smoke"] },
-  async ({ page, context, baseURL }) => {
-    context.route("**/*.xsl", (route) => route.abort());
-    const response = await page.goto("/sitemap.xml");
-    const status = await response?.status();
-    expect(status).toEqual(200);
-    const contentType = await response?.headerValue("content-type");
-    expect(contentType).toEqual("application/xml; charset=utf-8");
-    const xmlContent = await response?.text();
-    expect(xmlContent).toContain(
-      `<loc>${baseURL}/sitemaps/sitemap_1.xml</loc>`,
-    );
-    expect(xmlContent).toContain(
-      "<loc>https://www.nationalarchives.gov.uk/sitemap_index.xml</loc>",
-    );
-  },
-);
+test("main sitemap", async ({ page, context, baseURL }) => {
+  context.route("**/*.xsl", (route) => route.abort());
+  const response = await page.goto("/sitemap.xml");
+  const status = await response?.status();
+  expect(status).toEqual(200);
+  const contentType = await response?.headerValue("content-type");
+  expect(contentType).toEqual("application/xml; charset=utf-8");
+  const xmlContent = await response?.text();
+  expect(xmlContent).toContain(`<loc>${baseURL}/sitemaps/sitemap_1.xml</loc>`);
+  expect(xmlContent).toContain(
+    "<loc>https://www.nationalarchives.gov.uk/sitemap_index.xml</loc>",
+  );
+});
 
-test(
-  "first dynamic pages sitemap",
-  { tag: ["@wip", "@smoke"] },
-  async ({ page, context, baseURL }) => {
-    context.route("**/*.xsl", (route) => route.abort());
-    const response = await page.goto("/sitemaps/sitemap_1.xml");
-    const status = await response?.status();
-    expect(status).toEqual(200);
-    const contentType = await response?.headerValue("content-type");
-    expect(contentType).toEqual("application/xml; charset=utf-8");
-    const xmlContent = await response?.text();
-    expect(xmlContent).toContain(`<loc>${baseURL}/</loc>`);
-    expect(xmlContent).toContain(
-      `<loc>${baseURL}/explore-the-collection/</loc>`,
-    );
-  },
-);
+test("first dynamic pages sitemap", async ({ page, context, baseURL }) => {
+  context.route("**/*.xsl", (route) => route.abort());
+  const response = await page.goto("/sitemaps/sitemap_1.xml");
+  const status = await response?.status();
+  expect(status).toEqual(200);
+  const contentType = await response?.headerValue("content-type");
+  expect(contentType).toEqual("application/xml; charset=utf-8");
+  const xmlContent = await response?.text();
+  expect(xmlContent).toContain(`<loc>${baseURL}/</loc>`);
+  expect(xmlContent).toContain(`<loc>${baseURL}/explore-the-collection/</loc>`);
+});
 
-test("non-existant Wagtail sitemap", { tag: "@wip" }, async ({ page }) => {
+test("non-existant Wagtail sitemap", async ({ page }) => {
   const response = await page.goto("/sitemaps/sitemap_99999.xml");
   const status = await response?.status();
   expect(status).toEqual(404);
@@ -63,7 +47,7 @@ test("non-existant Wagtail sitemap", { tag: "@wip" }, async ({ page }) => {
 
 test(
   "WordPress sitemap index",
-  { tag: ["@wip", "@requires-wordpress"] },
+  { tag: ["@requires-wordpress"] },
   async ({ page, context }) => {
     context.route("**/*.xsl", (route) => route.abort());
     const response = await page.goto("/sitemap_index.xml");
@@ -76,7 +60,7 @@ test(
 
 test(
   "WordPress page sitemap 1",
-  { tag: ["@wip", "@requires-wordpress"] },
+  { tag: ["@requires-wordpress"] },
   async ({ page, context }) => {
     context.route("**/*.xsl", (route) => route.abort());
     const response = await page.goto("/page-sitemap.xml");
