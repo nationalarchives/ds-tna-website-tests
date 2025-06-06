@@ -17,11 +17,11 @@ const urlsToTest = [
   "/people/vicky-iglikowski-broad/",
   "/people/vicky-iglikowski-broad/?page=1",
   "/mi5-official-secrets/",
+  "/blogs/",
+  "/blogs/feeds/",
 ];
 
 const devUrlsToTest = [
-  "/blogs/",
-  "/blogs/feeds/",
   "/about-us/",
   "/about-us/our-role/",
   "/about-us/our-role/annual-report-and-accounts-202324/",
