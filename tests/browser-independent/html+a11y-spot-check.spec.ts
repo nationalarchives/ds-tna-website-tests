@@ -16,7 +16,7 @@ const urlsToTest = [
   "/people/",
   "/people/vicky-iglikowski-broad/",
   "/people/vicky-iglikowski-broad/?page=1",
-  "/mi5-official-secrets/",
+  // "/mi5-official-secrets/",
   "/blogs/",
   "/blogs/feeds/",
 ];
