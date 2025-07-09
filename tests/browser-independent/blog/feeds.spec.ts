@@ -1,12 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-test("feeds listing page", async ({ page }) => {
-  await page.goto("/blogs/feeds/");
-  await expect(page.locator("h1")).toHaveText(/Blog feeds/);
-});
-
 test("all feed - rss", async ({ page }) => {
-  const response = await page.goto("/blogs/feeds/all.xml");
+  const response = await page.goto("/feeds/blogs.xml");
   const status = await response?.status();
   expect(status).toEqual(200);
   const contentType = await response?.headerValue("content-type");
@@ -14,7 +9,7 @@ test("all feed - rss", async ({ page }) => {
 });
 
 test("all feed - atom", async ({ page }) => {
-  const response = await page.goto("/blogs/feeds/all.xml?format=atom");
+  const response = await page.goto("/feeds/blogs.xml?format=atom");
   const status = await response?.status();
   expect(status).toEqual(200);
   const contentType = await response?.headerValue("content-type");
@@ -22,7 +17,7 @@ test("all feed - atom", async ({ page }) => {
 });
 
 // test("digital blog feed - rss", async ({ page }) => {
-//   const response = await page.goto("/blogs/feeds/414.xml");
+//   const response = await page.goto("/feeds/blogs/414.xml");
 //   const status = await response?.status();
 //   expect(status).toEqual(200);
 //   const contentType = await response?.headerValue("content-type");
@@ -30,7 +25,7 @@ test("all feed - atom", async ({ page }) => {
 // });
 
 // test("digital blog feed - atom", async ({ page }) => {
-//   const response = await page.goto("/blogs/feeds/414.xml?format=atom");
+//   const response = await page.goto("/feeds/blogs/414.xml?format=atom");
 //   const status = await response?.status();
 //   expect(status).toEqual(200);
 //   const contentType = await response?.headerValue("content-type");
@@ -38,7 +33,7 @@ test("all feed - atom", async ({ page }) => {
 // });
 
 test("non-existant feed", async ({ page }) => {
-  const response = await page.goto("/blogs/feeds/0.xml");
+  const response = await page.goto("/feeds/blogs/0.xml");
   const status = await response?.status();
   expect(status).toEqual(404);
   const contentType = await response?.headerValue("content-type");
