@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import validateHtml from "../lib/validate-html";
 import checkAccessibility from "../lib/check-accessibility";
 
-test("page not found error page", { tag: ["@wip"] }, async ({ page }) => {
+test("page not found error page", async ({ page }) => {
   page.on("response", (response) => {
     if (response.url().endsWith("/foobar/")) {
       expect(response.status()).toEqual(404);
