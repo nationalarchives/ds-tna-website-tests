@@ -66,6 +66,7 @@ runs:
       # Some WebKit dependencies seem to lay outside the cache and will need to be installed separately
       if: steps.playwright-cache.outputs.cache-hit == 'true'
       run: npx playwright install-deps webkit
+      shell: bash
     - name: Install jq
       run: sudo apt-get install jq
       shell: bash
