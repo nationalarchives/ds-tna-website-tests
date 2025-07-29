@@ -18,7 +18,13 @@ export default defineConfig({
   reporter: process.env.CI
     ? [
         ["dot"],
-        ["@estruyf/github-actions-reporter"],
+        [
+          "@estruyf/github-actions-reporter",
+          {
+            useDetails: true,
+            showError: true,
+          },
+        ],
         ["json", { outputFile: "test-results.json" }],
       ]
     : "line",
