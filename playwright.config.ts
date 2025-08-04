@@ -52,7 +52,6 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
-      testIgnore: browserIndependentTests,
     },
     {
       name: "firefox",
@@ -73,11 +72,6 @@ export default defineConfig({
       name: "Mobile Safari",
       use: { ...devices["iPhone 15"] },
       testIgnore: browserIndependentTests,
-    },
-    {
-      name: "Browser independent",
-      use: { ...devices["Desktop Chrome"] },
-      testMatch: browserIndependentTests,
     },
   ],
 });
