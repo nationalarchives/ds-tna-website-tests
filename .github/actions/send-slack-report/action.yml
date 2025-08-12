@@ -63,7 +63,7 @@ runs:
         [[ -n "${{ inputs.excluded-tests }}" ]] && echo "- Excluded: \`${{ inputs.excluded-tests }}\`" >> report.txt
         echo >> report.txt
         echo >> report.txt && echo "✅ **${{ inputs.pass-count }}** tests passed" >> report.txt
-        echo >> report.txt && echo "❌ **${{ inputs.fail-count }}** tests failed" >> report.txt
+        [[ "${{ inputs.fail-count }}" -gt 0 ]] && echo >> report.txt && echo "❌ **${{ inputs.fail-count }}** tests failed" >> report.txt
         [[ "${{ inputs.skip-count }}" -gt 0 ]] && echo >> report.txt && echo "🙈 **${{ inputs.skip-count }}** tests skipped" >> report.txt
         [[ "${{ inputs.flake-count }}" -gt 0 ]] && echo >> report.txt && echo "🤕 **${{ inputs.flake-count }}** flaky tests" >> report.txt
         TIME_TAKEN=$(date -u -d @"${{ inputs.duration }}" +"%T")
