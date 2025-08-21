@@ -1,0 +1,113 @@
+name: Run tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      domain:
+        type: string
+        description: Domain to test
+        required: true
+        default: "https://www.nationalarchives.gov.uk/"
+      include-tests:
+        type: string
+        description: Test tags to run, separated with a pipe "|" (leave blank to run all tests)
+        required: false
+        default: ""
+      exclude-tests:
+        type: string
+        description: Test tags to exclude, separated with a pipe "|" (use @wip to exclude work in progress tests)
+        required: false
+        default: ""
+      notify-slack-on-pass:
+        type: boolean
+        description: Send successful test results to Slack
+        required: true
+        default: true
+      notify-slack-on-fail:
+        type: boolean
+        description: Send test failure results to Slack
+        required: true
+        default: true
+      description:
+        type: string
+        description: A description to add to the Slack report
+        required: false
+        default: ""
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get test header value
+        run: |
+          if [[ "${{ inputs.domain }}" == *"dev-www.nationalarchives.gov.uk"* ]]; then
+            echo "Using dev header..."
+            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_DEV }}" >> $GITHUB_ENV
+          elif [[ "${{ inputs.domain }}" == *"staging-www.nationalarchives.gov.uk"* ]]; then
+            echo "Using staging header..."
+            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_STAGING }}" >> $GITHUB_ENV
+          else
+            echo "Using no header..."
+            echo "TEST_ACCESS_HEADER=" >> $GITHUB_ENV
+          fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/jod
+      - name: Get installed Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['node_modules/@playwright/test'].version)")" >> $GITHUB_ENV
+      - name: Cache playwright binaries
+        uses: actions/cache@v3
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+      - name: Install test dependencies
+        run: npm ci
+      - run: npx playwright install --with-deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+      - run: npx playwright install-deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+      - name: Install system dependencies for WebKit
+        # Some WebKit dependencies seem to lay outside the cache and will need to be installed separately
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps webkit
+      - name: Install jq
+        run: sudo apt-get install jq
+      - name: Santisie domain
+        run: |
+          DOMAIN=$(echo "${{ inputs.domain }}" | sed 's:/*$::')
+          echo "DOMAIN=$DOMAIN" >> "$GITHUB_ENV"
+      - name: Run tests
+        run: TEST_DOMAIN="${{ env.DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+      - name: Report summary
+        if: always()
+        id: report-summary
+        run: |
+          echo "TEST_ACCESS_HEADER=" >> $GITHUB_ENV
+          PASS_COUNT=$(jq '(.stats.expected)' test-results.json)
+          echo "PASS_COUNT=$PASS_COUNT" >> "$GITHUB_ENV"
+          FAIL_COUNT=$(jq '(.stats.unexpected)' test-results.json)
+          echo "FAIL_COUNT=$FAIL_COUNT" >> "$GITHUB_ENV"
+          SKIP_COUNT=$(jq '(.stats.skipped)' test-results.json)
+          echo "SKIP_COUNT=$SKIP_COUNT" >> "$GITHUB_ENV"
+          FLAKE_COUNT=$(jq '(.stats.flaky)' test-results.json)
+          echo "FLAKE_COUNT=$FLAKE_COUNT" >> "$GITHUB_ENV"
+          DURATION=$(jq '(.stats.duration/1000|tonumber|floor)' test-results.json)
+          echo "DURATION=$DURATION" >> "$GITHUB_ENV"
+      - name: Send report to Slack
+        if: (success() && inputs.notify-slack-on-pass) || (failure() && inputs.notify-slack-on-fail)
+        uses: ./.github/actions/send-slack-report
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK }}
+          domain: ${{ env.DOMAIN }}
+          included-tests: ${{ inputs.include-tests }}
+          excluded-tests: ${{ inputs.exclude-tests }}
+          pass-count: ${{ env.PASS_COUNT }}
+          fail-count: ${{ env.FAIL_COUNT }}
+          skip-count: ${{ env.SKIP_COUNT }}
+          flake-count: ${{ env.FLAKE_COUNT }}
+          duration: ${{ env.DURATION }}
+          description: ${{ inputs.description }}
