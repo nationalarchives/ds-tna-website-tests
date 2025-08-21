@@ -74,14 +74,14 @@ jobs:
         # Some WebKit dependencies seem to lay outside the cache and will need to be installed separately
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps webkit
-      - name: Install jq
-        run: sudo apt-get install jq
       - name: Santisie domain
         run: |
           DOMAIN=$(echo "${{ inputs.domain }}" | sed 's:/*$::')
           echo "DOMAIN=$DOMAIN" >> "$GITHUB_ENV"
       - name: Run tests
         run: TEST_DOMAIN="${{ env.DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+      - name: Install jq
+        run: sudo apt-get install jq
       - name: Report summary
         if: always()
         id: report-summary
