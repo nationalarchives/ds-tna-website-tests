@@ -215,7 +215,7 @@ test.describe("malformed cookies", { tag: ["@requires-wordpress"] }, () => {
 
     test("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
-      // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
+      // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is set or not
       await expect(oldCookieBanner(page)).not.toBeVisible();
     });
   });

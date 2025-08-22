@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-import acceptAllCookies from "./lib/accept-all-cookies.ts";
+import { acceptAllCookies } from "./lib/set-cookie-preferences.ts";
 
 acceptAllCookies();
 
