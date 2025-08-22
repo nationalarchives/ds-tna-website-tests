@@ -53,7 +53,8 @@ jobs:
           fi
       - uses: actions/setup-node@v4
         with:
-          node-version: lts/jod
+          node-version-file: .nvmrc
+          cache: 'npm'
       - name: Get installed Playwright version
         id: playwright-version
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['node_modules/@playwright/test'].version)")" >> $GITHUB_ENV
@@ -63,12 +64,12 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
-      - name: Cache npm modules
-        uses: actions/cache@v4
-        id: npm-cache
-        with:
-          path: ~/.npm
-          key: npm-feature-${{ hashFiles('package-lock.json') }}
+      # - name: Cache npm modules
+      #   uses: actions/cache@v4
+      #   id: npm-cache
+      #   with:
+      #     path: ~/.npm
+      #     key: npm-feature-${{ hashFiles('package-lock.json') }}
       - name: Install test dependencies
         run: npm install
       - run: npx playwright install --with-deps
