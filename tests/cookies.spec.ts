@@ -123,7 +123,7 @@ test.describe("no cookie policy set", () => {
     await expect(policyValues).toHaveProperty("usage", false);
     await expect(policyValues).toHaveProperty("marketing", true);
 
-    await page.reload();
+    await page.goto("/cookies/");
     await expect(
       page.getByRole("radio", {
         name: "Use cookies that measure my website use",
