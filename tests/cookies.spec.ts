@@ -12,6 +12,8 @@ test.describe("no cookie policy set", () => {
   });
 
   test("cookies landing page", async ({ context, page }) => {
+    page.route("**", (route) => route.continue());
+
     await page.goto("/cookies/");
     let cookies = await context.cookies();
     let cookiePreferencesSet = await cookies.find(
@@ -123,7 +125,7 @@ test.describe("no cookie policy set", () => {
     await expect(policyValues).toHaveProperty("usage", false);
     await expect(policyValues).toHaveProperty("marketing", true);
 
-    await page.goto("/cookies/");
+    await page.goto("/cookies/?1");
     await expect(
       page.getByRole("radio", {
         name: "Use cookies that measure my website use",
@@ -167,7 +169,9 @@ test.describe("previously accepted cookies", () => {
   acceptAllCookies();
 
   test("cookies landing page", async ({ context, page }) => {
-    await page.goto("/cookies/");
+    page.route("**", (route) => route.continue());
+
+    await page.goto("/cookies/?2");
     const cookies = await context.cookies();
     const cookiePreferencesSet = await cookies.find(
       (cookie: Cookie) => cookie.name === cookiePreferencesSetKey,
@@ -230,7 +234,9 @@ test.describe("previously declined cookies", () => {
   declineAllCookies();
 
   test("cookies landing page", async ({ context, page }) => {
-    await page.goto("/cookies/");
+    page.route("**", (route) => route.continue());
+
+    await page.goto("/cookies/?3");
     const cookies = await context.cookies();
     const cookiePreferencesSet = await cookies.find(
       (cookie: Cookie) => cookie.name === cookiePreferencesSetKey,

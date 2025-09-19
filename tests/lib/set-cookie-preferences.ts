@@ -1,10 +1,10 @@
-import { test } from "@playwright/test";
+import { test, BrowserContext } from "@playwright/test";
 import getCookieDomainFromBaseUrl from "./domains.ts";
 import { cookiePreferencesSetKey } from "../../playwright.config.ts";
 
 const setCookiePolicy = async (
-  context,
-  baseURL,
+  context: BrowserContext,
+  baseURL: string | undefined,
   settings: boolean,
   usage: boolean,
   marketing: boolean,
