@@ -5,7 +5,7 @@ import getCookieDomainFromBaseUrl from "../lib/domains.ts";
 const newPagePath = "/explore-the-collection/";
 const getCookieBanner = (page: Page) =>
   page.getByRole("region", { name: "Cookies on The National Archives" });
-const oldPagePath = "/education/";
+const oldPagePath = "/contact-us/";
 const oldCookieBanner = (page: Page) => getCookieBanner(page);
 
 test.beforeEach(async ({ context }) => {

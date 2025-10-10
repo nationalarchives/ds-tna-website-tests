@@ -19,6 +19,8 @@ const urlsToTest = [
   // "/mi5-official-secrets/",
   "/blogs/",
   "/blogs/feeds/",
+  "/merlin/",
+  "/whats-on/",
 ];
 
 const devUrlsToTest = [

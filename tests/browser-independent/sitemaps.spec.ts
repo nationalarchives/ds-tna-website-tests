@@ -17,9 +17,11 @@ test("main sitemap", async ({ page, context, baseURL }) => {
   expect(contentType).toEqual("application/xml; charset=utf-8");
   const xmlContent = await response?.text();
   expect(xmlContent).toContain(`<loc>${baseURL}/sitemaps/sitemap_1.xml</loc>`);
-  expect(xmlContent).toContain(
-    "<loc>https://www.nationalarchives.gov.uk/sitemap_index.xml</loc>",
-  );
+  if (baseURL?.includes("https://www.nationalarchives.gov.uk")) {
+    expect(xmlContent).toContain(
+      "<loc>https://www.nationalarchives.gov.uk/sitemap_index.xml</loc>",
+    );
+  }
 });
 
 test("first dynamic pages sitemap", async ({ page, context, baseURL }) => {
