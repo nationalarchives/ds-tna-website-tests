@@ -39,18 +39,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Get test header value
-        run: |
-          if [[ "${{ inputs.domain }}" == *"dev-www.nationalarchives.gov.uk"* ]]; then
-            echo "Using dev header..."
-            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_DEV }}" >> $GITHUB_ENV
-          elif [[ "${{ inputs.domain }}" == *"staging-www.nationalarchives.gov.uk"* ]]; then
-            echo "Using staging header..."
-            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_STAGING }}" >> $GITHUB_ENV
-          else
-            echo "Using no header..."
-            echo "TEST_ACCESS_HEADER=" >> $GITHUB_ENV
-          fi
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -78,6 +66,18 @@ jobs:
         run: |
           DOMAIN=$(echo "${{ inputs.domain }}" | sed 's:/*$::')
           echo "DOMAIN=$DOMAIN" >> "$GITHUB_ENV"
+      - name: Get test header value
+        run: |
+          if [[ "${{ inputs.domain }}" == *"dev-www.nationalarchives.gov.uk"* ]]; then
+            echo "Using dev header..."
+            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_DEV }}" >> $GITHUB_ENV
+          elif [[ "${{ inputs.domain }}" == *"staging-www.nationalarchives.gov.uk"* ]]; then
+            echo "Using staging header..."
+            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_STAGING }}" >> $GITHUB_ENV
+          else
+            echo "Using no header..."
+            echo "TEST_ACCESS_HEADER=" >> $GITHUB_ENV
+          fi
       - name: Run tests
         run: TEST_DOMAIN="${{ env.DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       - name: Install jq
@@ -86,7 +86,6 @@ jobs:
         if: always()
         id: report-summary
         run: |
-          echo "TEST_ACCESS_HEADER=" >> $GITHUB_ENV
           PASS_COUNT=$(jq '(.stats.expected)' test-results.json)
           echo "PASS_COUNT=$PASS_COUNT" >> "$GITHUB_ENV"
           FAIL_COUNT=$(jq '(.stats.unexpected)' test-results.json)
