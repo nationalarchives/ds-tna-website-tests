@@ -1,5 +1,5 @@
 import { test, expect, Cookie, Page } from "@playwright/test";
-import { cookiePreferencesSetKey } from "../../playwright.config";
+import { cookiePreferencesSetKey } from "../../playwright.config.ts";
 import getCookieDomainFromBaseUrl from "../lib/domains.ts";
 
 const newPagePath = "/explore-the-collection/";

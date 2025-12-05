@@ -1,7 +1,7 @@
 
           <div class="tna-column tna-column--flex-1 tna-column--order-2">
             <span class="tna-global-header__logo-wrapper">
-      <a href="/" class="tna-global-header__logo tna-global-header__logo--link" title="The National Archives home page" aria-label="The National Archives home page">          <span class="tna-logo tna-logo--adornable">
+      <a href="/" class="tna-global-header__logo tna-global-header__logo--link" title="The National Archives" aria-label="The National Archives">          <span class="tna-logo tna-logo--adornable">
                   <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 160 160" width="96" height="96" aria-hidden="true" focusable="false">
                     <path fill="transparent" d="M0 0h160v160H0z" class="tna-logo__background"></path>
                     <g class="tna-logo__foreground" fill="currentColor">
@@ -10,8 +10,7 @@
                     </g>
                   </svg>
                 </span>        </a>      </span>
-          </div>
-          <div class="tna-column tna-column--order-2 tna-global-header__navigation-button-wrapper">
+          </div>    <div class="tna-column tna-column--order-2 tna-global-header__navigation-button-wrapper">
             <button class="tna-global-header__navigation-button tna-global-header__navigation-button--opened" type="button" aria-controls="tna-header__navigation tna-header__top-navigation" aria-expanded="true" title="Close menu">
               Menu
               <span class="tna-global-header__hamburger"></span>

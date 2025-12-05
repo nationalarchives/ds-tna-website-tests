@@ -13,7 +13,7 @@ test(
     if (isMobile) {
       await expect(header).toMatchAriaSnapshot(`
         - banner:
-          - link "The National Archives home page"
+          - link "The National Archives"
           - button "Menu"
       `);
       await expect(headerMenuButton).toBeVisible();
@@ -46,7 +46,7 @@ test(
 
     await expect(header).toMatchAriaSnapshot(`
       - banner:
-        - link "The National Archives home page"
+        - link "The National Archives"
         - navigation "Primary":
           - list:
             - listitem:

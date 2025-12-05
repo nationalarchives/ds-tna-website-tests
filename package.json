@@ -1,7 +1,7 @@
 {
   "scripts": {
     "postinstall": "npx playwright install --with-deps",
-    "lint:fix": "npx prettier --write .",
+    "lint:fix": "npx -y prettier --write .",
     "test:localhost": "npx playwright install && TEST_DOMAIN=https://localhost npx playwright test --update-snapshots --ui --grep-invert \"@requires-wordpress\"",
     "test:develop": "npx playwright install && TEST_DOMAIN=https://dev-www.nationalarchives.gov.uk npx playwright test --ui --grep-invert \"@wip\"",
     "test:staging": "npx playwright install && TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk npx playwright test --ui --grep-invert \"@wip\"",
