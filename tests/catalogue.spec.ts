@@ -48,7 +48,8 @@ test(
   { tag: ["@wip"] },
   async ({ page }) => {
     await page.goto("/catalogue/search/?q=ufos&display=grid");
-    await page.getByRole("article").first().click();
+    await expect(page.locator(".etna-results")).toBeVisible();
+    await page.locator(".etna-results").getByRole("link").first().click();
 
     await expect(page).toHaveURL(new RegExp("/catalogue/id/"));
     await expect(page).toHaveURL(/\?search=/);
@@ -94,9 +95,7 @@ test(
       await expect(
         page.locator(".record-details__description").first(),
       ).toBeVisible();
-      await page
-        .getByRole("checkbox", { name: "Hide field descriptions" })
-        .click();
+      await page.locator('label[for="field-descriptions"]').click();
       await expect(
         page.locator(".record-details__description").first(),
       ).not.toBeVisible();
