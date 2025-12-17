@@ -54,7 +54,7 @@ test("search explore the collection", async ({ page }) => {
     /\/explore-the-collection\/search\/\?q=victoria/,
   );
   await expect(page.getByRole("main")).toHaveText(
-    /Showing [\d,]+–[\d,]+ of [\d,]+ results for "victoria"/,
+    /Showing [\d,]+–[\d,]+ of [\d,]+ results[\s]+for "victoria"/,
   );
   const resultsCountsWithSearchTerm =
     (await page
@@ -76,7 +76,7 @@ test("search explore the collection", async ({ page }) => {
   await page.getByLabel("Date published").click();
   await page.getByRole("button", { name: "Update results" }).click();
   await expect(page.getByRole("main")).toHaveText(
-    /Showing [\d,]+–[\d,]+ of [\d,]+ results for "victoria"/,
+    /Showing [\d,]+–[\d,]+ of [\d,]+ results[\s]+for "victoria"/,
   );
   const resultsCountsWithSearchTermAndOrdered =
     (await page
