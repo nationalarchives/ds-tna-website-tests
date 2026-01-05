@@ -5,23 +5,16 @@ test(
   { tag: ["@a11y"] },
   async ({ page, isMobile }) => {
     await page.goto("/explore-the-collection/"); // TODO: Change to homepage once updated
-    const header = await page.locator(".tna-global-header");
+    const header = await page.locator(".tna-global-header__main");
     await expect(header).toBeVisible();
 
     const headerMenuButton = await header.getByRole("button", { name: "Menu" });
 
     if (isMobile) {
       await expect(header).toMatchAriaSnapshot(`
-        - banner:
-          - strong: "Service phase: Beta"
-          - paragraph:
-            - text: This is a new service. Help us improve it and
-            - link "give your feedback (opens in new tab)":
-              - /url: https://www.smartsurvey.co.uk/s/DN07V0/?area=header&source=http%3A%2F%2Fdev-www.nationalarchives.gov.uk%2Fexplore-the-collection%2F
-            - text: .
-          - link "The National Archives home page":
-            - /url: /
-          - button "Menu"
+        - link "The National Archives home page":
+          - /url: /
+        - button "Menu"
       `);
       await expect(headerMenuButton).toBeVisible();
       await expect(
@@ -52,35 +45,36 @@ test(
     ).toBeVisible();
 
     await expect(header).toMatchAriaSnapshot(`
-      - banner:
-        - strong: "Service phase: Beta"
-        - paragraph:
-          - text: This is a new service. Help us improve it and
-          - link "give your feedback (opens in new tab)":
-            - /url: https://www.smartsurvey.co.uk/s/DN07V0/?area=header&source=http%3A%2F%2Fdev-www.nationalarchives.gov.uk%2Fexplore-the-collection%2F
-          - text: .
-        - link "The National Archives home page":
-          - /url: /
-        - navigation "Primary":
-          - list:
-            - listitem:
-              - link "Visit"
-            - listitem:
-              - link "What’s on"
-            - listitem:
-              - link "Explore the collection"
-            - listitem:
-              - link "Help using the archive"
-            - listitem:
-              - link "Education"
-            - listitem:
-              - link "Professional guidance and services"
-        - navigation "Secondary":
-          - list:
-            - listitem:
-              - link "Search"
-            - listitem:
-              - link "Shop"
+      - link "The National Archives home page":
+        - /url: /
+      - navigation "Primary":
+        - list:
+          - listitem:
+            - link "Visit":
+              - /url: /about/visit-us/
+          - listitem:
+            - link "What’s on":
+              - /url: /whats-on/
+          - listitem:
+            - link "Explore the collection":
+              - /url: /explore-the-collection/
+          - listitem:
+            - link "Help using the archive":
+              - /url: /help-with-your-research/
+          - listitem:
+            - link "Education":
+              - /url: /education/
+          - listitem:
+            - link "Professional guidance and services":
+              - /url: /professional-guidance-and-services/
+      - navigation "Secondary":
+        - list:
+          - listitem:
+            - link "Search":
+              - /url: /search/
+          - listitem:
+            - link "Shop":
+              - /url: https://shop.nationalarchives.gov.uk/
     `);
 
     if (isMobile) {
