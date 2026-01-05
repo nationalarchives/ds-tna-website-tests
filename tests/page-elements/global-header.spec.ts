@@ -13,7 +13,14 @@ test(
     if (isMobile) {
       await expect(header).toMatchAriaSnapshot(`
         - banner:
-          - link "The National Archives"
+          - strong: "Service phase: Beta"
+          - paragraph:
+            - text: This is a new service. Help us improve it and
+            - link "give your feedback (opens in new tab)":
+              - /url: https://www.smartsurvey.co.uk/s/DN07V0/?area=header&source=http%3A%2F%2Fdev-www.nationalarchives.gov.uk%2Fexplore-the-collection%2F
+            - text: .
+          - link "The National Archives home page":
+            - /url: /
           - button "Menu"
       `);
       await expect(headerMenuButton).toBeVisible();
@@ -46,7 +53,14 @@ test(
 
     await expect(header).toMatchAriaSnapshot(`
       - banner:
-        - link "The National Archives"
+        - strong: "Service phase: Beta"
+        - paragraph:
+          - text: This is a new service. Help us improve it and
+          - link "give your feedback (opens in new tab)":
+            - /url: https://www.smartsurvey.co.uk/s/DN07V0/?area=header&source=http%3A%2F%2Fdev-www.nationalarchives.gov.uk%2Fexplore-the-collection%2F
+          - text: .
+        - link "The National Archives home page":
+          - /url: /
         - navigation "Primary":
           - list:
             - listitem:
