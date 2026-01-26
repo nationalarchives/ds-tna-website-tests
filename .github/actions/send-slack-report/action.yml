@@ -5,13 +5,9 @@ inputs:
     type: string
     description: The Slack webhook URL to use
     required: true
-  site:
+  domain:
     type: string
-    description: Site tested
-    required: true
-  environment:
-    type: string
-    description: Environment tested
+    description: Site domain tested
     required: true
   included-tests:
     type: string
@@ -61,7 +57,7 @@ runs:
       id: report
       run: |
         touch report.txt
-        echo "Site: **${{ inputs.site }} (${{ inputs.environment }})**" >> report.txt
+        echo "Site: **${{ inputs.domain }}**" >> report.txt
         echo >> report.txt
         [[ -n "${{ inputs.included-tests }}" ]] && echo "- Included: \`${{ inputs.included-tests }}\`" >> report.txt
         [[ -n "${{ inputs.excluded-tests }}" ]] && echo "- Excluded: \`${{ inputs.excluded-tests }}\`" >> report.txt
