@@ -122,7 +122,8 @@ jobs:
         uses: ./.github/actions/send-slack-report
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK }}
-          domain: ${{ env.DOMAIN }}
+          site: ${{ env.site }}
+          environment: ${{ env.environment }}
           included-tests: ${{ inputs.include-tests }}
           excluded-tests: ${{ inputs.exclude-tests }}
           pass-count: ${{ env.PASS_COUNT }}
