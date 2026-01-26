@@ -7,16 +7,16 @@ on:
         type: choice
         description: Site to test
         options:
-        - www
-        - beta
+          - www
+          - beta
         default: "www"
       environment:
         type: choice
         description: Environment to test
         options:
-        - production
-        - staging
-        - development
+          - production
+          - staging
+          - development
         default: "production"
       include-tests:
         type: string

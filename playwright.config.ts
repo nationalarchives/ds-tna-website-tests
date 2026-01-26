@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+require("dotenv").config();
 
 const browserIndependentTests = "browser-independent/**/*.spec.ts";
 

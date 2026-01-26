@@ -5,13 +5,13 @@ import checkAccessibility from "../../lib/check-accessibility.ts";
 
 acceptAllCookies();
 
-test("what's on landing page", { tag: ["@wip"] }, async ({ page }) => {
+test("what's on landing page", async ({ page }) => {
   await page.goto("/whats-on/");
   await expect(page.locator("h1")).not.toBeEmpty();
   await expect(page.locator("h1")).toBeVisible();
 });
 
-test("what's on events page", { tag: ["@wip"] }, async ({ page }) => {
+test("what's on events page", async ({ page }) => {
   await page.goto("/whats-on/events/");
   await expect(page.locator("h1")).not.toBeEmpty();
   await expect(page.locator("h1")).toBeVisible();
@@ -25,7 +25,7 @@ test("what's on events page", { tag: ["@wip"] }, async ({ page }) => {
   await checkAccessibility(page);
 });
 
-test("what's on exhibitions page", { tag: ["@wip"] }, async ({ page }) => {
+test("what's on exhibitions page", async ({ page }) => {
   await page.goto("/whats-on/exhibitions/");
   await expect(page.locator("h1")).not.toBeEmpty();
   await expect(page.locator("h1")).toBeVisible();
