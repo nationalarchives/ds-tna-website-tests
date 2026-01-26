@@ -1,5 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 
 const browserIndependentTests = "browser-independent/**/*.spec.ts";
 
