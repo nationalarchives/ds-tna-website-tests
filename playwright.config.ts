@@ -7,15 +7,14 @@ export const cookiePreferencesSetKey = "dontShowCookieNotice";
 const extraHTTPHeaders = {};
 if (process.env.ACCESS_HEADER) {
   extraHTTPHeaders["x-external-access-key"] = process.env.ACCESS_HEADER;
+  console.log("Using x-external-access-key header for tests");
 }
 
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  // timeout: (process.env.CI ? 15 : 5) * 1000,
+  workers: undefined,
   reporter: process.env.CI
     ? [
         ["dot"],
@@ -31,7 +30,7 @@ export default defineConfig({
     : "line",
   use: {
     baseURL: process.env.TEST_DOMAIN || "https://www.nationalarchives.gov.uk",
-    ignoreHTTPSErrors: ["https://localhost", "https://nginx"].includes(
+    ignoreHTTPSErrors: ["https://localhost"].includes(
       process.env.TEST_DOMAIN || "",
     ),
     trace: "on-first-retry",
