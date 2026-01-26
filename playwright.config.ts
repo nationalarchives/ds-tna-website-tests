@@ -4,10 +4,9 @@ const browserIndependentTests = "browser-independent/**/*.spec.ts";
 
 export const cookiePreferencesSetKey = "dontShowCookieNotice";
 
-const extraHTTPHeaders = {};
+const extraHTTPHeaders: { [key: string]: string } = {};
 if (process.env.ACCESS_HEADER) {
   extraHTTPHeaders["x-external-access-key"] = process.env.ACCESS_HEADER;
-  console.log("Using x-external-access-key header for tests");
 }
 
 export default defineConfig({
