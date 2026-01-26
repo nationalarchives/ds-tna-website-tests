@@ -74,6 +74,9 @@ jobs:
           elif [[ "${{ inputs.domain }}" == *"staging-www.nationalarchives.gov.uk"* ]]; then
             echo "Using staging header..."
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_STAGING }}" >> $GITHUB_ENV
+          elif [[ "${{ inputs.domain }}" == *"www.nationalarchives.gov.uk"* ]]; then
+            echo "Using production header..."
+            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_PROD }}" >> $GITHUB_ENV
           else
             echo "Using no header..."
             echo "TEST_ACCESS_HEADER=" >> $GITHUB_ENV
