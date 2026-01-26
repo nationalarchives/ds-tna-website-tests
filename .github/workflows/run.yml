@@ -100,7 +100,7 @@ jobs:
             echo "TEST_SITE_CONFIG=playwright.config.ts" >> $GITHUB_ENV
           fi
       - name: Run tests
-        run: ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright --config "${{ env.TEST_SITE_CONFIG }}" test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+        run: ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config "${{ env.TEST_SITE_CONFIG }}" --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       - name: Install jq
         run: sudo apt-get install jq
       - name: Report summary
