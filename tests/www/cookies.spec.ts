@@ -2,9 +2,9 @@ import { test, expect, Cookie, Page } from "@playwright/test";
 import {
   acceptAllCookies,
   declineAllCookies,
-} from "./lib/set-cookie-preferences.ts";
+} from "../../lib/set-cookie-preferences.ts";
 
-import { cookiePreferencesSetKey } from "../playwright.config";
+import { cookiePreferencesSetKey } from "../../playwright.config.ts";
 
 test.describe("no cookie policy set", () => {
   test.beforeEach(async ({ context }) => {

@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { acceptAllCookies } from "./lib/set-cookie-preferences.ts";
+import { acceptAllCookies } from "../../lib/set-cookie-preferences.ts";
 
 acceptAllCookies();
 

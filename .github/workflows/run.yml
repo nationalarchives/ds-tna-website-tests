@@ -3,11 +3,21 @@ name: Run tests
 on:
   workflow_dispatch:
     inputs:
-      domain:
-        type: string
-        description: Domain to test
-        required: true
-        default: "https://www.nationalarchives.gov.uk/"
+      site:
+        type: choice
+        description: Site to test
+        options:
+        - www
+        - beta
+        default: "www"
+      environment:
+        type: choice
+        description: Environment to test
+        options:
+        - production
+        - staging
+        - development
+        default: "production"
       include-tests:
         type: string
         description: Test tags to run, separated with a pipe "|" (leave blank to run all tests)
@@ -62,27 +72,35 @@ jobs:
         # Some WebKit dependencies seem to lay outside the cache and will need to be installed separately
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps webkit
-      - name: Santisie domain
-        run: |
-          DOMAIN=$(echo "${{ inputs.domain }}" | sed 's:/*$::')
-          echo "DOMAIN=$DOMAIN" >> "$GITHUB_ENV"
       - name: Get test header value
         run: |
-          if [[ "${{ inputs.domain }}" == *"dev-www.nationalarchives.gov.uk"* ]]; then
+          if [[ "${{ inputs.environment }}" == "develop" ]]; then
             echo "Using dev header..."
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_DEV }}" >> $GITHUB_ENV
-          elif [[ "${{ inputs.domain }}" == *"staging-www.nationalarchives.gov.uk"* ]]; then
+          elif [[ "${{ inputs.environment }}" == "staging" ]]; then
             echo "Using staging header..."
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_STAGING }}" >> $GITHUB_ENV
-          elif [[ "${{ inputs.domain }}" == *"www.nationalarchives.gov.uk"* ]]; then
+          elif [[ "${{ inputs.environment }}" == "production" ]]; then
             echo "Using production header..."
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_PROD }}" >> $GITHUB_ENV
           else
             echo "Using no header..."
             echo "TEST_ACCESS_HEADER=" >> $GITHUB_ENV
           fi
+      - name: Get Playwright configuration
+        run: |
+          if [[ "${{ inputs.site }}" == "www" ]]; then
+            echo "Testing www site..."
+            echo "TEST_SITE_CONFIG=playwright.config.ts" >> $GITHUB_ENV
+          elif [[ "${{ inputs.site }}" == "beta" ]]; then
+            echo "Testing beta site..."
+            echo "TEST_SITE_CONFIG=playwright-beta.config.ts" >> $GITHUB_ENV
+          else
+            echo "Unknown site, defaulting to www..."
+            echo "TEST_SITE_CONFIG=playwright.config.ts" >> $GITHUB_ENV
+          fi
       - name: Run tests
-        run: TEST_DOMAIN="${{ env.DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+        run: ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright --config "${{ env.TEST_SITE_CONFIG }}" test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       - name: Install jq
         run: sudo apt-get install jq
       - name: Report summary

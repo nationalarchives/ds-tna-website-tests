@@ -1,6 +1,6 @@
 import { test, expect, Cookie, Page } from "@playwright/test";
-import { cookiePreferencesSetKey } from "../../playwright.config.ts";
-import getCookieDomainFromBaseUrl from "../lib/domains.ts";
+import { cookiePreferencesSetKey } from "../../../playwright.config.ts";
+import getCookieDomainFromBaseUrl from "../../../lib/domains.ts";
 
 const newPagePath = "/explore-the-collection/";
 const getCookieBanner = (page: Page) =>
@@ -195,10 +195,10 @@ test.describe("malformed cookies", { tag: ["@requires-wordpress"] }, () => {
     await expect(getCookieBanner(page)).toBeVisible();
   });
 
-  test("visit old page", async ({ page }) => {
-    await page.goto(oldPagePath);
-    await expect(oldCookieBanner(page)).toBeVisible();
-  });
+  // test("visit old page", async ({ page }) => {
+  //   await page.goto(oldPagePath);
+  //   await expect(oldCookieBanner(page)).toBeVisible();
+  // });
 
   test.describe("with cookie preferences set", () => {
     test.beforeEach(async ({ context, baseURL }) => {

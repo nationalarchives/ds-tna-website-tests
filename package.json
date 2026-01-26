@@ -2,10 +2,13 @@
   "scripts": {
     "postinstall": "npx playwright install --with-deps",
     "lint:fix": "npx -y prettier --write .",
-    "test:localhost": "npx playwright install && TEST_DOMAIN=https://localhost npx playwright test --update-snapshots --ui --grep-invert \"@requires-wordpress\"",
-    "test:develop": "npx playwright install && TEST_DOMAIN=https://dev-www.nationalarchives.gov.uk npx playwright test --ui --grep-invert \"@wip\"",
-    "test:staging": "npx playwright install && TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk npx playwright test --ui --grep-invert \"@wip\"",
-    "test:production": "npx playwright install && npx playwright test --ui --grep-invert \"@wip\""
+    "test:localhost": "npx playwright install && npx playwright test --config playwright-localhost.config.ts --update-snapshots --ui --grep-invert \"@requires-wordpress\"",
+    "test:beta:develop": "npx playwright install && TEST_DOMAIN=https://dev-beta.nationalarchives.gov.uk npx playwright test --config playwright-beta.config.ts --ui --grep-invert \"@wip\"",
+    "test:beta:staging": "npx playwright install && TEST_DOMAIN=https://staging-beta.nationalarchives.gov.uk npx playwright test --config playwright-beta.config.ts --ui --grep-invert \"@wip\"",
+    "test:beta:production": "npx playwright install && npx playwright test --config playwright-beta.config.ts --ui --grep-invert \"@wip\"",
+    "test:www:develop": "npx playwright install && TEST_DOMAIN=https://dev-www.nationalarchives.gov.uk npx playwright test --ui --grep-invert \"@wip\"",
+    "test:www:staging": "npx playwright install && TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk npx playwright test --ui --grep-invert \"@wip\"",
+    "test:www:production": "npx playwright install && npx playwright test --ui --grep-invert \"@wip\""
   },
   "dependencies": {
     "@axe-core/playwright": "^4.10.1",

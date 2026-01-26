@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
-import { acceptAllCookies } from "./lib/set-cookie-preferences.ts";
-import validateHtml from "./lib/validate-html";
-import checkAccessibility from "./lib/check-accessibility";
+import { acceptAllCookies } from "../../lib/set-cookie-preferences.ts";
+import validateHtml from "../../lib/validate-html.ts";
+import checkAccessibility from "../../lib/check-accessibility.ts";
 
 acceptAllCookies();
 

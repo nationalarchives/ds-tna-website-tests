@@ -10,7 +10,7 @@ if (process.env.ACCESS_HEADER) {
 }
 
 export default defineConfig({
-  testDir: "./tests",
+  testDir: "./tests/www",
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
   workers: undefined,
@@ -29,9 +29,6 @@ export default defineConfig({
     : "line",
   use: {
     baseURL: process.env.TEST_DOMAIN || "https://www.nationalarchives.gov.uk",
-    ignoreHTTPSErrors: ["https://localhost"].includes(
-      process.env.TEST_DOMAIN || "",
-    ),
     trace: "on-first-retry",
     extraHTTPHeaders,
   },
