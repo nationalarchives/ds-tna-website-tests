@@ -16,7 +16,7 @@ on:
         options:
           - production
           - staging
-          - development
+          - develop
         default: "production"
       include-tests:
         type: string
