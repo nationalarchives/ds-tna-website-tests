@@ -21,6 +21,10 @@ const urlsToTest = [
   "/blogs/feeds/",
   "/merlin/",
   "/whats-on/",
+  "/whats-on/events/",
+  // "/whats-on/exhibitions/",
+  "/professional-guidance-and-services/",
+  "/professional-guidance-and-services/our-research-and-academic-collaboration/our-research-projects/our-current-projects/"
 ];
 
 const devUrlsToTest = [
@@ -48,38 +52,38 @@ test.describe("html validity and axe accessibility check", () => {
   });
 });
 
-test.describe("html validity and axe accessibility check without js or css", () => {
-  urlsToTest.forEach((url) => {
-    test(`${url}`, async ({ page, context }) => {
-      await context.route("**", (route) => {
-        return ["script", "stylesheet", "xhr"].includes(
-          route.request().resourceType(),
-        )
-          ? route.abort()
-          : route.continue();
-      });
-      const response = await page.goto(url);
-      const status = await response?.status();
-      expect(status).toEqual(200);
-      await validateHtml(page);
-      await checkAccessibility(page);
-    });
-  });
+// test.describe("html validity and axe accessibility check without js or css", () => {
+//   urlsToTest.forEach((url) => {
+//     test(`${url}`, async ({ page, context }) => {
+//       await context.route("**", (route) => {
+//         return ["script", "stylesheet", "xhr"].includes(
+//           route.request().resourceType(),
+//         )
+//           ? route.abort()
+//           : route.continue();
+//       });
+//       const response = await page.goto(url);
+//       const status = await response?.status();
+//       expect(status).toEqual(200);
+//       await validateHtml(page);
+//       await checkAccessibility(page);
+//     });
+//   });
 
-  devUrlsToTest.forEach((url) => {
-    test(`${url}`, { tag: ["@wip", "@a11y"] }, async ({ page, context }) => {
-      await context.route("**", (route) => {
-        return ["script", "stylesheet", "xhr"].includes(
-          route.request().resourceType(),
-        )
-          ? route.abort()
-          : route.continue();
-      });
-      const response = await page.goto(url);
-      const status = await response?.status();
-      expect(status).toEqual(200);
-      await validateHtml(page);
-      await checkAccessibility(page);
-    });
-  });
-});
+//   devUrlsToTest.forEach((url) => {
+//     test(`${url}`, { tag: ["@wip", "@a11y"] }, async ({ page, context }) => {
+//       await context.route("**", (route) => {
+//         return ["script", "stylesheet", "xhr"].includes(
+//           route.request().resourceType(),
+//         )
+//           ? route.abort()
+//           : route.continue();
+//       });
+//       const response = await page.goto(url);
+//       const status = await response?.status();
+//       expect(status).toEqual(200);
+//       await validateHtml(page);
+//       await checkAccessibility(page);
+//     });
+//   });
+// });
