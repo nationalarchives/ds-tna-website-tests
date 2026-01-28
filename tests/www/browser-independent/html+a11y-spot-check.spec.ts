@@ -24,7 +24,7 @@ const urlsToTest = [
   "/whats-on/events/",
   // "/whats-on/exhibitions/",
   "/professional-guidance-and-services/",
-  "/professional-guidance-and-services/our-research-and-academic-collaboration/our-research-projects/our-current-projects/"
+  "/professional-guidance-and-services/our-research-and-academic-collaboration/our-research-projects/our-current-projects/",
 ];
 
 const devUrlsToTest = [

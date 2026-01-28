@@ -7,7 +7,7 @@ acceptAllCookies();
 
 test("event page", async ({ page }) => {
   await page.goto("/whats-on/events/");
-  
+
   await page.locator("main").getByRole("link").first().click();
   await expect(page.locator("h1")).not.toBeEmpty();
   await expect(page.locator("h1")).toBeVisible();

@@ -6,7 +6,6 @@ export default defineConfig({
   testDir: "./tests/beta",
   use: {
     ...config.use,
-    baseURL:
-      process.env.TEST_DOMAIN || "https://beta.nationalarchives.gov.uk",
+    baseURL: process.env.TEST_DOMAIN || "https://beta.nationalarchives.gov.uk",
   },
 });
