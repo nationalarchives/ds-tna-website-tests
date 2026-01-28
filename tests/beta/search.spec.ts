@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test";
-import { acceptAllCookies } from "./lib/set-cookie-preferences.ts";
+import { acceptAllCookies } from "../../lib/set-cookie-preferences.ts";
 
 acceptAllCookies();
 
-test("search for a page", { tag: ["@wip"] }, async ({ page }) => {
+test("search for a page", async ({ page }) => {
   await page.goto("/search/");
   await expect(
     page.getByRole("region", { name: "Cookies on The National Archives" }),
