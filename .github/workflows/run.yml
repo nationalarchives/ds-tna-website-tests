@@ -93,7 +93,7 @@ jobs:
         run: TEST_DOMAIN="${{ env.TEST_DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       - name: Run beta tests
         if: inputs.site == 'beta' || inputs.site == 'all'
-        run: TEST_BETA_DOMAIN="${{ env.TEST_BETA_DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright-beta.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+        run: TEST_DOMAIN="${{ env.TEST_BETA_DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright-beta.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       - name: Install jq
         run: sudo apt-get install jq
       - name: Report summary

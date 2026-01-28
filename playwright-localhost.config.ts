@@ -6,7 +6,7 @@ export default defineConfig({
   testDir: "./tests",
   use: {
     ...config.use,
-    baseURL: process.env.TEST_BETA_DOMAIN || "https://localhost",
+    baseURL: process.env.TEST_DOMAIN || "https://localhost",
     ignoreHTTPSErrors: true,
   },
 });
