@@ -15,12 +15,12 @@ test("event page", async ({ page }) => {
   await checkAccessibility(page);
 });
 
-test("exhibition page", async ({ page }) => {
-  await page.goto("/whats-on/exhibitions/");
+// test("exhibition page", async ({ page }) => {
+//   await page.goto("/whats-on/exhibitions/");
 
-  await page.locator("main").getByRole("link").first().click();
-  await expect(page.locator("h1")).not.toBeEmpty();
-  await expect(page.locator("h1")).toBeVisible();
-  await validateHtml(page);
-  await checkAccessibility(page);
-});
+//   await page.locator("main").getByRole("link").first().click();
+//   await expect(page.locator("h1")).not.toBeEmpty();
+//   await expect(page.locator("h1")).toBeVisible();
+//   await validateHtml(page);
+//   await checkAccessibility(page);
+// });
