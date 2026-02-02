@@ -56,20 +56,20 @@ export default defineConfig({
     //   use: { ...devices["Desktop Firefox"] },
     //   testIgnore: browserIndependentTests,
     // },
-    // {
-    //   name: "webkit",
-    //   use: { ...devices["Desktop Safari"] },
-    //   testIgnore: browserIndependentTests,
-    // },
+    {
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
+      testIgnore: browserIndependentTests,
+    },
     {
       name: "Mobile Chrome",
       use: { ...devices["Pixel 7"] },
       testIgnore: browserIndependentTests,
     },
-    // {
-    //   name: "Mobile Safari",
-    //   use: { ...devices["iPhone 15"] },
-    //   testIgnore: browserIndependentTests,
-    // },
+    {
+      name: "Mobile Safari",
+      use: { ...devices["iPhone 15"] },
+      testIgnore: browserIndependentTests,
+    },
   ],
 });
