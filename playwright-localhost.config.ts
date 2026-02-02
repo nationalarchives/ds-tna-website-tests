@@ -7,6 +7,5 @@ export default defineConfig({
   use: {
     ...config.use,
     baseURL: process.env.TEST_DOMAIN || "https://localhost",
-    ignoreHTTPSErrors: true,
   },
 });

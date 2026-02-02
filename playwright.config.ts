@@ -13,7 +13,7 @@ if (process.env.ACCESS_HEADER) {
 export default defineConfig({
   testDir: "./tests/www",
   fullyParallel: true,
-  retries: process.env.CI ? 2 : 0,
+  retries: 2,
   workers: undefined,
   reporter: process.env.CI
     ? [
@@ -32,6 +32,7 @@ export default defineConfig({
     baseURL: process.env.TEST_DOMAIN || "https://www.nationalarchives.gov.uk",
     trace: "on-first-retry",
     extraHTTPHeaders,
+    ignoreHTTPSErrors: true,
   },
   snapshotPathTemplate:
     "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}",
@@ -60,11 +61,11 @@ export default defineConfig({
     //   use: { ...devices["Desktop Safari"] },
     //   testIgnore: browserIndependentTests,
     // },
-    // {
-    //   name: "Mobile Chrome",
-    //   use: { ...devices["Pixel 7"] },
-    //   testIgnore: browserIndependentTests,
-    // },
+    {
+      name: "Mobile Chrome",
+      use: { ...devices["Pixel 7"] },
+      testIgnore: browserIndependentTests,
+    },
     // {
     //   name: "Mobile Safari",
     //   use: { ...devices["iPhone 15"] },
