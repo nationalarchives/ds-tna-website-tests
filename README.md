@@ -9,7 +9,7 @@
 npm install
 
 # Run the tests against www.nationalarchives.gov.uk
-npm run test:production
+npm run test:www:production
 ```
 
 ## Writing tests
