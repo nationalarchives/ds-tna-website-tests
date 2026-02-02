@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
-import validateHtml from "../lib/validate-html";
-import checkAccessibility from "../lib/check-accessibility";
+import validateHtml from "../../../lib/validate-html";
+import checkAccessibility from "../../../lib/check-accessibility";
 
 const urlsToTest = [
   "/explore-the-collection/",
@@ -21,6 +21,10 @@ const urlsToTest = [
   "/blogs/feeds/",
   "/merlin/",
   "/whats-on/",
+  "/whats-on/events/",
+  // "/whats-on/exhibitions/",
+  // "/professional-guidance-and-services/",
+  // "/professional-guidance-and-services/our-research-and-academic-collaboration/our-research-projects/our-current-projects/",
   "/request-a-military-service-record/",
 ];
 
@@ -50,6 +54,8 @@ test.describe("html validity and axe accessibility check", () => {
 });
 
 test.describe("html validity and axe accessibility check without js or css", () => {
+  // test.use({ javaScriptEnabled: false });
+
   urlsToTest.forEach((url) => {
     test(`${url}`, async ({ page, context }) => {
       await context.route("**", (route) => {

@@ -7,7 +7,7 @@ inputs:
     required: true
   domain:
     type: string
-    description: Domain tested
+    description: Site domain tested
     required: true
   included-tests:
     type: string
@@ -57,7 +57,7 @@ runs:
       id: report
       run: |
         touch report.txt
-        echo "Domain: **${{ inputs.domain }}**" >> report.txt
+        echo "Site: **${{ inputs.domain }}**" >> report.txt
         echo >> report.txt
         [[ -n "${{ inputs.included-tests }}" ]] && echo "- Included: \`${{ inputs.included-tests }}\`" >> report.txt
         [[ -n "${{ inputs.excluded-tests }}" ]] && echo "- Excluded: \`${{ inputs.excluded-tests }}\`" >> report.txt

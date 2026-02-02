@@ -3,11 +3,22 @@ name: Run tests
 on:
   workflow_dispatch:
     inputs:
-      domain:
-        type: string
-        description: Domain to test
-        required: true
-        default: "https://www.nationalarchives.gov.uk/"
+      site:
+        type: choice
+        description: Site to test
+        options:
+          - www
+          - beta
+          - all
+        default: "www"
+      environment:
+        type: choice
+        description: Environment to test
+        options:
+          - production
+          - staging
+          - develop
+        default: "production"
       include-tests:
         type: string
         description: Test tags to run, separated with a pipe "|" (leave blank to run all tests)
@@ -38,8 +49,8 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -47,7 +58,7 @@ jobs:
         id: playwright-version
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['node_modules/@playwright/test'].version)")" >> $GITHUB_ENV
       - name: Cache Playwright binaries
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
@@ -62,27 +73,27 @@ jobs:
         # Some WebKit dependencies seem to lay outside the cache and will need to be installed separately
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps webkit
-      - name: Santisie domain
+      - name: Set site domains and get test header value
         run: |
-          DOMAIN=$(echo "${{ inputs.domain }}" | sed 's:/*$::')
-          echo "DOMAIN=$DOMAIN" >> "$GITHUB_ENV"
-      - name: Get test header value
-        run: |
-          if [[ "${{ inputs.domain }}" == *"dev-www.nationalarchives.gov.uk"* ]]; then
-            echo "Using dev header..."
+          if [[ "${{ inputs.environment }}" == "develop" ]]; then
+            echo "TEST_DOMAIN=https://dev-www.nationalarchives.gov.uk" >> $GITHUB_ENV
+            echo "TEST_BETA_DOMAIN=https://dev-beta.nationalarchives.gov.uk" >> $GITHUB_ENV
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_DEV }}" >> $GITHUB_ENV
-          elif [[ "${{ inputs.domain }}" == *"staging-www.nationalarchives.gov.uk"* ]]; then
-            echo "Using staging header..."
+          elif [[ "${{ inputs.environment }}" == "staging" ]]; then
+            echo "TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk" >> $GITHUB_ENV
+            echo "TEST_BETA_DOMAIN=https://staging-beta.nationalarchives.gov.uk" >> $GITHUB_ENV
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_STAGING }}" >> $GITHUB_ENV
-          elif [[ "${{ inputs.domain }}" == *"www.nationalarchives.gov.uk"* ]]; then
-            echo "Using production header..."
-            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_PROD }}" >> $GITHUB_ENV
           else
-            echo "Using no header..."
-            echo "TEST_ACCESS_HEADER=" >> $GITHUB_ENV
+            echo "TEST_DOMAIN=https://www.nationalarchives.gov.uk" >> $GITHUB_ENV
+            echo "TEST_BETA_DOMAIN=https://beta.nationalarchives.gov.uk" >> $GITHUB_ENV
+            echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_PROD }}" >> $GITHUB_ENV
           fi
-      - name: Run tests
-        run: TEST_DOMAIN="${{ env.DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+      - name: Run www tests
+        if: inputs.site == 'www' || inputs.site == 'all'
+        run: TEST_DOMAIN="${{ env.TEST_DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+      - name: Run beta tests
+        if: inputs.site == 'beta' || inputs.site == 'all'
+        run: TEST_DOMAIN="${{ env.TEST_BETA_DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright-beta.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       - name: Install jq
         run: sudo apt-get install jq
       - name: Report summary
@@ -104,7 +115,7 @@ jobs:
         uses: ./.github/actions/send-slack-report
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK }}
-          domain: ${{ env.DOMAIN }}
+          domain: ${{ env.TEST_DOMAIN }}
           included-tests: ${{ inputs.include-tests }}
           excluded-tests: ${{ inputs.exclude-tests }}
           pass-count: ${{ env.PASS_COUNT }}

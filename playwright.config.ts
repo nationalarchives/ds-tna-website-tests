@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+require("dotenv").config({ quiet: true });
 
 const browserIndependentTests = "browser-independent/**/*.spec.ts";
 
@@ -10,9 +11,9 @@ if (process.env.ACCESS_HEADER) {
 }
 
 export default defineConfig({
-  testDir: "./tests",
+  testDir: "./tests/www",
   fullyParallel: true,
-  retries: process.env.CI ? 2 : 0,
+  retries: 2,
   workers: undefined,
   reporter: process.env.CI
     ? [
@@ -29,11 +30,9 @@ export default defineConfig({
     : "line",
   use: {
     baseURL: process.env.TEST_DOMAIN || "https://www.nationalarchives.gov.uk",
-    ignoreHTTPSErrors: ["https://localhost"].includes(
-      process.env.TEST_DOMAIN || "",
-    ),
     trace: "on-first-retry",
     extraHTTPHeaders,
+    ignoreHTTPSErrors: true,
   },
   snapshotPathTemplate:
     "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}",
@@ -57,20 +56,20 @@ export default defineConfig({
     //   use: { ...devices["Desktop Firefox"] },
     //   testIgnore: browserIndependentTests,
     // },
-    // {
-    //   name: "webkit",
-    //   use: { ...devices["Desktop Safari"] },
-    //   testIgnore: browserIndependentTests,
-    // },
-    // {
-    //   name: "Mobile Chrome",
-    //   use: { ...devices["Pixel 7"] },
-    //   testIgnore: browserIndependentTests,
-    // },
-    // {
-    //   name: "Mobile Safari",
-    //   use: { ...devices["iPhone 15"] },
-    //   testIgnore: browserIndependentTests,
-    // },
+    {
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
+      testIgnore: browserIndependentTests,
+    },
+    {
+      name: "Mobile Chrome",
+      use: { ...devices["Pixel 7"] },
+      testIgnore: browserIndependentTests,
+    },
+    {
+      name: "Mobile Safari",
+      use: { ...devices["iPhone 15"] },
+      testIgnore: browserIndependentTests,
+    },
   ],
 });
