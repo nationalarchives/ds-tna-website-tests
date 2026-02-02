@@ -8,9 +8,21 @@
 # Install dependencies
 npm install
 
-# Run the tests against www.nationalarchives.gov.uk
+# Run the tests for www.nationalarchives.gov.uk
 npm run test:www:production
 ```
+
+### Test configurations
+
+| Test script            | Domain                                       |
+| ---------------------- | -------------------------------------------- |
+| `test:localhost`       | https://localhost                            |
+| `test:beta:develop`    | https://dev-beta.nationalarchives.gov.uk     |
+| `test:beta:staging`    | https://staging-beta.nationalarchives.gov.uk |
+| `test:beta:production` | https://beta.nationalarchives.gov.uk         |
+| `test:www:develop`     | https://dev-www.nationalarchives.gov.uk      |
+| `test:www:staging`     | https://staging-www.nationalarchives.gov.uk  |
+| `test:www:production`  | https://www.nationalarchives.gov.uk          |
 
 ## Writing tests
 
@@ -47,7 +59,7 @@ Ensure the permissions include:
 - **Actions**: Read and write
 - **Metadata**: Read-only
 
-Save the PAT in your repository secrets as `ACTIONS_GITHUB_TOKEN_TEST_RUNNER` and add the following to your GitHub workflow, updating the domain as necessary:
+Save the PAT in your repository secrets as `ACTIONS_GITHUB_TOKEN_TEST_RUNNER` and add the following to your GitHub workflow, updating the `site` and `environment` variables as necessary:
 
 ```yaml
 test:
@@ -55,7 +67,7 @@ test:
   env:
     GH_TOKEN: ${{ secrets.ACTIONS_GITHUB_TOKEN_TEST_RUNNER }}
   steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Run tests
-      run: gh workflow run manual.yml --repo nationalarchives/ds-tna-website-tests --raw-field domain=https://www.nationalarchives.gov.uk --raw-field notify-slack=true
+      run: gh workflow run manual.yml --repo nationalarchives/ds-tna-website-tests --raw-field site=www --raw-field environment=production --raw-field notify-slack=true
 ```
