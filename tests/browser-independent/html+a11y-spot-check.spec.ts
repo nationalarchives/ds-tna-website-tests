@@ -21,6 +21,7 @@ const urlsToTest = [
   "/blogs/feeds/",
   "/merlin/",
   "/whats-on/",
+  "/request-a-military-service-record/",
 ];
 
 const devUrlsToTest = [
