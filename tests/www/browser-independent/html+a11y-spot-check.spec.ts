@@ -25,6 +25,7 @@ const urlsToTest = [
   // "/whats-on/exhibitions/",
   "/professional-guidance-and-services/",
   "/professional-guidance-and-services/our-research-and-academic-collaboration/our-research-projects/our-current-projects/",
+  "/request-a-military-service-record/",
 ];
 
 const devUrlsToTest = [
