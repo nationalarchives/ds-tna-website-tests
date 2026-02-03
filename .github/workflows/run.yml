@@ -91,7 +91,6 @@ jobs:
       - name: Install jq
         run: sudo apt-get install jq
       - name: Report summary preparation
-        id: report-summary-preparation
         run: |
           echo "PASS_COUNT=0" >> "$GITHUB_ENV"
           echo "FAIL_COUNT=0" >> "$GITHUB_ENV"
@@ -102,8 +101,7 @@ jobs:
         if: inputs.site == 'www' || inputs.site == 'all'
         run: TEST_DOMAIN="${{ env.TEST_DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       - name: www report summary
-        if: always()
-        id: report-summary-www
+        if: always() && (inputs.site == 'www' || inputs.site == 'all')
         run: |
           PASS_COUNT_WWW=$(jq '(.stats.expected)' test-results.json)
           echo "PASS_COUNT=$((PASS_COUNT + PASS_COUNT_WWW))" >> "$GITHUB_ENV"
@@ -120,7 +118,6 @@ jobs:
         run: TEST_DOMAIN="${{ env.TEST_BETA_DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright-beta.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       - name: beta report summary
         if: always() && (inputs.site == 'beta' || inputs.site == 'all')
-        id: report-summary-beta
         run: |
           PASS_COUNT_BETA=$(jq '(.stats.expected)' test-results.json)
           echo "PASS_COUNT=$((PASS_COUNT + PASS_COUNT_BETA))" >> "$GITHUB_ENV"
