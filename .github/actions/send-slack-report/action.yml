@@ -61,8 +61,8 @@ runs:
       id: report
       run: |
         touch report.txt
+        echo "Site(s): **${{ inputs.site }}**" >> report.txt
         echo "Environment: **${{ inputs.environment }}**" >> report.txt
-        echo "Site(s): ${{ inputs.site }}" >> report.txt
         echo >> report.txt
         [[ -n "${{ inputs.included-tests }}" ]] && echo "- Included: \`${{ inputs.included-tests }}\`" >> report.txt
         [[ -n "${{ inputs.excluded-tests }}" ]] && echo "- Excluded: \`${{ inputs.excluded-tests }}\`" >> report.txt
