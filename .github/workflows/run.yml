@@ -88,34 +88,54 @@ jobs:
             echo "TEST_BETA_DOMAIN=https://beta.nationalarchives.gov.uk" >> $GITHUB_ENV
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_PROD }}" >> $GITHUB_ENV
           fi
+      - name: Install jq
+        run: sudo apt-get install jq
+      - name: Report summary preparation
+        run: |
+          echo "PASS_COUNT=0" >> "$GITHUB_ENV"
+          echo "FAIL_COUNT=0" >> "$GITHUB_ENV"
+          echo "SKIP_COUNT=0" >> "$GITHUB_ENV"
+          echo "FLAKE_COUNT=0" >> "$GITHUB_ENV"
+          echo "DURATION=0" >> "$GITHUB_ENV"
       - name: Run www tests
         if: inputs.site == 'www' || inputs.site == 'all'
         run: TEST_DOMAIN="${{ env.TEST_DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+      - name: www report summary
+        if: always() && (inputs.site == 'www' || inputs.site == 'all')
+        run: |
+          PASS_COUNT_WWW=$(jq '(.stats.expected)' test-results.json)
+          echo "PASS_COUNT=$((PASS_COUNT + PASS_COUNT_WWW))" >> "$GITHUB_ENV"
+          FAIL_COUNT_WWW=$(jq '(.stats.unexpected)' test-results.json)
+          echo "FAIL_COUNT=$((FAIL_COUNT + FAIL_COUNT_WWW))" >> "$GITHUB_ENV"
+          SKIP_COUNT_WWW=$(jq '(.stats.skipped)' test-results.json)
+          echo "SKIP_COUNT=$((SKIP_COUNT + SKIP_COUNT_WWW))" >> "$GITHUB_ENV"
+          FLAKE_COUNT_WWW=$(jq '(.stats.flaky)' test-results.json)
+          echo "FLAKE_COUNT=$((FLAKE_COUNT + FLAKE_COUNT_WWW))" >> "$GITHUB_ENV"
+          DURATION_WWW=$(jq '(.stats.duration/1000|tonumber|floor)' test-results.json)
+          echo "DURATION=$((DURATION + DURATION_WWW))" >> "$GITHUB_ENV"
       - name: Run beta tests
         if: inputs.site == 'beta' || inputs.site == 'all'
         run: TEST_DOMAIN="${{ env.TEST_BETA_DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright-beta.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
-      - name: Install jq
-        run: sudo apt-get install jq
-      - name: Report summary
-        if: always()
-        id: report-summary
+      - name: beta report summary
+        if: always() && (inputs.site == 'beta' || inputs.site == 'all')
         run: |
-          PASS_COUNT=$(jq '(.stats.expected)' test-results.json)
-          echo "PASS_COUNT=$PASS_COUNT" >> "$GITHUB_ENV"
-          FAIL_COUNT=$(jq '(.stats.unexpected)' test-results.json)
-          echo "FAIL_COUNT=$FAIL_COUNT" >> "$GITHUB_ENV"
-          SKIP_COUNT=$(jq '(.stats.skipped)' test-results.json)
-          echo "SKIP_COUNT=$SKIP_COUNT" >> "$GITHUB_ENV"
-          FLAKE_COUNT=$(jq '(.stats.flaky)' test-results.json)
-          echo "FLAKE_COUNT=$FLAKE_COUNT" >> "$GITHUB_ENV"
-          DURATION=$(jq '(.stats.duration/1000|tonumber|floor)' test-results.json)
-          echo "DURATION=$DURATION" >> "$GITHUB_ENV"
+          PASS_COUNT_BETA=$(jq '(.stats.expected)' test-results.json)
+          echo "PASS_COUNT=$((PASS_COUNT + PASS_COUNT_BETA))" >> "$GITHUB_ENV"
+          FAIL_COUNT_BETA=$(jq '(.stats.unexpected)' test-results.json)
+          echo "FAIL_COUNT=$((FAIL_COUNT + FAIL_COUNT_BETA))" >> "$GITHUB_ENV"
+          SKIP_COUNT_BETA=$(jq '(.stats.skipped)' test-results.json)
+          echo "SKIP_COUNT=$((SKIP_COUNT + SKIP_COUNT_BETA))" >> "$GITHUB_ENV"
+          FLAKE_COUNT_BETA=$(jq '(.stats.flaky)' test-results.json)
+          echo "FLAKE_COUNT=$((FLAKE_COUNT + FLAKE_COUNT_BETA))" >> "$GITHUB_ENV"
+          DURATION_BETA=$(jq '(.stats.duration/1000|tonumber|floor)' test-results.json)
+          echo "DURATION=$((DURATION + DURATION_BETA))" >> "$GITHUB_ENV"
       - name: Send report to Slack
         if: (success() && inputs.notify-slack-on-pass) || (failure() && inputs.notify-slack-on-fail)
         uses: ./.github/actions/send-slack-report
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK }}
-          domain: ${{ env.TEST_DOMAIN }}
+          environment: ${{ inputs.environment }}
+          site: ${{ inputs.site }}
           included-tests: ${{ inputs.include-tests }}
           excluded-tests: ${{ inputs.exclude-tests }}
           pass-count: ${{ env.PASS_COUNT }}
