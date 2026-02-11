@@ -139,16 +139,16 @@ jobs:
       - name: wagtail report summary
         if: always() && (inputs.site == 'wagtail' || inputs.site == 'all')
         run: |
-          PASS_COUNT_BETA=$(jq '(.stats.expected)' test-results.json)
-          echo "PASS_COUNT=$((PASS_COUNT + PASS_COUNT_BETA))" >> "$GITHUB_ENV"
-          FAIL_COUNT_BETA=$(jq '(.stats.unexpected)' test-results.json)
-          echo "FAIL_COUNT=$((FAIL_COUNT + FAIL_COUNT_BETA))" >> "$GITHUB_ENV"
-          SKIP_COUNT_BETA=$(jq '(.stats.skipped)' test-results.json)
-          echo "SKIP_COUNT=$((SKIP_COUNT + SKIP_COUNT_BETA))" >> "$GITHUB_ENV"
-          FLAKE_COUNT_BETA=$(jq '(.stats.flaky)' test-results.json)
-          echo "FLAKE_COUNT=$((FLAKE_COUNT + FLAKE_COUNT_BETA))" >> "$GITHUB_ENV"
-          DURATION_BETA=$(jq '(.stats.duration/1000|tonumber|floor)' test-results.json)
-          echo "DURATION=$((DURATION + DURATION_BETA))" >> "$GITHUB_ENV"
+          PASS_COUNT_WAGTAIL=$(jq '(.stats.expected)' test-results.json)
+          echo "PASS_COUNT=$((PASS_COUNT + PASS_COUNT_WAGTAIL))" >> "$GITHUB_ENV"
+          FAIL_COUNT_WAGTAIL=$(jq '(.stats.unexpected)' test-results.json)
+          echo "FAIL_COUNT=$((FAIL_COUNT + FAIL_COUNT_WAGTAIL))" >> "$GITHUB_ENV"
+          SKIP_COUNT_WAGTAIL=$(jq '(.stats.skipped)' test-results.json)
+          echo "SKIP_COUNT=$((SKIP_COUNT + SKIP_COUNT_WAGTAIL))" >> "$GITHUB_ENV"
+          FLAKE_COUNT_WAGTAIL=$(jq '(.stats.flaky)' test-results.json)
+          echo "FLAKE_COUNT=$((FLAKE_COUNT + FLAKE_COUNT_WAGTAIL))" >> "$GITHUB_ENV"
+          DURATION_WAGTAIL=$(jq '(.stats.duration/1000|tonumber|floor)' test-results.json)
+          echo "DURATION=$((DURATION + DURATION_WAGTAIL))" >> "$GITHUB_ENV"
       - name: Send report to Slack
         if: (success() && inputs.notify-slack-on-pass) || (failure() && inputs.notify-slack-on-fail)
         uses: ./.github/actions/send-slack-report
