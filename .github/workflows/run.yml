@@ -9,6 +9,7 @@ on:
         options:
           - www
           - beta
+          - wagtail
           - all
         default: "www"
       environment:
@@ -78,14 +79,17 @@ jobs:
           if [[ "${{ inputs.environment }}" == "develop" ]]; then
             echo "TEST_DOMAIN=https://dev-www.nationalarchives.gov.uk" >> $GITHUB_ENV
             echo "TEST_BETA_DOMAIN=https://dev-beta.nationalarchives.gov.uk" >> $GITHUB_ENV
+            echo "TEST_WAGTAIL_DOMAIN=https://dev-wagtail.nationalarchives.gov.uk" >> $GITHUB_ENV
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_DEV }}" >> $GITHUB_ENV
           elif [[ "${{ inputs.environment }}" == "staging" ]]; then
             echo "TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk" >> $GITHUB_ENV
             echo "TEST_BETA_DOMAIN=https://staging-beta.nationalarchives.gov.uk" >> $GITHUB_ENV
+            echo "TEST_WAGTAIL_DOMAIN=https://staging-wagtail.nationalarchives.gov.uk" >> $GITHUB_ENV
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_STAGING }}" >> $GITHUB_ENV
           else
             echo "TEST_DOMAIN=https://www.nationalarchives.gov.uk" >> $GITHUB_ENV
             echo "TEST_BETA_DOMAIN=https://beta.nationalarchives.gov.uk" >> $GITHUB_ENV
+            echo "TEST_WAGTAIL_DOMAIN=https://wagtail.nationalarchives.gov.uk" >> $GITHUB_ENV
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_PROD }}" >> $GITHUB_ENV
           fi
       - name: Install jq
@@ -118,6 +122,22 @@ jobs:
         run: TEST_DOMAIN="${{ env.TEST_BETA_DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright-beta.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
       - name: beta report summary
         if: always() && (inputs.site == 'beta' || inputs.site == 'all')
+        run: |
+          PASS_COUNT_BETA=$(jq '(.stats.expected)' test-results.json)
+          echo "PASS_COUNT=$((PASS_COUNT + PASS_COUNT_BETA))" >> "$GITHUB_ENV"
+          FAIL_COUNT_BETA=$(jq '(.stats.unexpected)' test-results.json)
+          echo "FAIL_COUNT=$((FAIL_COUNT + FAIL_COUNT_BETA))" >> "$GITHUB_ENV"
+          SKIP_COUNT_BETA=$(jq '(.stats.skipped)' test-results.json)
+          echo "SKIP_COUNT=$((SKIP_COUNT + SKIP_COUNT_BETA))" >> "$GITHUB_ENV"
+          FLAKE_COUNT_BETA=$(jq '(.stats.flaky)' test-results.json)
+          echo "FLAKE_COUNT=$((FLAKE_COUNT + FLAKE_COUNT_BETA))" >> "$GITHUB_ENV"
+          DURATION_BETA=$(jq '(.stats.duration/1000|tonumber|floor)' test-results.json)
+          echo "DURATION=$((DURATION + DURATION_BETA))" >> "$GITHUB_ENV"
+      - name: Run wagtail tests
+        if: inputs.site == 'wagtail' || inputs.site == 'all'
+        run: TEST_DOMAIN="${{ env.TEST_WAGTAIL_DOMAIN }}" ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright-wagtail.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+      - name: wagtail report summary
+        if: always() && (inputs.site == 'wagtail' || inputs.site == 'all')
         run: |
           PASS_COUNT_BETA=$(jq '(.stats.expected)' test-results.json)
           echo "PASS_COUNT=$((PASS_COUNT + PASS_COUNT_BETA))" >> "$GITHUB_ENV"
