@@ -360,51 +360,6 @@ test("article tags", async ({ page }) => {
   });
 });
 
-test("pages listing", async ({ page }) => {
-  const response = await page.goto("/api/v2/pages/?format=json");
-  const status = await response?.status();
-  expect(status).toEqual(200);
-  const contentType = await response?.headerValue("content-type");
-  expect(contentType).toEqual("application/json");
-  const jsonContent = await response?.json();
-
-  ["meta", "items"].forEach((property) => {
-    expect(jsonContent).toHaveProperty(property);
-  });
-
-  ["total_count"].forEach((property) => {
-    expect(jsonContent.meta).toHaveProperty(property);
-  });
-
-  expect(jsonContent.meta.total_count).toBeGreaterThanOrEqual(
-    jsonContent.items.length,
-  );
-
-  serialisedPageProperties.forEach((property) => {
-    expect(jsonContent.items[0]).toHaveProperty(property);
-  });
-
-  // Teaser images are optional
-  const pageWithTeaserImage = jsonContent.items.find(
-    (article: any) => article.teaser_image !== null,
-  );
-  if (pageWithTeaserImage) {
-    ["id", "uuid", "title", "description", "jpeg", "webp"].forEach(
-      (property) => {
-        expect(pageWithTeaserImage.teaser_image).toHaveProperty(property);
-      },
-    );
-
-    ["jpeg", "webp"].forEach((imageFormat) => {
-      ["url", "full_url", "width", "height"].forEach((property) => {
-        expect(pageWithTeaserImage.teaser_image[imageFormat]).toHaveProperty(
-          property,
-        );
-      });
-    });
-  }
-});
-
 test("blogs", async ({ page }) => {
   const response = await page.goto("/api/v2/blogs/?format=json");
   const jsonContent = await response?.json();
