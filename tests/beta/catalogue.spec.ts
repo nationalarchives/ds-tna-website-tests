@@ -59,7 +59,7 @@ test("view the details of a record from a search and return to the same search r
   ).toBeVisible();
   await page.getByRole("link", { name: "Back to search results" }).click();
   await expect(page.getByLabel("Catalogue search results")).toHaveValue("ufos");
-  await expect(page).toHaveURL(/&display=grid/);
+  await expect(page).toHaveURL(/(&|\?)display=grid/);
 });
 
 test("record details page", async ({ page }) => {
