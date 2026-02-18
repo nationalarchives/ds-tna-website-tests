@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 require("dotenv").config({ quiet: true });
 
-const browserIndependentTests = "browser-independent/**/*.spec.ts";
+const browserIndependentTests = ["browser-independent/**/*.spec.ts"];
 
 export const cookiePreferencesSetKey = "dontShowCookieNotice";
 

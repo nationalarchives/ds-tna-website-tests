@@ -9,4 +9,16 @@ export default defineConfig({
     ...config.use,
     baseURL: process.env.TEST_DOMAIN || "https://localhost",
   },
+  projects:
+    config.projects?.map((project) => ({
+      ...project,
+      testIgnore: [
+        ...(project.testIgnore
+          ? Array.isArray(project.testIgnore)
+            ? project.testIgnore
+            : [project.testIgnore]
+          : []),
+        "wagtail/**/*",
+      ],
+    })) || [],
 });
