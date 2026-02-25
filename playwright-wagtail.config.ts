@@ -2,8 +2,9 @@ import config from "./playwright.config.ts";
 import { defineConfig } from "@playwright/test";
 
 const extraHTTPHeaders: { [key: string]: string } = {};
-if (process.env.WAGTAIL_API_TOKEN) {
-  extraHTTPHeaders["Authorization"] = `Token ${process.env.WAGTAIL_API_TOKEN}`;
+if (process.env.TEST_WAGTAIL_API_TOKEN) {
+  extraHTTPHeaders["Authorization"] =
+    `Token ${process.env.TEST_WAGTAIL_API_TOKEN}`;
 }
 
 export default defineConfig({
