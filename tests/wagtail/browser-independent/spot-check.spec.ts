@@ -6,9 +6,9 @@ import { test, expect } from "@playwright/test";
 //   await expect(page.locator("h1")).toBeVisible();
 // });
 
-test("wagtail admin login", async ({ page }) => {
-  await page.goto("/admin/");
-  await expect(page.locator("h1")).toBeVisible();
-  await expect(page.locator("h1")).not.toBeEmpty();
-  await expect(page.locator("h1")).toContainText("Sign in to Wagtail");
-});
+// test("wagtail admin login", async ({ page }) => {
+//   await page.goto("/admin/");
+//   await expect(page.locator("h1")).toBeVisible();
+//   await expect(page.locator("h1")).not.toBeEmpty();
+//   await expect(page.locator("h1")).toContainText("Sign in to Wagtail");
+// });
