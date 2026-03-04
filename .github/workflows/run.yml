@@ -27,7 +27,7 @@ on:
         default: ""
       exclude-tests:
         type: string
-        description: Test tags to exclude, separated with a pipe "|" (use @wip to exclude work in progress tests)
+        description: Test tags to exclude, separated with a pipe "|" (@wip is already excluded)
         required: false
         default: ""
       notify-slack-on-pass:
@@ -106,7 +106,7 @@ jobs:
           echo "DURATION=0" >> "$GITHUB_ENV"
       - name: Run www tests
         if: inputs.site == 'www' || inputs.site == 'all'
-        run: TEST_DOMAIN="${{ env.TEST_DOMAIN }}" TEST_ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+        run: TEST_DOMAIN="${{ env.TEST_DOMAIN }}" TEST_ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}${{ inputs.exclude-tests && '|' }}@wip"
       - name: www report summary
         if: always() && (inputs.site == 'www' || inputs.site == 'all')
         run: |
@@ -122,7 +122,7 @@ jobs:
           echo "DURATION=$((DURATION + DURATION_WWW))" >> "$GITHUB_ENV"
       - name: Run beta tests
         if: inputs.site == 'beta' || inputs.site == 'all'
-        run: TEST_DOMAIN="${{ env.TEST_BETA_DOMAIN }}" TEST_ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright-beta.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+        run: TEST_DOMAIN="${{ env.TEST_BETA_DOMAIN }}" TEST_ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright-beta.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}${{ inputs.exclude-tests && '|' }}@wip"
       - name: beta report summary
         if: always() && (inputs.site == 'beta' || inputs.site == 'all')
         run: |
@@ -138,7 +138,7 @@ jobs:
           echo "DURATION=$((DURATION + DURATION_BETA))" >> "$GITHUB_ENV"
       - name: Run wagtail tests
         if: inputs.site == 'wagtail' || inputs.site == 'all'
-        run: TEST_DOMAIN="${{ env.TEST_WAGTAIL_DOMAIN }}" TEST_ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" TEST_WAGTAIL_API_TOKEN="${{ env.TEST_WAGTAIL_API_TOKEN }}" CI=true npx playwright test --config playwright-wagtail.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}"
+        run: TEST_DOMAIN="${{ env.TEST_WAGTAIL_DOMAIN }}" TEST_ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" TEST_WAGTAIL_API_TOKEN="${{ env.TEST_WAGTAIL_API_TOKEN }}" CI=true npx playwright test --config playwright-wagtail.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}${{ inputs.exclude-tests && '|' }}@wip"
       - name: wagtail report summary
         if: always() && (inputs.site == 'wagtail' || inputs.site == 'all')
         run: |
