@@ -1,50 +1,50 @@
 import { test, expect } from "@playwright/test";
 
-test(
-  "global header can be interacted with and has the correct accessibility tree",
-  { tag: ["@a11y"] },
-  async ({ page, isMobile }) => {
-    await page.goto("/explore-the-collection/"); // TODO: Change to homepage once updated
-    const header = await page.locator(".tna-global-header__main");
-    await expect(header).toBeVisible();
+test("global header can be interacted with and has the correct accessibility tree", async ({
+  page,
+  isMobile,
+}) => {
+  await page.goto("/explore-the-collection/"); // TODO: Change to homepage once updated
+  const header = await page.locator(".tna-global-header__main");
+  await expect(header).toBeVisible();
 
-    const headerMenuButton = await header.getByRole("button", { name: "Menu" });
+  const headerMenuButton = await header.getByRole("button", { name: "Menu" });
 
-    if (isMobile) {
-      await expect(header).toMatchAriaSnapshot(`
+  if (isMobile) {
+    await expect(header).toMatchAriaSnapshot(`
         - link "The National Archives home page":
           - /url: /
         - button "Menu"
       `);
-      await expect(headerMenuButton).toBeVisible();
-      await expect(
-        header.getByRole("navigation", { name: "Primary" }),
-      ).not.toBeVisible();
-      await expect(
-        header.getByRole("navigation", { name: "Secondary" }),
-      ).not.toBeVisible();
-      // await expect(await header.screenshot()).toMatchSnapshot(
-      //   "global-header-mobile.png",
-      // );
-      await headerMenuButton.click();
-      // await expect(await header.screenshot()).toMatchSnapshot(
-      //   "global-header-mobile-open.png",
-      // );
-    } else {
-      await expect(headerMenuButton).not.toBeVisible();
-      // await expect(await header.screenshot()).toMatchSnapshot(
-      //   "global-header.png",
-      // );
-    }
-
+    await expect(headerMenuButton).toBeVisible();
     await expect(
       header.getByRole("navigation", { name: "Primary" }),
-    ).toBeVisible();
+    ).not.toBeVisible();
     await expect(
       header.getByRole("navigation", { name: "Secondary" }),
-    ).toBeVisible();
+    ).not.toBeVisible();
+    // await expect(await header.screenshot()).toMatchSnapshot(
+    //   "global-header-mobile.png",
+    // );
+    await headerMenuButton.click();
+    // await expect(await header.screenshot()).toMatchSnapshot(
+    //   "global-header-mobile-open.png",
+    // );
+  } else {
+    await expect(headerMenuButton).not.toBeVisible();
+    // await expect(await header.screenshot()).toMatchSnapshot(
+    //   "global-header.png",
+    // );
+  }
 
-    await expect(header).toMatchAriaSnapshot(`
+  await expect(
+    header.getByRole("navigation", { name: "Primary" }),
+  ).toBeVisible();
+  await expect(
+    header.getByRole("navigation", { name: "Secondary" }),
+  ).toBeVisible();
+
+  await expect(header).toMatchAriaSnapshot(`
       - link "The National Archives home page":
         - /url: /
       - navigation "Primary":
@@ -77,14 +77,13 @@ test(
               - /url: https://shop.nationalarchives.gov.uk/
     `);
 
-    if (isMobile) {
-      await headerMenuButton.click();
-      await expect(
-        header.getByRole("navigation", { name: "Primary" }),
-      ).not.toBeVisible();
-      await expect(
-        header.getByRole("navigation", { name: "Secondary" }),
-      ).not.toBeVisible();
-    }
-  },
-);
+  if (isMobile) {
+    await headerMenuButton.click();
+    await expect(
+      header.getByRole("navigation", { name: "Primary" }),
+    ).not.toBeVisible();
+    await expect(
+      header.getByRole("navigation", { name: "Secondary" }),
+    ).not.toBeVisible();
+  }
+});
