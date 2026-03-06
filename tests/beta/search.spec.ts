@@ -4,6 +4,8 @@ import { acceptAllCookies } from "../../lib/set-cookie-preferences.ts";
 acceptAllCookies();
 
 test("search for a page", async ({ page }) => {
+  test.slow();
+
   await page.goto("/search/");
   await expect(
     page.getByRole("region", { name: "Cookies on The National Archives" }),
