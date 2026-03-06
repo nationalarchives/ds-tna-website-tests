@@ -5,9 +5,11 @@ import { acceptAllCookies } from "../../lib/set-cookie-preferences.ts";
 acceptAllCookies();
 
 // Increase the retry count for this test suite - Rosetta may be flaky
-test.describe.configure({ retries: 10 });
+test.describe.configure({ retries: 5 });
 
 test("search for records", async ({ page }) => {
+  test.slow();
+
   await page.goto("/catalogue/");
   await expect(
     page.getByRole("region", { name: "Cookies on The National Archives" }),
@@ -46,6 +48,8 @@ test("search for records", async ({ page }) => {
 test("view the details of a record from a search and return to the same search results", async ({
   page,
 }) => {
+  test.slow();
+
   await page.goto("/catalogue/search/?q=ufos&display=grid");
   await expect(page.locator(".etna-results")).toBeVisible();
   await page.locator(".etna-results").getByRole("link").first().click();
@@ -63,6 +67,8 @@ test("view the details of a record from a search and return to the same search r
 });
 
 test("record details page", async ({ page }) => {
+  test.slow();
+
   await page.goto("/catalogue/id/C4/");
 
   await expect(page.locator("h1")).not.toBeEmpty();
@@ -74,6 +80,8 @@ test("record details page", async ({ page }) => {
 });
 
 test("record details page accordion", async ({ page }) => {
+  test.slow();
+
   await page.goto("/catalogue/id/C4/");
 
   await expect(page.locator(".record-hierarchy")).not.toBeVisible();
@@ -82,6 +90,8 @@ test("record details page accordion", async ({ page }) => {
 });
 
 test("record details page field descriptions", async ({ page }) => {
+  test.slow();
+
   await page.goto("/catalogue/id/C4/");
 
   if (await page.locator(".record-details__description").count()) {
