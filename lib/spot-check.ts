@@ -32,7 +32,7 @@ const spotCheck: (urls: SpotCheck[], devUrls: SpotCheck[]) => void = async (
   });
 
   await test.describe("html validity and axe accessibility check without js or css", async () => {
-    test.use({ javaScriptEnabled: false });
+    // test.use({ javaScriptEnabled: false });
 
     urls.forEach((url) => {
       test(`${url.url}`, async ({ page, context }) => {
