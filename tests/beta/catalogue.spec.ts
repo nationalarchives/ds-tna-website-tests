@@ -5,7 +5,7 @@ import { acceptAllCookies } from "../../lib/set-cookie-preferences.ts";
 acceptAllCookies();
 
 // Increase the retry count for this test suite - Rosetta may be flaky
-test.describe.configure({ retries: 10 });
+test.describe.configure({ retries: 5 });
 
 test("search for records", async ({ page }) => {
   test.slow();
