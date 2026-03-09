@@ -1,13 +1,13 @@
 import { defineConfig, devices } from "@playwright/test";
 require("dotenv").config({ quiet: true });
 
-const browserIndependentTests = "browser-independent/**/*.spec.ts";
+const browserIndependentTests = ["browser-independent/**/*.spec.ts"];
 
 export const cookiePreferencesSetKey = "dontShowCookieNotice";
 
 const extraHTTPHeaders: { [key: string]: string } = {};
-if (process.env.ACCESS_HEADER) {
-  extraHTTPHeaders["x-external-access-key"] = process.env.ACCESS_HEADER;
+if (process.env.TEST_ACCESS_HEADER) {
+  extraHTTPHeaders["x-external-access-key"] = process.env.TEST_ACCESS_HEADER;
 }
 
 export default defineConfig({
