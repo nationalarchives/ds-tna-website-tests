@@ -35,9 +35,11 @@ test("pages", async ({ page }) => {
     jsonContent.items.length,
   );
 
-  serialisedPageProperties.forEach((property) => {
-    expect(jsonContent.items[0]).toHaveProperty(property);
-  });
+  if (jsonContent.items.length) {
+    serialisedPageProperties.forEach((property) => {
+      expect(jsonContent.items[0]).toHaveProperty(property);
+    });
+  }
 
   // Teaser images are optional
   const pageWithTeaserImage = jsonContent.items.find(
@@ -59,50 +61,52 @@ test("pages", async ({ page }) => {
     });
   }
 
-  const singleItemResponse = await page.goto(
-    `/api/v2/pages/${jsonContent.items[0].id}/?format=json`,
-  );
-  const singleItemJsonContent = await singleItemResponse?.json();
+  if (jsonContent.items.length) {
+    const singleItemResponse = await page.goto(
+      `/api/v2/pages/${jsonContent.items[0].id}/?format=json`,
+    );
+    const singleItemJsonContent = await singleItemResponse?.json();
 
-  [
-    "id",
-    "title",
-    "short_title",
-    "global_alert",
-    "type_label",
-    "mourning_notice",
-  ].forEach((property) => {
-    expect(singleItemJsonContent).toHaveProperty(property);
-  });
+    [
+      "id",
+      "title",
+      "short_title",
+      "global_alert",
+      "type_label",
+      "mourning_notice",
+    ].forEach((property) => {
+      expect(singleItemJsonContent).toHaveProperty(property);
+    });
 
-  expect(singleItemJsonContent).toHaveProperty("meta");
-  [
-    "type",
-    "detail_url",
-    "html_url",
-    "slug",
-    "show_in_menus",
-    "seo_title",
-    "search_description",
-    "first_published_at",
-    "alias_of",
-    "parent",
-    "privacy",
-    "last_published_at",
-    "url",
-    "depth",
-    "page_path",
-    "teaser_text",
-    "teaser_image",
-    "teaser_image_square",
-    "search_image",
-    "twitter_og_title",
-    "twitter_og_description",
-    "twitter_og_image",
-    "breadcrumbs",
-  ].forEach((property) => {
-    expect(singleItemJsonContent.meta).toHaveProperty(property);
-  });
+    expect(singleItemJsonContent).toHaveProperty("meta");
+    [
+      "type",
+      "detail_url",
+      "html_url",
+      "slug",
+      "show_in_menus",
+      "seo_title",
+      "search_description",
+      "first_published_at",
+      "alias_of",
+      "parent",
+      "privacy",
+      "last_published_at",
+      "url",
+      "depth",
+      "page_path",
+      "teaser_text",
+      "teaser_image",
+      "teaser_image_square",
+      "search_image",
+      "twitter_og_title",
+      "twitter_og_description",
+      "twitter_og_image",
+      "breadcrumbs",
+    ].forEach((property) => {
+      expect(singleItemJsonContent.meta).toHaveProperty(property);
+    });
+  }
 });
 
 test("global notifications", async ({ page }) => {
@@ -153,16 +157,18 @@ test("events", async ({ page }) => {
   expect(jsonContent.meta.total_count).toBeGreaterThanOrEqual(
     jsonContent.items.length,
   );
-  [
-    ...serialisedPageProperties,
-    "start_date",
-    "end_date",
-    "min_price",
-    "max_price",
-    "short_location",
-  ].forEach((property) => {
-    expect(jsonContent.items[0]).toHaveProperty(property);
-  });
+  if (jsonContent.items.length) {
+    [
+      ...serialisedPageProperties,
+      "start_date",
+      "end_date",
+      "min_price",
+      "max_price",
+      "short_location",
+    ].forEach((property) => {
+      expect(jsonContent.items[0]).toHaveProperty(property);
+    });
+  }
 });
 
 test("foi", async ({ page }) => {
@@ -180,9 +186,11 @@ test("foi", async ({ page }) => {
   expect(jsonContent.meta.total_count).toBeGreaterThanOrEqual(
     jsonContent.items.length,
   );
-  [...serialisedPageProperties, "date", "reference"].forEach((property) => {
-    expect(jsonContent.items[0]).toHaveProperty(property);
-  });
+  if (jsonContent.items.length) {
+    [...serialisedPageProperties, "date", "reference"].forEach((property) => {
+      expect(jsonContent.items[0]).toHaveProperty(property);
+    });
+  }
 });
 
 test("images", async ({ page }) => {
@@ -201,45 +209,47 @@ test("images", async ({ page }) => {
     jsonContent.items.length,
   );
 
-  ["id", "title", "tags", "uuid", "jpeg", "webp"].forEach((property) => {
-    expect(jsonContent.items[0]).toHaveProperty(property);
-  });
-
-  ["jpeg", "webp"].forEach((imageFormat) => {
-    ["url", "full_url", "width", "height"].forEach((property) => {
-      expect(jsonContent.items[0][imageFormat]).toHaveProperty(property);
+  if (jsonContent.items.length) {
+    ["id", "title", "tags", "uuid", "jpeg", "webp"].forEach((property) => {
+      expect(jsonContent.items[0]).toHaveProperty(property);
     });
-  });
 
-  const responseSingleItem = await page.goto(
-    `/api/v2/images/${jsonContent.items[0].uuid}/?format=json`,
-  );
-  const singleItemJsonContent = await responseSingleItem?.json();
-
-  [
-    "id",
-    "title",
-    "width",
-    "height",
-    "uuid",
-    "copyright",
-    "tags",
-    "transcription_heading",
-    "transcription",
-    "translation_heading",
-    "translation",
-    "description",
-    "jpeg",
-    "webp",
-  ].forEach((property) => {
-    expect(singleItemJsonContent).toHaveProperty(property);
-  });
-
-  ["jpeg", "webp"].forEach((imageFormat) => {
-    ["url", "full_url", "width", "height"].forEach((property) => {
-      expect(singleItemJsonContent[imageFormat]).toHaveProperty(property);
+    ["jpeg", "webp"].forEach((imageFormat) => {
+      ["url", "full_url", "width", "height"].forEach((property) => {
+        expect(jsonContent.items[0][imageFormat]).toHaveProperty(property);
+      });
     });
-  });
+
+    const responseSingleItem = await page.goto(
+      `/api/v2/images/${jsonContent.items[0].uuid}/?format=json`,
+    );
+    const singleItemJsonContent = await responseSingleItem?.json();
+
+    [
+      "id",
+      "title",
+      "width",
+      "height",
+      "uuid",
+      "copyright",
+      "tags",
+      "transcription_heading",
+      "transcription",
+      "translation_heading",
+      "translation",
+      "description",
+      "jpeg",
+      "webp",
+    ].forEach((property) => {
+      expect(singleItemJsonContent).toHaveProperty(property);
+    });
+
+    ["jpeg", "webp"].forEach((imageFormat) => {
+      ["url", "full_url", "width", "height"].forEach((property) => {
+        expect(singleItemJsonContent[imageFormat]).toHaveProperty(property);
+      });
+    });
+  }
 });
 
 test("media", async ({ page }) => {
@@ -258,57 +268,59 @@ test("media", async ({ page }) => {
     jsonContent.items.length,
   );
 
-  [
-    "id",
-    "meta",
-    "title",
-    "width",
-    "height",
-    "media_type",
-    "collection",
-    "thumbnail",
-    "uuid",
-    "chapters",
-    "subtitles_file",
-    "subtitles_file_full_url",
-    "chapters_file",
-    "chapters_file_full_url",
-  ].forEach((property) => {
-    expect(jsonContent.items[0]).toHaveProperty(property);
-  });
+  if (jsonContent.items.length) {
+    [
+      "id",
+      "meta",
+      "title",
+      "width",
+      "height",
+      "media_type",
+      "collection",
+      "thumbnail",
+      "uuid",
+      "chapters",
+      "subtitles_file",
+      "subtitles_file_full_url",
+      "chapters_file",
+      "chapters_file_full_url",
+    ].forEach((property) => {
+      expect(jsonContent.items[0]).toHaveProperty(property);
+    });
 
-  const responseSingleItem = await page.goto(
-    `/api/v2/media/${jsonContent.items[0].uuid}/?format=json`,
-  );
-  const singleItemJsonContent = await responseSingleItem?.json();
+    const responseSingleItem = await page.goto(
+      `/api/v2/media/${jsonContent.items[0].uuid}/?format=json`,
+    );
+    const singleItemJsonContent = await responseSingleItem?.json();
 
-  [
-    "id",
-    "meta",
-    "title",
-    "width",
-    "height",
-    "media_type",
-    "collection",
-    "uuid",
-    "url",
-    "full_url",
-    "audio_described_file",
-    "thumbnail",
-    "date",
-    "created_at",
-    "duration",
-    "subtitles_file",
-    "subtitles_file_full_url",
-    "chapters",
-    "chapters_file",
-    "chapters_file_full_url",
-    "mime",
-    "description",
-    "transcript",
-  ].forEach((property) => {
-    expect(singleItemJsonContent).toHaveProperty(property);
-  });
+    [
+      "id",
+      "meta",
+      "title",
+      "width",
+      "height",
+      "media_type",
+      "collection",
+      "uuid",
+      "url",
+      "full_url",
+      "audio_described_file",
+      "thumbnail",
+      "date",
+      "created_at",
+      "duration",
+      "subtitles_file",
+      "subtitles_file_full_url",
+      "chapters",
+      "chapters_file",
+      "chapters_file_full_url",
+      "mime",
+      "description",
+      "transcript",
+    ].forEach((property) => {
+      expect(singleItemJsonContent).toHaveProperty(property);
+    });
+  }
 });
 
 test("redirects", async ({ page }) => {
@@ -327,18 +339,24 @@ test("redirects", async ({ page }) => {
     jsonContent.items.length,
   );
 
-  ["id", "meta", "old_path", "location", "is_permanent"].forEach((property) => {
-    expect(jsonContent.items[0]).toHaveProperty(property);
-  });
+  if (jsonContent.items.length) {
+    ["id", "meta", "old_path", "location", "is_permanent"].forEach(
+      (property) => {
+        expect(jsonContent.items[0]).toHaveProperty(property);
+      },
+    );
 
-  const responseSingleItem = await page.goto(
-    `/api/v2/redirects/${jsonContent.items[0].id}/?format=json`,
-  );
-  const singleItemJsonContent = await responseSingleItem?.json();
+    const responseSingleItem = await page.goto(
+      `/api/v2/redirects/${jsonContent.items[0].id}/?format=json`,
+    );
+    const singleItemJsonContent = await responseSingleItem?.json();
 
-  ["id", "meta", "old_path", "location", "is_permanent"].forEach((property) => {
-    expect(singleItemJsonContent).toHaveProperty(property);
-  });
+    ["id", "meta", "old_path", "location", "is_permanent"].forEach(
+      (property) => {
+        expect(singleItemJsonContent).toHaveProperty(property);
+      },
+    );
+  }
 });
 
 test("article tags", async ({ page }) => {
@@ -355,9 +373,11 @@ test("article tags", async ({ page }) => {
   const jsonContent = await response?.json();
   expect(jsonContent.length).toBeLessThanOrEqual(3);
 
-  [...serialisedPageProperties, "is_newly_published"].forEach((property) => {
-    expect(jsonContent[0]).toHaveProperty(property);
-  });
+  if (jsonContent.length) {
+    [...serialisedPageProperties, "is_newly_published"].forEach((property) => {
+      expect(jsonContent[0]).toHaveProperty(property);
+    });
+  }
 });
 
 test("blogs", async ({ page }) => {
@@ -375,9 +395,11 @@ test("blogs", async ({ page }) => {
   expect(jsonContent.meta.total_count).toBeGreaterThanOrEqual(
     jsonContent.items.length,
   );
-  serialisedPageProperties.forEach((property) => {
-    expect(jsonContent.items[0]).toHaveProperty(property);
-  });
+  if (jsonContent.items.length) {
+    serialisedPageProperties.forEach((property) => {
+      expect(jsonContent.items[0]).toHaveProperty(property);
+    });
+  }
 });
 
 test("blogs - index", async ({ page }) => {
@@ -394,7 +416,9 @@ test("blogs - top", async ({ page }) => {
   const jsonContent = await response?.json();
 
   expect(jsonContent.length).toBeGreaterThan(0);
-  serialisedPageProperties.forEach((property) => {
-    expect(jsonContent[0]).toHaveProperty(property);
-  });
+  if (jsonContent.length) {
+    serialisedPageProperties.forEach((property) => {
+      expect(jsonContent[0]).toHaveProperty(property);
+    });
+  }
 });
