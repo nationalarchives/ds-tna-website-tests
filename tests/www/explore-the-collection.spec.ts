@@ -5,12 +5,14 @@ import { acceptAllCookies } from "../../lib/set-cookie-preferences.ts";
 acceptAllCookies();
 
 test("explore the collection home page", async ({ page }) => {
-  await page.goto("/explore-the-collection/");
+  const response = await page.goto("/explore-the-collection/");
+  await expect(response?.ok()).toBeTruthy();
   await expect(page.locator("h1")).toHaveText(/Explore the collection/);
 });
 
 test("search explore the collection", async ({ page }) => {
-  await page.goto("/explore-the-collection/search/");
+  const response = await page.goto("/explore-the-collection/search/");
+  await expect(response?.ok()).toBeTruthy();
   await expect(page.locator("h1")).toHaveText(/Search Explore the collection/);
   await expect(page.getByRole("main")).toHaveText(
     /Showing [\d,]+–[\d,]+ of [\d,]+ results/,

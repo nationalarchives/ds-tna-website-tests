@@ -3,12 +3,8 @@ import validateHtml from "../../../lib/validate-html";
 import checkAccessibility from "../../../lib/check-accessibility";
 
 test("page not found error page", async ({ page }) => {
-  page.on("response", (response) => {
-    if (response.url().endsWith("/foobar/")) {
-      expect(response.status()).toEqual(404);
-    }
-  });
-  await page.goto("/foobar/");
+  const response = await page.goto("/foobar/");
+  await expect(response?.status()).toEqual(404);
   await expect(page).toHaveTitle("Page not found - The National Archives");
   await expect(
     page.getByRole("main").getByRole("heading", { name: "Page not found" }),

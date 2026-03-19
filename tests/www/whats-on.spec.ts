@@ -6,7 +6,8 @@ import checkAccessibility from "../../lib/check-accessibility.ts";
 acceptAllCookies();
 
 test("event page", async ({ page }) => {
-  await page.goto("/whats-on/events/");
+  const response = await page.goto("/whats-on/events/");
+  await expect(response?.ok()).toBeTruthy();
 
   await page.locator("main").getByRole("link").first().click();
   await expect(page.locator("h1")).not.toBeEmpty();
@@ -16,7 +17,8 @@ test("event page", async ({ page }) => {
 });
 
 // test("exhibition page", async ({ page }) => {
-//   await page.goto("/whats-on/exhibitions/");
+//   const response = await page.goto("/whats-on/exhibitions/");
+//         await expect(response?.ok()).toBeTruthy();
 
 //   await page.locator("main").getByRole("link").first().click();
 //   await expect(page.locator("h1")).not.toBeEmpty();

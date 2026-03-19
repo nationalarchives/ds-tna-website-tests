@@ -10,7 +10,8 @@ test.describe.configure({ retries: 5 });
 test("search for records", async ({ page }) => {
   test.slow();
 
-  await page.goto("/catalogue/");
+  const response = await page.goto("/catalogue/");
+  await expect(response?.ok()).toBeTruthy();
   await expect(
     page.getByRole("region", { name: "Cookies on The National Archives" }),
   ).not.toBeVisible();
@@ -50,7 +51,8 @@ test("view the details of a record from a search and return to the same search r
 }) => {
   test.slow();
 
-  await page.goto("/catalogue/search/?q=ufos&display=grid");
+  const response = await page.goto("/catalogue/search/?q=ufos&display=grid");
+  await expect(response?.ok()).toBeTruthy();
   await expect(page.locator(".etna-results")).toBeVisible();
   await page.locator(".etna-results").getByRole("link").first().click();
 
@@ -69,7 +71,8 @@ test("view the details of a record from a search and return to the same search r
 test("record details page", async ({ page }) => {
   test.slow();
 
-  await page.goto("/catalogue/id/C4/");
+  const response = await page.goto("/catalogue/id/C4/");
+  await expect(response?.ok()).toBeTruthy();
 
   await expect(page.locator("h1")).not.toBeEmpty();
   await expect(page.getByRole("main")).toHaveText(
@@ -82,7 +85,8 @@ test("record details page", async ({ page }) => {
 test("record details page accordion", async ({ page }) => {
   test.slow();
 
-  await page.goto("/catalogue/id/C4/");
+  const response = await page.goto("/catalogue/id/C4/");
+  await expect(response?.ok()).toBeTruthy();
 
   await expect(page.locator(".record-hierarchy")).not.toBeVisible();
   await page.getByRole("button", { name: "Catalogue hierarchy" }).click();
@@ -92,7 +96,8 @@ test("record details page accordion", async ({ page }) => {
 test("record details page field descriptions", async ({ page }) => {
   test.slow();
 
-  await page.goto("/catalogue/id/C4/");
+  const response = await page.goto("/catalogue/id/C4/");
+  await expect(response?.ok()).toBeTruthy();
 
   if (await page.locator(".record-details__description").count()) {
     await expect(

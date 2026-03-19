@@ -14,7 +14,8 @@ test.describe("no cookie policy set", { tag: ["@wip"] }, () => {
   test("cookies landing page", async ({ context, page }) => {
     page.route("**", (route) => route.continue());
 
-    await page.goto("/cookies/");
+    const response = await page.goto("/cookies/");
+    await expect(response?.ok()).toBeTruthy();
     let cookies = await context.cookies();
     let cookiePreferencesSet = await cookies.find(
       (cookie: Cookie) => cookie.name === cookiePreferencesSetKey,
