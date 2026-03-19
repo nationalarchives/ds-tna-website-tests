@@ -6,7 +6,8 @@ acceptAllCookies();
 test("search for a page", async ({ page }) => {
   test.slow();
 
-  await page.goto("/search/");
+  const response = await page.goto("/search/");
+  await expect(response?.ok()).toBeTruthy();
   await expect(
     page.getByRole("region", { name: "Cookies on The National Archives" }),
   ).not.toBeVisible();
