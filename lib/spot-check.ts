@@ -10,7 +10,8 @@ const spotCheck: (urls: SpotCheck[], devUrls: SpotCheck[]) => void = async (
   test.describe("html validity and axe accessibility check", () => {
     urls.forEach((url) => {
       test(url.url, async ({ page }) => {
-        await page.goto(url.url);
+        const response = await page.goto(url.url);
+        await expect(response?.ok()).toBeTruthy();
         await validateHtml(page, url.additionalHtmlvalidateRules || {});
         await checkAccessibility(
           page,
@@ -21,7 +22,8 @@ const spotCheck: (urls: SpotCheck[], devUrls: SpotCheck[]) => void = async (
 
     devUrls.forEach((url) => {
       test(url.url, { tag: ["@wip"] }, async ({ page }) => {
-        await page.goto(url.url);
+        const response = await page.goto(url.url);
+        await expect(response?.ok()).toBeTruthy();
         await validateHtml(page, url.additionalHtmlvalidateRules || {});
         await checkAccessibility(
           page,
@@ -44,8 +46,7 @@ const spotCheck: (urls: SpotCheck[], devUrls: SpotCheck[]) => void = async (
             : route.continue();
         });
         const response = await page.goto(url.url);
-        const status = await response?.status();
-        expect(status).toEqual(200);
+        await expect(response?.ok()).toBeTruthy();
         await validateHtml(page, url.additionalHtmlvalidateRules || {});
         await checkAccessibility(
           page,
@@ -64,8 +65,7 @@ const spotCheck: (urls: SpotCheck[], devUrls: SpotCheck[]) => void = async (
             : route.continue();
         });
         const response = await page.goto(url.url);
-        const status = await response?.status();
-        expect(status).toEqual(200);
+        await expect(response?.ok()).toBeTruthy();
         await validateHtml(page, url.additionalHtmlvalidateRules || {});
         await checkAccessibility(
           page,
