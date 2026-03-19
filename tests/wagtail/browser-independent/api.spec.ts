@@ -15,11 +15,10 @@ const serialisedPageProperties = [
   "teaser_image",
 ];
 
-test("pages", async ({ page }) => {
-  const response = await page.goto("/api/v2/pages/?format=json");
-  const status = await response?.status();
-  expect(status).toEqual(200);
-  const contentType = await response?.headerValue("content-type");
+test("pages", async ({ request }) => {
+  const response = await request.get("/api/v2/pages/?format=json");
+  await expect(response).toBeOK();
+  const contentType = await response?.headers()["content-type"];
   expect(contentType).toEqual("application/json");
   const jsonContent = await response?.json();
 
@@ -62,9 +61,10 @@ test("pages", async ({ page }) => {
   }
 
   if (jsonContent.items.length) {
-    const singleItemResponse = await page.goto(
+    const singleItemResponse = await request.get(
       `/api/v2/pages/${jsonContent.items[0].id}/?format=json`,
     );
+    await expect(singleItemResponse).toBeOK();
     const singleItemJsonContent = await singleItemResponse?.json();
 
     [
@@ -109,10 +109,11 @@ test("pages", async ({ page }) => {
   }
 });
 
-test("global notifications", async ({ page }) => {
-  const response = await page.goto(
+test("global notifications", async ({ request }) => {
+  const response = await request.get(
     "/api/v2/globals/notifications/?format=json",
   );
+  await expect(response).toBeOK();
   const jsonContent = await response?.json();
 
   ["global_alert", "mourning_notice"].forEach((property) => {
@@ -120,8 +121,9 @@ test("global notifications", async ({ page }) => {
   });
 });
 
-test("catalogue landing", async ({ page }) => {
-  const response = await page.goto("/api/v2/catalogue/landing/?format=json");
+test("catalogue landing", async ({ request }) => {
+  const response = await request.get("/api/v2/catalogue/landing/?format=json");
+  await expect(response).toBeOK();
   const jsonContent = await response?.json();
 
   ["global_alert", "mourning_notice", "explore_the_collection"].forEach(
@@ -142,8 +144,9 @@ test("catalogue landing", async ({ page }) => {
   ).toBeGreaterThan(0);
 });
 
-test("events", async ({ page }) => {
-  const response = await page.goto("/api/v2/events/?format=json");
+test("events", async ({ request }) => {
+  const response = await request.get("/api/v2/events/?format=json");
+  await expect(response).toBeOK();
   const jsonContent = await response?.json();
 
   ["meta", "items"].forEach((property) => {
@@ -171,8 +174,9 @@ test("events", async ({ page }) => {
   }
 });
 
-test("foi", async ({ page }) => {
-  const response = await page.goto("/api/v2/foi/?format=json");
+test("foi", async ({ request }) => {
+  const response = await request.get("/api/v2/foi/?format=json");
+  await expect(response).toBeOK();
   const jsonContent = await response?.json();
 
   ["meta", "items"].forEach((property) => {
@@ -193,8 +197,9 @@ test("foi", async ({ page }) => {
   }
 });
 
-test("images", async ({ page }) => {
-  const response = await page.goto("/api/v2/images/?format=json");
+test("images", async ({ request }) => {
+  const response = await request.get("/api/v2/images/?format=json");
+  await expect(response).toBeOK();
   const jsonContent = await response?.json();
 
   ["meta", "items"].forEach((property) => {
@@ -220,9 +225,10 @@ test("images", async ({ page }) => {
       });
     });
 
-    const responseSingleItem = await page.goto(
+    const responseSingleItem = await request.get(
       `/api/v2/images/${jsonContent.items[0].uuid}/?format=json`,
     );
+    await expect(responseSingleItem).toBeOK();
     const singleItemJsonContent = await responseSingleItem?.json();
 
     [
@@ -252,8 +258,9 @@ test("images", async ({ page }) => {
   }
 });
 
-test("media", async ({ page }) => {
-  const response = await page.goto("/api/v2/media/?format=json");
+test("media", async ({ request }) => {
+  const response = await request.get("/api/v2/media/?format=json");
+  await expect(response).toBeOK();
   const jsonContent = await response?.json();
 
   ["meta", "items"].forEach((property) => {
@@ -288,9 +295,10 @@ test("media", async ({ page }) => {
       expect(jsonContent.items[0]).toHaveProperty(property);
     });
 
-    const responseSingleItem = await page.goto(
+    const responseSingleItem = await request.get(
       `/api/v2/media/${jsonContent.items[0].uuid}/?format=json`,
     );
+    await expect(responseSingleItem).toBeOK();
     const singleItemJsonContent = await responseSingleItem?.json();
 
     [
@@ -323,8 +331,9 @@ test("media", async ({ page }) => {
   }
 });
 
-test("redirects", async ({ page }) => {
-  const response = await page.goto("/api/v2/redirects/?format=json");
+test("redirects", async ({ request }) => {
+  const response = await request.get("/api/v2/redirects/?format=json");
+  await expect(response).toBeOK();
   const jsonContent = await response?.json();
 
   ["meta", "items"].forEach((property) => {
@@ -346,9 +355,10 @@ test("redirects", async ({ page }) => {
       },
     );
 
-    const responseSingleItem = await page.goto(
+    const responseSingleItem = await request.get(
       `/api/v2/redirects/${jsonContent.items[0].id}/?format=json`,
     );
+    await expect(responseSingleItem).toBeOK();
     const singleItemJsonContent = await responseSingleItem?.json();
 
     ["id", "meta", "old_path", "location", "is_permanent"].forEach(
@@ -359,16 +369,14 @@ test("redirects", async ({ page }) => {
   }
 });
 
-test("article tags", async ({ page }) => {
-  const responseEmpty = await page.goto("/api/v2/article_tags/?format=json");
-  const statusEmpty = await responseEmpty?.status();
-  expect(statusEmpty).toEqual(400);
+test("article tags", async ({ request }) => {
+  const responseEmpty = await request.get("/api/v2/article_tags/?format=json");
+  await expect(responseEmpty?.status()).toEqual(400);
 
-  const response = await page.goto(
+  const response = await request.get(
     "/api/v2/article_tags/?tags=medicine&format=json",
   );
-  const status = await response?.status();
-  expect(status).toEqual(200);
+  await expect(response).toBeOK();
 
   const jsonContent = await response?.json();
   expect(jsonContent.length).toBeLessThanOrEqual(3);
@@ -380,8 +388,9 @@ test("article tags", async ({ page }) => {
   }
 });
 
-test("blogs", async ({ page }) => {
-  const response = await page.goto("/api/v2/blogs/?format=json");
+test("blogs", async ({ request }) => {
+  const response = await request.get("/api/v2/blogs/?format=json");
+  await expect(response).toBeOK();
   const jsonContent = await response?.json();
 
   ["meta", "items"].forEach((property) => {
@@ -402,8 +411,9 @@ test("blogs", async ({ page }) => {
   }
 });
 
-test("blogs - index", async ({ page }) => {
-  const response = await page.goto("/api/v2/blogs/index/?format=json");
+test("blogs - index", async ({ request }) => {
+  const response = await request.get("/api/v2/blogs/index/?format=json");
+  await expect(response).toBeOK();
   const jsonContent = await response?.json();
 
   serialisedPageProperties.forEach((property) => {
@@ -411,8 +421,9 @@ test("blogs - index", async ({ page }) => {
   });
 });
 
-test("blogs - top", async ({ page }) => {
-  const response = await page.goto("/api/v2/blogs/top/?format=json");
+test("blogs - top", async ({ request }) => {
+  const response = await request.get("/api/v2/blogs/top/?format=json");
+  await expect(response).toBeOK();
   const jsonContent = await response?.json();
 
   expect(jsonContent.length).toBeGreaterThan(0);
