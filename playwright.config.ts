@@ -3,7 +3,8 @@ require("dotenv").config({ quiet: true });
 
 const browserIndependentTests = ["browser-independent/**/*.spec.ts"];
 
-export const cookiePreferencesSetKey = "dontShowCookieNotice";
+export const cookiePreferencesSetKey = "cookie_preferences_set";
+export const cookiePreferencesSetKeyOld = "dontShowCookieNotice";
 
 const extraHTTPHeaders: { [key: string]: string } = {};
 if (process.env.TEST_ACCESS_HEADER) {
@@ -51,11 +52,11 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
-    // {
-    //   name: "firefox",
-    //   use: { ...devices["Desktop Firefox"] },
-    //   testIgnore: browserIndependentTests,
-    // },
+    {
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
+      testIgnore: browserIndependentTests,
+    },
     {
       name: "webkit",
       use: { ...devices["Desktop Safari"] },

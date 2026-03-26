@@ -1,8 +1,11 @@
 import { test, expect, Cookie, Page } from "@playwright/test";
-import { cookiePreferencesSetKey } from "../../../playwright.config.ts";
+import {
+  cookiePreferencesSetKey,
+  cookiePreferencesSetKeyOld,
+} from "../../../playwright.config.ts";
 import getCookieDomainFromBaseUrl from "../../../lib/domains.ts";
 
-const newPagePath = "/explore-the-collection/";
+const newPagePath = "/";
 const getCookieBanner = (page: Page) =>
   page.getByRole("region", { name: "Cookies on The National Archives" });
 const oldPagePath = "/contact-us/";
@@ -50,7 +53,7 @@ test.describe("no existing cookies", { tag: ["@requires-wordpress"] }, () => {
     await expect(getCookieBanner(page)).toBeVisible();
     await page.getByRole("button", { name: "Accept cookies" }).click();
     await page.goto(oldPagePath);
-    await expect(oldCookieBanner(page)).not.toBeVisible();
+    await expect(oldCookieBanner(page)).toBeVisible();
   });
 
   test("reject on new page then visit old page", async ({ page }) => {
@@ -58,7 +61,7 @@ test.describe("no existing cookies", { tag: ["@requires-wordpress"] }, () => {
     await expect(getCookieBanner(page)).toBeVisible();
     await page.getByRole("button", { name: "Reject cookies" }).click();
     await page.goto(oldPagePath);
-    await expect(oldCookieBanner(page)).not.toBeVisible();
+    await expect(oldCookieBanner(page)).toBeVisible();
   });
 
   test("don't interact on new page, don't interact on old page then return to new page", async ({
@@ -74,7 +77,6 @@ test.describe("no existing cookies", { tag: ["@requires-wordpress"] }, () => {
 
   test("visit new page, accept on old page then return to new page", async ({
     page,
-    baseURL,
   }) => {
     await page.goto(newPagePath);
     await expect(getCookieBanner(page)).toBeVisible();
@@ -116,8 +118,7 @@ test.describe("no existing cookies", { tag: ["@requires-wordpress"] }, () => {
 
     test("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
-      // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
-      await expect(oldCookieBanner(page)).not.toBeVisible();
+      await expect(oldCookieBanner(page)).toBeVisible();
     });
   });
 });
@@ -155,8 +156,16 @@ test.describe(
     test.describe("with cookie preferences set", () => {
       test.beforeEach(async ({ context, baseURL }) => {
         await context.addCookies([
+          // New
           {
             name: cookiePreferencesSetKey,
+            value: "true",
+            domain: getCookieDomainFromBaseUrl(baseURL),
+            path: "/",
+          },
+          // Old
+          {
+            name: cookiePreferencesSetKeyOld,
             value: "true",
             domain: getCookieDomainFromBaseUrl(baseURL),
             path: "/",
@@ -171,7 +180,7 @@ test.describe(
 
       test("visit old page", async ({ page }) => {
         await page.goto(oldPagePath);
-        // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is or not
+        // This is incorrect behaviour - the ds-cookie-consent doesn't display when the cookies_policy only contains some of the expected policies
         await expect(oldCookieBanner(page)).not.toBeVisible();
       });
     });
@@ -195,16 +204,25 @@ test.describe("malformed cookies", { tag: ["@requires-wordpress"] }, () => {
     await expect(getCookieBanner(page)).toBeVisible();
   });
 
-  // test("visit old page", async ({ page }) => {
-  //   await page.goto(oldPagePath);
-  //   await expect(oldCookieBanner(page)).toBeVisible();
-  // });
+  test("visit old page", async ({ page }) => {
+    await page.goto(oldPagePath);
+    // This is incorrect behaviour - the ds-cookie-consent doesn't display when the cookies_policy cookie is malformed
+    await expect(oldCookieBanner(page)).not.toBeVisible();
+  });
 
   test.describe("with cookie preferences set", () => {
     test.beforeEach(async ({ context, baseURL }) => {
       await context.addCookies([
+        // New
         {
           name: cookiePreferencesSetKey,
+          value: "true",
+          domain: getCookieDomainFromBaseUrl(baseURL),
+          path: "/",
+        },
+        // Old
+        {
+          name: cookiePreferencesSetKeyOld,
           value: "true",
           domain: getCookieDomainFromBaseUrl(baseURL),
           path: "/",
@@ -219,7 +237,7 @@ test.describe("malformed cookies", { tag: ["@requires-wordpress"] }, () => {
 
     test("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
-      // This is incorrect behaviour - the ds-cookie-consent doesn't display if dontShowCookieNotice is set, regardless of whether cookies_policy is set or not
+      // This is incorrect behaviour - the ds-cookie-consent should still show even when the cookies_policy cookie is malformed
       await expect(oldCookieBanner(page)).not.toBeVisible();
     });
   });
