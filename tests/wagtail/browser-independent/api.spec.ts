@@ -1,4 +1,6 @@
 import { test, expect } from "@playwright/test";
+import Ajv from "ajv/dist/2020.js";
+import {JsonSchemaValidator} from "../../../lib/validate-json-schema.ts";
 
 const serialisedPageProperties = [
   "id",
@@ -22,91 +24,37 @@ test("pages", async ({ request }) => {
   expect(contentType).toEqual("application/json");
   const jsonContent = await response?.json();
 
-  ["meta", "items"].forEach((property) => {
-    expect(jsonContent).toHaveProperty(property);
+  const [pagesSchemaResponse, pagesItemSchemaResponse] = await Promise.all([
+    fetch(
+      "https://raw.githubusercontent.com/nationalarchives/ds-api-json-schemas/refs/heads/initial-commit/schemas/wagtail/pages.schema.json",
+    ),
+    fetch(
+      "https://raw.githubusercontent.com/nationalarchives/ds-api-json-schemas/refs/heads/initial-commit/schemas/wagtail/pages-item.schema.json",
+    ),
+  ]);
+  const pagesSchema = await pagesSchemaResponse.json();
+  const pagesItemSchema = await pagesItemSchemaResponse.json();
+
+  const ajv = new Ajv();
+  ajv.addSchema(pagesItemSchema);
+  const validate = ajv.compile(pagesSchema);
+  const valid = validate(jsonContent);
+  if (!valid) {
+    console.error(validate.errors);
+  }
+  expect(valid).toBeTruthy();
+});
+
+test("pages 2", async ({ request }) => {
+  const response = await request.get("/api/v2/pages/?format=json");
+  await expect(response).toBeOK();
+  const contentType = await response?.headers()["content-type"];
+  expect(contentType).toEqual("application/json");
+  const jsonContent = await response?.json();
+  const validator = new JsonSchemaValidator();
+  validator.init().then(async () => {
+    await validator.validateData(jsonContent, "pagesSchema");
   });
-
-  ["total_count"].forEach((property) => {
-    expect(jsonContent.meta).toHaveProperty(property);
-  });
-
-  expect(jsonContent.meta.total_count).toBeGreaterThanOrEqual(
-    jsonContent.items.length,
-  );
-
-  if (jsonContent.items.length) {
-    serialisedPageProperties.forEach((property) => {
-      expect(jsonContent.items[0]).toHaveProperty(property);
-    });
-  }
-
-  // Teaser images are optional
-  const pageWithTeaserImage = jsonContent.items.find(
-    (article: any) => article.teaser_image !== null,
-  );
-  if (pageWithTeaserImage) {
-    ["id", "uuid", "title", "description", "jpeg", "webp"].forEach(
-      (property) => {
-        expect(pageWithTeaserImage.teaser_image).toHaveProperty(property);
-      },
-    );
-
-    ["jpeg", "webp"].forEach((imageFormat) => {
-      ["url", "full_url", "width", "height"].forEach((property) => {
-        expect(pageWithTeaserImage.teaser_image[imageFormat]).toHaveProperty(
-          property,
-        );
-      });
-    });
-  }
-
-  if (jsonContent.items.length) {
-    const singleItemResponse = await request.get(
-      `/api/v2/pages/${jsonContent.items[0].id}/?format=json`,
-    );
-    await expect(singleItemResponse).toBeOK();
-    const singleItemJsonContent = await singleItemResponse?.json();
-
-    [
-      "id",
-      "title",
-      "short_title",
-      "global_alert",
-      "type_label",
-      "mourning_notice",
-    ].forEach((property) => {
-      expect(singleItemJsonContent).toHaveProperty(property);
-    });
-
-    expect(singleItemJsonContent).toHaveProperty("meta");
-    [
-      "type",
-      "detail_url",
-      "html_url",
-      "slug",
-      "show_in_menus",
-      "seo_title",
-      "search_description",
-      "first_published_at",
-      "alias_of",
-      "parent",
-      "privacy",
-      "last_published_at",
-      "url",
-      "depth",
-      "page_path",
-      "teaser_text",
-      "teaser_image",
-      "teaser_image_square",
-      "search_image",
-      "twitter_og_title",
-      "twitter_og_description",
-      "twitter_og_image",
-      "breadcrumbs",
-    ].forEach((property) => {
-      expect(singleItemJsonContent.meta).toHaveProperty(property);
-    });
-  }
 });
 
 test("global notifications", async ({ request }) => {
@@ -118,6 +66,18 @@ test("global notifications", async ({ request }) => {
 
   ["global_alert", "mourning_notice"].forEach((property) => {
     expect(jsonContent).toHaveProperty(property);
+  });
+});
+
+test("global notifications 2", async ({ request }) => {
+  const response = await request.get("/api/v2/globals/notifications/?format=json");
+  await expect(response).toBeOK();
+  const contentType = await response?.headers()["content-type"];
+  expect(contentType).toEqual("application/json");
+  const jsonContent = await response?.json();
+  const validator = new JsonSchemaValidator();
+  validator.init().then(async () => {
+    await validator.validateData(jsonContent, "pagesSchema");
   });
 });
 
