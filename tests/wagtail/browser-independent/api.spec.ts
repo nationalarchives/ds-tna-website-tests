@@ -3,24 +3,24 @@ import { JsonSchemaValidator } from "../../../lib/validate-json-schema.ts";
 
 const apiEndpoints = [
   {
-    name: "pages",
+    name: "/pages/",
     url: "/api/v2/pages/?format=json",
-    schemaName: "pages",
+    schema: "pages",
   },
   {
-    name: "page",
+    name: "/pages/3/",
     url: "/api/v2/pages/3/?format=json",
-    schemaName: "page",
+    schema: "page",
   },
   {
-    name: "global notifications",
+    name: "/globals/notifications/",
     url: "/api/v2/globals/notifications/?format=json",
-    schemaName: "globalNotifications",
+    schema: "globalNotifications",
   },
 ];
 
 // test.describe("API endpoint JSON validation", () => {
-apiEndpoints.forEach(({ name, url, schemaName }) => {
+apiEndpoints.forEach(({ name, url, schema }) => {
   test(name, async ({ request }) => {
     const response = await request.get(url);
     await expect(response).toBeOK();
@@ -31,7 +31,7 @@ apiEndpoints.forEach(({ name, url, schemaName }) => {
     await expect(jsonContent).toBeTruthy();
     const validator = new JsonSchemaValidator();
     await validator.init();
-    await validator.validateData(jsonContent, schemaName);
+    await validator.validateData(jsonContent, schema);
   });
 });
 // });
