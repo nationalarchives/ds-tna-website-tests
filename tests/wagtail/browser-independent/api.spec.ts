@@ -1,6 +1,40 @@
 import { test, expect } from "@playwright/test";
-import Ajv from "ajv/dist/2020.js";
-import {JsonSchemaValidator} from "../../../lib/validate-json-schema.ts";
+import { JsonSchemaValidator } from "../../../lib/validate-json-schema.ts";
+
+const apiEndpoints = [
+  {
+    name: "pages",
+    url: "/api/v2/pages/?format=json",
+    schemaName: "pages",
+  },
+  {
+    name: "page",
+    url: "/api/v2/pages/3/?format=json",
+    schemaName: "page",
+  },
+  {
+    name: "global notifications",
+    url: "/api/v2/globals/notifications/?format=json",
+    schemaName: "globalNotifications",
+  },
+];
+
+// test.describe("API endpoint JSON validation", () => {
+apiEndpoints.forEach(({ name, url, schemaName }) => {
+  test(name, async ({ request }) => {
+    const response = await request.get(url);
+    await expect(response).toBeOK();
+    await expect(await response?.headers()["content-type"]).toEqual(
+      "application/json",
+    );
+    const jsonContent = await response?.json();
+    await expect(jsonContent).toBeTruthy();
+    const validator = new JsonSchemaValidator();
+    await validator.init();
+    await validator.validateData(jsonContent, schemaName);
+  });
+});
+// });
 
 const serialisedPageProperties = [
   "id",
@@ -16,70 +50,6 @@ const serialisedPageProperties = [
   "teaser_text",
   "teaser_image",
 ];
-
-test("pages", async ({ request }) => {
-  const response = await request.get("/api/v2/pages/?format=json");
-  await expect(response).toBeOK();
-  const contentType = await response?.headers()["content-type"];
-  expect(contentType).toEqual("application/json");
-  const jsonContent = await response?.json();
-
-  const [pagesSchemaResponse, pagesItemSchemaResponse] = await Promise.all([
-    fetch(
-      "https://raw.githubusercontent.com/nationalarchives/ds-api-json-schemas/refs/heads/initial-commit/schemas/wagtail/pages.schema.json",
-    ),
-    fetch(
-      "https://raw.githubusercontent.com/nationalarchives/ds-api-json-schemas/refs/heads/initial-commit/schemas/wagtail/pages-item.schema.json",
-    ),
-  ]);
-  const pagesSchema = await pagesSchemaResponse.json();
-  const pagesItemSchema = await pagesItemSchemaResponse.json();
-
-  const ajv = new Ajv();
-  ajv.addSchema(pagesItemSchema);
-  const validate = ajv.compile(pagesSchema);
-  const valid = validate(jsonContent);
-  if (!valid) {
-    console.error(validate.errors);
-  }
-  expect(valid).toBeTruthy();
-});
-
-test("pages 2", async ({ request }) => {
-  const response = await request.get("/api/v2/pages/?format=json");
-  await expect(response).toBeOK();
-  const contentType = await response?.headers()["content-type"];
-  expect(contentType).toEqual("application/json");
-  const jsonContent = await response?.json();
-  const validator = new JsonSchemaValidator();
-  validator.init().then(async () => {
-    await validator.validateData(jsonContent, "pagesSchema");
-  });
-});
-
-test("global notifications", async ({ request }) => {
-  const response = await request.get(
-    "/api/v2/globals/notifications/?format=json",
-  );
-  await expect(response).toBeOK();
-  const jsonContent = await response?.json();
-
-  ["global_alert", "mourning_notice"].forEach((property) => {
-    expect(jsonContent).toHaveProperty(property);
-  });
-});
-
-test("global notifications 2", async ({ request }) => {
-  const response = await request.get("/api/v2/globals/notifications/?format=json");
-  await expect(response).toBeOK();
-  const contentType = await response?.headers()["content-type"];
-  expect(contentType).toEqual("application/json");
-  const jsonContent = await response?.json();
-  const validator = new JsonSchemaValidator();
-  validator.init().then(async () => {
-    await validator.validateData(jsonContent, "pagesSchema");
-  });
-});
 
 test("catalogue landing", async ({ request }) => {
   const response = await request.get("/api/v2/catalogue/landing/?format=json");
