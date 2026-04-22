@@ -17,9 +17,23 @@ const apiEndpoints = [
     url: "/api/v2/globals/notifications/?format=json",
     schema: "globalNotifications",
   },
+  {
+    name: "/catalogue/landing/",
+    url: "/api/v2/catalogue/landing/?format=json",
+    schema: "catalogueLanding",
+  },
+  {
+    name: "/events/",
+    url: "/api/v2/events/?format=json",
+    schema: "events",
+  },
+  {
+    name: "/foi/",
+    url: "/api/v2/foi/?format=json",
+    schema: "foi",
+  },
 ];
 
-// test.describe("API endpoint JSON validation", () => {
 apiEndpoints.forEach(({ name, url, schema }) => {
   test(name, async ({ request }) => {
     const response = await request.get(url);
@@ -34,7 +48,6 @@ apiEndpoints.forEach(({ name, url, schema }) => {
     await validator.validateData(jsonContent, schema);
   });
 });
-// });
 
 const serialisedPageProperties = [
   "id",
@@ -51,81 +64,6 @@ const serialisedPageProperties = [
   "teaser_image",
 ];
 
-test("catalogue landing", async ({ request }) => {
-  const response = await request.get("/api/v2/catalogue/landing/?format=json");
-  await expect(response).toBeOK();
-  const jsonContent = await response?.json();
-
-  ["global_alert", "mourning_notice", "explore_the_collection"].forEach(
-    (property) => {
-      expect(jsonContent).toHaveProperty(property);
-    },
-  );
-
-  ["top_pages", "latest_articles"].forEach((property) => {
-    expect(jsonContent.explore_the_collection).toHaveProperty(property);
-  });
-
-  expect(jsonContent.explore_the_collection.top_pages.length).toBeGreaterThan(
-    0,
-  );
-  expect(
-    jsonContent.explore_the_collection.latest_articles.length,
-  ).toBeGreaterThan(0);
-});
-
-test("events", async ({ request }) => {
-  const response = await request.get("/api/v2/events/?format=json");
-  await expect(response).toBeOK();
-  const jsonContent = await response?.json();
-
-  ["meta", "items"].forEach((property) => {
-    expect(jsonContent).toHaveProperty(property);
-  });
-
-  ["total_count"].forEach((property) => {
-    expect(jsonContent.meta).toHaveProperty(property);
-  });
-
-  expect(jsonContent.meta.total_count).toBeGreaterThanOrEqual(
-    jsonContent.items.length,
-  );
-  if (jsonContent.items.length) {
-    [
-      ...serialisedPageProperties,
-      "start_date",
-      "end_date",
-      "min_price",
-      "max_price",
-      "short_location",
-    ].forEach((property) => {
-      expect(jsonContent.items[0]).toHaveProperty(property);
-    });
-  }
-});
-
-test("foi", async ({ request }) => {
-  const response = await request.get("/api/v2/foi/?format=json");
-  await expect(response).toBeOK();
-  const jsonContent = await response?.json();
-
-  ["meta", "items"].forEach((property) => {
-    expect(jsonContent).toHaveProperty(property);
-  });
-
-  ["total_count"].forEach((property) => {
-    expect(jsonContent.meta).toHaveProperty(property);
-  });
-
-  expect(jsonContent.meta.total_count).toBeGreaterThanOrEqual(
-    jsonContent.items.length,
-  );
-  if (jsonContent.items.length) {
-    [...serialisedPageProperties, "date", "reference"].forEach((property) => {
-      expect(jsonContent.items[0]).toHaveProperty(property);
-    });
-  }
-});
 
 test("images", async ({ request }) => {
   const response = await request.get("/api/v2/images/?format=json");

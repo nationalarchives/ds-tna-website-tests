@@ -12,6 +12,10 @@ const schemas = [
     url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/pages.schema.json",
   },
   {
+    name: "pageSummary",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/page-summary.schema.json",
+  },
+  {
     name: "imageRendition",
     url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/image-rendition.schema.json",
   },
@@ -26,6 +30,18 @@ const schemas = [
   {
     name: "mourningNotice",
     url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/mourning-notice.schema.json",
+  },
+  {
+    name: "catalogueLanding",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/catalogue-landing.schema.json",
+  },
+  {
+    name: "events",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/events.schema.json",
+  },
+  {
+    name: "foi",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/foi.schema.json",
   },
 ];
 
