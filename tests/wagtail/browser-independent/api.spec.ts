@@ -8,8 +8,8 @@ const apiEndpoints = [
     schema: "pages",
   },
   {
-    name: "/pages/3/",
-    url: "/api/v2/pages/3/?format=json",
+    name: "/pages/find/?html_path=/",
+    url: "/api/v2/pages/find/?html_path=%2F&format=json",
     schema: "page",
   },
   {
@@ -47,7 +47,12 @@ const apiEndpoints = [
     url: "/api/v2/redirects/?format=json",
     schema: "redirects",
   },
-  // TODO: Single redirect
+  {
+    name: "/redirect/",
+    getUrlFrom: "/api/v2/redirects/?format=json",
+    getUrlKey: "items.0.meta.detail_url",
+    schema: "redirect",
+  },
   {
     name: "/article-tags/",
     url: "/api/v2/article_tags/?tags=medicine&format=json",
@@ -70,10 +75,29 @@ const apiEndpoints = [
   },
 ];
 
-apiEndpoints.forEach(({ name, url, schema }) => {
-  test(name, async ({ request }) => {
-    const response = await request.get(url);
-    await expect(response).toBeOK();
+apiEndpoints.forEach(({ name, url, getUrlFrom, getUrlKey, schema }) => {
+  test(name, async ({ request, baseURL }) => {
+    let response;
+    if (url) {
+      response = await request.get(url);
+    } else if (getUrlFrom && getUrlKey) {
+      const preResponse = await fetch(`${baseURL}${getUrlFrom}`);
+      await expect(preResponse).toBeTruthy();
+      if (preResponse) {
+        const preJsonContent = await preResponse.json();
+        const urlToTest = getUrlKey
+          .split(".")
+          .reduce((obj, key) => obj && obj[key], preJsonContent);
+        console.log(urlToTest);
+        response = await request.get(`${urlToTest}?format=json`);
+      }
+    } else {
+      throw new Error(`Invalid API endpoint configuration for ${name}`);
+    }
+    await expect(response).toBeTruthy();
+    if (response) {
+      await expect(response).toBeOK();
+    }
     await expect(await response?.headers()["content-type"]).toEqual(
       "application/json",
     );
@@ -84,255 +108,3 @@ apiEndpoints.forEach(({ name, url, schema }) => {
     await validator.validateData(jsonContent, schema);
   });
 });
-
-// const serialisedPageProperties = [
-//   "id",
-//   "title",
-//   "short_title",
-//   "page_path",
-//   "url",
-//   "full_url",
-//   "type",
-//   "type_label",
-//   "first_published_at",
-//   "last_published_at",
-//   "teaser_text",
-//   "teaser_image",
-// ];
-
-// test("images", async ({ request }) => {
-//   const response = await request.get("/api/v2/images/?format=json");
-//   await expect(response).toBeOK();
-//   const jsonContent = await response?.json();
-
-//   ["meta", "items"].forEach((property) => {
-//     expect(jsonContent).toHaveProperty(property);
-//   });
-
-//   ["total_count"].forEach((property) => {
-//     expect(jsonContent.meta).toHaveProperty(property);
-//   });
-
-//   expect(jsonContent.meta.total_count).toBeGreaterThanOrEqual(
-//     jsonContent.items.length,
-//   );
-
-//   if (jsonContent.items.length) {
-//     ["id", "title", "tags", "uuid", "jpeg", "webp"].forEach((property) => {
-//       expect(jsonContent.items[0]).toHaveProperty(property);
-//     });
-
-//     ["jpeg", "webp"].forEach((imageFormat) => {
-//       ["url", "full_url", "width", "height"].forEach((property) => {
-//         expect(jsonContent.items[0][imageFormat]).toHaveProperty(property);
-//       });
-//     });
-
-//     const responseSingleItem = await request.get(
-//       `/api/v2/images/${jsonContent.items[0].uuid}/?format=json`,
-//     );
-//     await expect(responseSingleItem).toBeOK();
-//     const singleItemJsonContent = await responseSingleItem?.json();
-
-//     [
-//       "id",
-//       "title",
-//       "width",
-//       "height",
-//       "uuid",
-//       "copyright",
-//       "tags",
-//       "transcription_heading",
-//       "transcription",
-//       "translation_heading",
-//       "translation",
-//       "description",
-//       "jpeg",
-//       "webp",
-//     ].forEach((property) => {
-//       expect(singleItemJsonContent).toHaveProperty(property);
-//     });
-
-//     ["jpeg", "webp"].forEach((imageFormat) => {
-//       ["url", "full_url", "width", "height"].forEach((property) => {
-//         expect(singleItemJsonContent[imageFormat]).toHaveProperty(property);
-//       });
-//     });
-//   }
-// });
-
-// test("media", async ({ request }) => {
-//   const response = await request.get("/api/v2/media/?format=json");
-//   await expect(response).toBeOK();
-//   const jsonContent = await response?.json();
-
-//   ["meta", "items"].forEach((property) => {
-//     expect(jsonContent).toHaveProperty(property);
-//   });
-
-//   ["total_count"].forEach((property) => {
-//     expect(jsonContent.meta).toHaveProperty(property);
-//   });
-
-//   expect(jsonContent.meta.total_count).toBeGreaterThanOrEqual(
-//     jsonContent.items.length,
-//   );
-
-//   if (jsonContent.items.length) {
-//     [
-//       "id",
-//       "meta",
-//       "title",
-//       "width",
-//       "height",
-//       "media_type",
-//       "collection",
-//       "thumbnail",
-//       "uuid",
-//       "chapters",
-//       "subtitles_file",
-//       "subtitles_file_full_url",
-//       "chapters_file",
-//       "chapters_file_full_url",
-//     ].forEach((property) => {
-//       expect(jsonContent.items[0]).toHaveProperty(property);
-//     });
-
-//     const responseSingleItem = await request.get(
-//       `/api/v2/media/${jsonContent.items[0].uuid}/?format=json`,
-//     );
-//     await expect(responseSingleItem).toBeOK();
-//     const singleItemJsonContent = await responseSingleItem?.json();
-
-//     [
-//       "id",
-//       "meta",
-//       "title",
-//       "width",
-//       "height",
-//       "media_type",
-//       "collection",
-//       "uuid",
-//       "url",
-//       "full_url",
-//       "audio_described_file",
-//       "thumbnail",
-//       "date",
-//       "created_at",
-//       "duration",
-//       "subtitles_file",
-//       "subtitles_file_full_url",
-//       "chapters",
-//       "chapters_file",
-//       "chapters_file_full_url",
-//       "mime",
-//       "description",
-//       "transcript",
-//     ].forEach((property) => {
-//       expect(singleItemJsonContent).toHaveProperty(property);
-//     });
-//   }
-// });
-
-// test("redirects", async ({ request }) => {
-//   const response = await request.get("/api/v2/redirects/?format=json");
-//   await expect(response).toBeOK();
-//   const jsonContent = await response?.json();
-
-//   ["meta", "items"].forEach((property) => {
-//     expect(jsonContent).toHaveProperty(property);
-//   });
-
-//   ["total_count"].forEach((property) => {
-//     expect(jsonContent.meta).toHaveProperty(property);
-//   });
-
-//   expect(jsonContent.meta.total_count).toBeGreaterThanOrEqual(
-//     jsonContent.items.length,
-//   );
-
-//   if (jsonContent.items.length) {
-//     ["id", "meta", "old_path", "location", "is_permanent"].forEach(
-//       (property) => {
-//         expect(jsonContent.items[0]).toHaveProperty(property);
-//       },
-//     );
-
-//     const responseSingleItem = await request.get(
-//       `/api/v2/redirects/${jsonContent.items[0].id}/?format=json`,
-//     );
-//     await expect(responseSingleItem).toBeOK();
-//     const singleItemJsonContent = await responseSingleItem?.json();
-
-//     ["id", "meta", "old_path", "location", "is_permanent"].forEach(
-//       (property) => {
-//         expect(singleItemJsonContent).toHaveProperty(property);
-//       },
-//     );
-//   }
-// });
-
-// test("article tags", async ({ request }) => {
-//   const responseEmpty = await request.get("/api/v2/article_tags/?format=json");
-//   await expect(responseEmpty?.status()).toEqual(400);
-
-//   const response = await request.get(
-//     "/api/v2/article_tags/?tags=medicine&format=json",
-//   );
-//   await expect(response).toBeOK();
-
-//   const jsonContent = await response?.json();
-//   expect(jsonContent.length).toBeLessThanOrEqual(3);
-
-//   if (jsonContent.length) {
-//     [...serialisedPageProperties, "is_newly_published"].forEach((property) => {
-//       expect(jsonContent[0]).toHaveProperty(property);
-//     });
-//   }
-// });
-
-// test("blogs", async ({ request }) => {
-//   const response = await request.get("/api/v2/blogs/?format=json");
-//   await expect(response).toBeOK();
-//   const jsonContent = await response?.json();
-
-//   ["meta", "items"].forEach((property) => {
-//     expect(jsonContent).toHaveProperty(property);
-//   });
-
-//   ["total_count"].forEach((property) => {
-//     expect(jsonContent.meta).toHaveProperty(property);
-//   });
-
-//   expect(jsonContent.meta.total_count).toBeGreaterThanOrEqual(
-//     jsonContent.items.length,
-//   );
-//   if (jsonContent.items.length) {
-//     serialisedPageProperties.forEach((property) => {
-//       expect(jsonContent.items[0]).toHaveProperty(property);
-//     });
-//   }
-// });
-
-// test("blogs - index", async ({ request }) => {
-//   const response = await request.get("/api/v2/blogs/index/?format=json");
-//   await expect(response).toBeOK();
-//   const jsonContent = await response?.json();
-
-//   serialisedPageProperties.forEach((property) => {
-//     expect(jsonContent).toHaveProperty(property);
-//   });
-// });
-
-// test("blogs - top", async ({ request }) => {
-//   const response = await request.get("/api/v2/blogs/top/?format=json");
-//   await expect(response).toBeOK();
-//   const jsonContent = await response?.json();
-
-//   expect(jsonContent.length).toBeGreaterThan(0);
-//   if (jsonContent.length) {
-//     serialisedPageProperties.forEach((property) => {
-//       expect(jsonContent[0]).toHaveProperty(property);
-//     });
-//   }
-// });
