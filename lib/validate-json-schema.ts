@@ -4,32 +4,20 @@ import addFormats from "ajv-formats";
 
 const schemas = [
   {
-    name: "page",
-    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/page.schema.json",
+    name: "articleTags",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/article-tags.schema.json",
   },
   {
-    name: "pages",
-    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/pages.schema.json",
+    name: "blogsIndex",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/blogs-index.schema.json",
   },
   {
-    name: "pageSummary",
-    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/page-summary.schema.json",
+    name: "blogsTop",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/blogs-top.schema.json",
   },
   {
-    name: "imageRendition",
-    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/image-rendition.schema.json",
-  },
-  {
-    name: "globalNotifications",
-    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/global-notifications.schema.json",
-  },
-  {
-    name: "globalAlert",
-    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/global-alert.schema.json",
-  },
-  {
-    name: "mourningNotice",
-    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/mourning-notice.schema.json",
+    name: "blogs",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/blogs.schema.json",
   },
   {
     name: "catalogueLanding",
@@ -42,6 +30,58 @@ const schemas = [
   {
     name: "foi",
     url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/foi.schema.json",
+  },
+  {
+    name: "globalAlert",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/global-alert.schema.json",
+  },
+  {
+    name: "globalNotifications",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/global-notifications.schema.json",
+  },
+  {
+    name: "imageRendition",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/image-rendition.schema.json",
+  },
+  {
+    name: "image",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/image.schema.json",
+  },
+  {
+    name: "images",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/images.schema.json",
+  },
+  {
+    name: "media",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/media.schema.json",
+  },
+  {
+    name: "medias",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/medias.schema.json",
+  },
+  {
+    name: "mourningNotice",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/mourning-notice.schema.json",
+  },
+  {
+    name: "pageSummary",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/page-summary.schema.json",
+  },
+  {
+    name: "page",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/page.schema.json",
+  },
+  {
+    name: "pages",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/pages.schema.json",
+  },
+  {
+    name: "redirect",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/redirect.schema.json",
+  },
+  {
+    name: "redirects",
+    url: "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/feature/json-schemas/schemas/redirects.schema.json",
   },
 ];
 
@@ -57,7 +97,8 @@ class JsonSchemaValidator {
     }
     this.schemas = await Promise.all(
       schemas.map(async ({ name, url }) => {
-        const response = await fetch(url);
+        const response = await fetch(`${url}?buster=${Date.now()}`);
+        console.log(response);
         const schema = await response.json();
         return { name, url, schema };
       }),
