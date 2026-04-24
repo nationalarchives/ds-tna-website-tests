@@ -47,12 +47,12 @@ const apiEndpoints = [
     url: "/api/v2/redirects/?format=json",
     schema: "redirects",
   },
-  {
-    name: "/redirect/",
-    getUrlFrom: "/api/v2/redirects/?format=json",
-    getUrlKey: "items.0.meta.detail_url",
-    schema: "redirect",
-  },
+  // {
+  //   name: "/redirect/",
+  //   getUrlFrom: "/api/v2/redirects/?format=json",
+  //   getUrlKey: "items.0.meta.detail_url",
+  //   schema: "redirect",
+  // },
   {
     name: "/article-tags/",
     url: "/api/v2/article_tags/?tags=medicine&format=json",
