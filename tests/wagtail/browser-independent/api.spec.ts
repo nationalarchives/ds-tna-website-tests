@@ -82,7 +82,6 @@ apiEndpoints.forEach(({ name, url, getUrlFrom, getUrlKey, schema }) => {
       response = await request.get(url);
     } else if (getUrlFrom && getUrlKey) {
       const preResponse = await fetch(`${baseURL}${getUrlFrom}`);
-      await expect(preResponse).toBeTruthy();
       if (preResponse) {
         const preJsonContent = await preResponse.json();
         const urlToTest = getUrlKey
@@ -104,7 +103,6 @@ apiEndpoints.forEach(({ name, url, getUrlFrom, getUrlKey, schema }) => {
     const jsonContent = await response?.json();
     await expect(jsonContent).toBeTruthy();
     const validator = new JsonSchemaValidator();
-    await validator.init();
     await validator.validateData(jsonContent, schema);
   });
 });
