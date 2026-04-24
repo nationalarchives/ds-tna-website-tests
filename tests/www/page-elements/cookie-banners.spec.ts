@@ -53,7 +53,7 @@ test.describe("no existing cookies", { tag: ["@requires-wordpress"] }, () => {
     await expect(getCookieBanner(page)).toBeVisible();
     await page.getByRole("button", { name: "Accept cookies" }).click();
     await page.goto(oldPagePath);
-    await expect(oldCookieBanner(page)).toBeVisible();
+    await expect(oldCookieBanner(page)).not.toBeVisible();
   });
 
   test("reject on new page then visit old page", async ({ page }) => {
@@ -61,7 +61,7 @@ test.describe("no existing cookies", { tag: ["@requires-wordpress"] }, () => {
     await expect(getCookieBanner(page)).toBeVisible();
     await page.getByRole("button", { name: "Reject cookies" }).click();
     await page.goto(oldPagePath);
-    await expect(oldCookieBanner(page)).toBeVisible();
+    await expect(oldCookieBanner(page)).not.toBeVisible();
   });
 
   test("don't interact on new page, don't interact on old page then return to new page", async ({
@@ -118,7 +118,7 @@ test.describe("no existing cookies", { tag: ["@requires-wordpress"] }, () => {
 
     test("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
-      await expect(oldCookieBanner(page)).toBeVisible();
+      await expect(oldCookieBanner(page)).not.toBeVisible();
     });
   });
 });
