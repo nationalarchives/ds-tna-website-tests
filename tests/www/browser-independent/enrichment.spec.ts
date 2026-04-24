@@ -8,6 +8,8 @@ test("logo adornments CSS", async ({ page }) => {
   await expect(response?.ok()).toBeTruthy();
   const contentType = await response?.headerValue("content-type");
   expect(contentType).toEqual("text/css; charset=UTF-8");
+  const corsHeader = await response?.headerValue("Access-Control-Allow-Origin");
+  expect(corsHeader).toEqual("*");
 });
 
 test("logo adornments JS", async ({ page }) => {
@@ -15,4 +17,6 @@ test("logo adornments JS", async ({ page }) => {
   await expect(response?.ok()).toBeTruthy();
   const contentType = await response?.headerValue("content-type");
   expect(contentType).toEqual("text/javascript; charset=UTF-8");
+  const corsHeader = await response?.headerValue("Access-Control-Allow-Origin");
+  expect(corsHeader).toEqual("*");
 });
