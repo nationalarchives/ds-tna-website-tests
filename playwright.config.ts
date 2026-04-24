@@ -3,7 +3,7 @@ require("dotenv").config({ quiet: true });
 
 const browserIndependentTests = ["browser-independent/**/*.spec.ts"];
 
-export const cookiePreferencesSetKey = "cookie_preferences_set";
+export const cookiePreferencesSetKey = "dontShowCookieNotice";
 export const cookiePreferencesSetKeyOld = "dontShowCookieNotice";
 
 const extraHTTPHeaders: { [key: string]: string } = {};
