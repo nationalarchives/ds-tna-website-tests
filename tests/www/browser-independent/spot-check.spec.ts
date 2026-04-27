@@ -25,7 +25,7 @@ const urlsToTest: SpotCheck[] = [
   { url: "/whats-on/events/" },
   // { url: "/whats-on/exhibitions/" },
   // { url: "/professional-guidance-and-services/" },
-  // { url: "/professional-guidance-and-services/our-research-and-academic-collaboration/our-research-projects/our-current-projects/" },
+  // { url: "/professional-guidance-and-services/our-research-and-academic-collaboration/our-research-projects/" },
   { url: "/request-a-military-service-record/" },
 ];
 

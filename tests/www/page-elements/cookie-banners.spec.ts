@@ -4,11 +4,10 @@ import {
   cookiePreferencesSetKeyOld,
 } from "../../../playwright.config.ts";
 import getCookieDomainFromBaseUrl from "../../../lib/domains.ts";
+import { getCookieBanner } from "../../../lib/set-cookie-preferences.ts";
 
-const newPagePath = "/";
-const getCookieBanner = (page: Page) =>
-  page.getByRole("region", { name: "Cookies on The National Archives" });
-const oldPagePath = "/contact-us/";
+const newPagePath = "/"; // New frontend page
+const oldPagePath = "/contact-us/"; // WordPress page
 const oldCookieBanner = (page: Page) => getCookieBanner(page);
 
 test.beforeEach(async ({ context }) => {

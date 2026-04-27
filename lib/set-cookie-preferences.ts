@@ -1,4 +1,4 @@
-import { test, BrowserContext } from "@playwright/test";
+import { test, BrowserContext, Page } from "@playwright/test";
 import getCookieDomainFromBaseUrl from "./domains.ts";
 import { cookiePreferencesSetKey } from "../playwright.config.ts";
 
@@ -43,4 +43,12 @@ const declineAllCookies = () => {
   });
 };
 
-export { acceptAllCookies, declineAllCookies, setCookiePolicy };
+const getCookieBanner = (page: Page) =>
+  page.getByRole("region", { name: "Cookies on The National Archives" });
+
+export {
+  getCookieBanner,
+  acceptAllCookies,
+  declineAllCookies,
+  setCookiePolicy,
+};
