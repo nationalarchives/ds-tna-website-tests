@@ -2,16 +2,48 @@ import { test, expect, Cookie, Page } from "@playwright/test";
 import {
   acceptAllCookies,
   declineAllCookies,
+  getCookieBanner,
 } from "../../lib/set-cookie-preferences.ts";
 
 import { cookiePreferencesSetKey } from "../../playwright.config.ts";
 
-test.describe("no cookie policy set", { tag: ["@wip"] }, () => {
+test.describe("initial state", () => {
   test.beforeEach(async ({ context }) => {
     await context.clearCookies();
   });
 
-  test("cookies landing page", async ({ context, page }) => {
+  test("continue to show cookie banners if preferences not changed", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(getCookieBanner(page)).toBeVisible();
+    await page.goto("/cookies/");
+    await expect(getCookieBanner(page)).not.toBeVisible();
+    await page.goto("/");
+    await expect(getCookieBanner(page)).toBeVisible();
+    await page.goto("/contact-us/"); // WordPress page
+    await expect(getCookieBanner(page)).toBeVisible();
+  });
+
+  test("hide cookie banners after changing preferences", async ({ page }) => {
+    await page.goto("/");
+    await expect(getCookieBanner(page)).toBeVisible();
+    await page.goto("/cookies/");
+    await expect(getCookieBanner(page)).not.toBeVisible();
+    await page.getByRole("button", { name: "Save changes" }).click();
+    await page.goto("/");
+    await expect(getCookieBanner(page)).not.toBeVisible();
+    await page.goto("/contact-us/"); // WordPress page
+    await expect(getCookieBanner(page)).not.toBeVisible();
+  });
+});
+
+test.describe("no cookie policy set", () => {
+  test.beforeEach(async ({ context }) => {
+    await context.clearCookies();
+  });
+
+  test("setting cookie preferences", async ({ context, page }) => {
     page.route("**", (route) => route.continue());
 
     const response = await page.goto("/cookies/");
@@ -166,7 +198,7 @@ test.describe("no cookie policy set", { tag: ["@wip"] }, () => {
   });
 });
 
-test.describe("previously accepted cookies", { tag: ["@wip"] }, () => {
+test.describe("previously accepted cookies", () => {
   acceptAllCookies();
 
   test("cookies landing page", async ({ context, page }) => {
@@ -231,7 +263,7 @@ test.describe("previously accepted cookies", { tag: ["@wip"] }, () => {
   });
 });
 
-test.describe("previously declined cookies", { tag: ["@wip"] }, () => {
+test.describe("previously declined cookies", () => {
   declineAllCookies();
 
   test("cookies landing page", async ({ context, page }) => {
