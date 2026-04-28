@@ -7,7 +7,7 @@ import {
 
 import { cookiePreferencesSetKey } from "../../playwright.config.ts";
 
-test.describe("initial state", () => {
+test.describe("initial state", { tag: ["@www"] }, () => {
   test.beforeEach(async ({ context }) => {
     await context.clearCookies();
   });
@@ -38,7 +38,7 @@ test.describe("initial state", () => {
   });
 });
 
-test.describe("no cookie policy set", () => {
+test.describe("no cookie policy set", { tag: ["@www"] }, () => {
   test.beforeEach(async ({ context }) => {
     await context.clearCookies();
   });
@@ -198,7 +198,7 @@ test.describe("no cookie policy set", () => {
   });
 });
 
-test.describe("previously accepted cookies", () => {
+test.describe("previously accepted cookies", { tag: ["@www"] }, () => {
   acceptAllCookies();
 
   test("cookies landing page", async ({ context, page }) => {
@@ -263,7 +263,7 @@ test.describe("previously accepted cookies", () => {
   });
 });
 
-test.describe("previously declined cookies", () => {
+test.describe("previously declined cookies", { tag: ["@www"] }, () => {
   declineAllCookies();
 
   test("cookies landing page", async ({ context, page }) => {

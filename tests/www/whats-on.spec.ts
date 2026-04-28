@@ -5,7 +5,7 @@ import checkAccessibility from "../lib/check-accessibility.ts";
 
 acceptAllCookies();
 
-test("event page", async ({ page }) => {
+test("event page", { tag: ["@www"] }, async ({ page }) => {
   const response = await page.goto("/whats-on/events/");
   await expect(response?.ok()).toBeTruthy();
 
@@ -16,7 +16,7 @@ test("event page", async ({ page }) => {
   await checkAccessibility(page);
 });
 
-// test("exhibition page", async ({ page }) => {
+// test("exhibition page", {tag: ["@www"]}, async ({ page }) => {
 //   const response = await page.goto("/whats-on/exhibitions/");
 //         await expect(response?.ok()).toBeTruthy();
 

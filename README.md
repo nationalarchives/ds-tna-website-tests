@@ -38,6 +38,9 @@ These tests include checking redirects, content on the page, the validitiy of HT
 | --------------------- | ----------------------------------- |
 | `@wip`                | Tests that aren't run in the CI     |
 | `@requires-wordpress` | Tests that require WordPress to run |
+| `@www`                | Main site tests                     |
+| `@beta`               | Beta site tests                     |
+| `@wagtail`            | Wagtail tests                       |
 
 ## Updating Playwright
 

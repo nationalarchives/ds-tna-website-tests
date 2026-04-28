@@ -4,13 +4,17 @@ import { acceptAllCookies } from "../lib/set-cookie-preferences.ts";
 
 acceptAllCookies();
 
-test("explore the collection home page", async ({ page }) => {
-  const response = await page.goto("/explore-the-collection/");
-  await expect(response?.ok()).toBeTruthy();
-  await expect(page.locator("h1")).toHaveText(/Explore the collection/);
-});
+test(
+  "explore the collection home page",
+  { tag: ["@www"] },
+  async ({ page }) => {
+    const response = await page.goto("/explore-the-collection/");
+    await expect(response?.ok()).toBeTruthy();
+    await expect(page.locator("h1")).toHaveText(/Explore the collection/);
+  },
+);
 
-test("search explore the collection", async ({ page }) => {
+test("search explore the collection", { tag: ["@www"] }, async ({ page }) => {
   const response = await page.goto("/explore-the-collection/search/");
   await expect(response?.ok()).toBeTruthy();
   await expect(page.locator("h1")).toHaveText(/Search Explore the collection/);

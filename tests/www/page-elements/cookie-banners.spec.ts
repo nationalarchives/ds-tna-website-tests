@@ -39,92 +39,96 @@ test.beforeEach(async ({ context }) => {
 //   }
 // });
 
-test.describe("no existing cookies", { tag: ["@requires-wordpress"] }, () => {
-  test("don't interact on new page then visit old page", async ({ page }) => {
-    await page.goto(newPagePath);
-    await expect(getCookieBanner(page)).toBeVisible();
-    await page.goto(oldPagePath);
-    await expect(oldCookieBanner(page)).toBeVisible();
-  });
-
-  test("accept on new page then visit old page", async ({ page }) => {
-    await page.goto(newPagePath);
-    await expect(getCookieBanner(page)).toBeVisible();
-    await page.getByRole("button", { name: "Accept cookies" }).click();
-    await page.goto(oldPagePath);
-    await expect(oldCookieBanner(page)).not.toBeVisible();
-  });
-
-  test("reject on new page then visit old page", async ({ page }) => {
-    await page.goto(newPagePath);
-    await expect(getCookieBanner(page)).toBeVisible();
-    await page.getByRole("button", { name: "Reject cookies" }).click();
-    await page.goto(oldPagePath);
-    await expect(oldCookieBanner(page)).not.toBeVisible();
-  });
-
-  test("don't interact on new page, don't interact on old page then return to new page", async ({
-    page,
-  }) => {
-    await page.goto(newPagePath);
-    await expect(getCookieBanner(page)).toBeVisible();
-    await page.goto(oldPagePath);
-    await expect(oldCookieBanner(page)).toBeVisible();
-    await page.goto(newPagePath);
-    await expect(getCookieBanner(page)).toBeVisible();
-  });
-
-  test("visit new page, accept on old page then return to new page", async ({
-    page,
-  }) => {
-    await page.goto(newPagePath);
-    await expect(getCookieBanner(page)).toBeVisible();
-    await page.goto(oldPagePath);
-    await expect(oldCookieBanner(page)).toBeVisible();
-    await page.getByRole("button", { name: "Accept cookies" }).click();
-    await page.goto(newPagePath);
-    await expect(getCookieBanner(page)).toBeVisible();
-  });
-
-  test("visit new page, reject on old page then return to new page", async ({
-    page,
-  }) => {
-    await page.goto(newPagePath);
-    await expect(getCookieBanner(page)).toBeVisible();
-    await page.goto(oldPagePath);
-    await expect(oldCookieBanner(page)).toBeVisible();
-    await page.getByRole("button", { name: "Reject cookies" }).click();
-    await page.goto(newPagePath);
-    await expect(getCookieBanner(page)).toBeVisible();
-  });
-
-  test.describe("with cookie preferences set", () => {
-    test.beforeEach(async ({ context, baseURL }) => {
-      await context.addCookies([
-        {
-          name: cookiePreferencesSetKey,
-          value: "true",
-          domain: getCookieDomainFromBaseUrl(baseURL),
-          path: "/",
-        },
-      ]);
+test.describe(
+  "no existing cookies",
+  { tag: ["@www", "@requires-wordpress"] },
+  () => {
+    test("don't interact on new page then visit old page", async ({ page }) => {
+      await page.goto(newPagePath);
+      await expect(getCookieBanner(page)).toBeVisible();
+      await page.goto(oldPagePath);
+      await expect(oldCookieBanner(page)).toBeVisible();
     });
 
-    test("visit new page", async ({ page }) => {
+    test("accept on new page then visit old page", async ({ page }) => {
+      await page.goto(newPagePath);
+      await expect(getCookieBanner(page)).toBeVisible();
+      await page.getByRole("button", { name: "Accept cookies" }).click();
+      await page.goto(oldPagePath);
+      await expect(oldCookieBanner(page)).not.toBeVisible();
+    });
+
+    test("reject on new page then visit old page", async ({ page }) => {
+      await page.goto(newPagePath);
+      await expect(getCookieBanner(page)).toBeVisible();
+      await page.getByRole("button", { name: "Reject cookies" }).click();
+      await page.goto(oldPagePath);
+      await expect(oldCookieBanner(page)).not.toBeVisible();
+    });
+
+    test("don't interact on new page, don't interact on old page then return to new page", async ({
+      page,
+    }) => {
+      await page.goto(newPagePath);
+      await expect(getCookieBanner(page)).toBeVisible();
+      await page.goto(oldPagePath);
+      await expect(oldCookieBanner(page)).toBeVisible();
       await page.goto(newPagePath);
       await expect(getCookieBanner(page)).toBeVisible();
     });
 
-    test("visit old page", async ({ page }) => {
+    test("visit new page, accept on old page then return to new page", async ({
+      page,
+    }) => {
+      await page.goto(newPagePath);
+      await expect(getCookieBanner(page)).toBeVisible();
       await page.goto(oldPagePath);
-      await expect(oldCookieBanner(page)).not.toBeVisible();
+      await expect(oldCookieBanner(page)).toBeVisible();
+      await page.getByRole("button", { name: "Accept cookies" }).click();
+      await page.goto(newPagePath);
+      await expect(getCookieBanner(page)).toBeVisible();
     });
-  });
-});
+
+    test("visit new page, reject on old page then return to new page", async ({
+      page,
+    }) => {
+      await page.goto(newPagePath);
+      await expect(getCookieBanner(page)).toBeVisible();
+      await page.goto(oldPagePath);
+      await expect(oldCookieBanner(page)).toBeVisible();
+      await page.getByRole("button", { name: "Reject cookies" }).click();
+      await page.goto(newPagePath);
+      await expect(getCookieBanner(page)).toBeVisible();
+    });
+
+    test.describe("with cookie preferences set", () => {
+      test.beforeEach(async ({ context, baseURL }) => {
+        await context.addCookies([
+          {
+            name: cookiePreferencesSetKey,
+            value: "true",
+            domain: getCookieDomainFromBaseUrl(baseURL),
+            path: "/",
+          },
+        ]);
+      });
+
+      test("visit new page", async ({ page }) => {
+        await page.goto(newPagePath);
+        await expect(getCookieBanner(page)).toBeVisible();
+      });
+
+      test("visit old page", async ({ page }) => {
+        await page.goto(oldPagePath);
+        await expect(oldCookieBanner(page)).not.toBeVisible();
+      });
+    });
+  },
+);
 
 test.describe(
   "partial existing cookies",
-  { tag: ["@requires-wordpress"] },
+  { tag: ["@www", "@requires-wordpress"] },
   () => {
     test("visit new page", async ({ page, context, baseURL }) => {
       await context.addCookies([
@@ -186,43 +190,15 @@ test.describe(
   },
 );
 
-test.describe("malformed cookies", { tag: ["@requires-wordpress"] }, () => {
-  test.beforeEach(async ({ context, baseURL }) => {
-    await context.addCookies([
-      {
-        name: "cookies_policy",
-        value: "foobar",
-        domain: getCookieDomainFromBaseUrl(baseURL),
-        path: "/",
-      },
-    ]);
-  });
-
-  test("visit new page", async ({ page }) => {
-    await page.goto(newPagePath);
-    await expect(getCookieBanner(page)).toBeVisible();
-  });
-
-  test("visit old page", async ({ page }) => {
-    await page.goto(oldPagePath);
-    // This is incorrect behaviour - the ds-cookie-consent doesn't display when the cookies_policy cookie is malformed
-    await expect(oldCookieBanner(page)).not.toBeVisible();
-  });
-
-  test.describe("with cookie preferences set", () => {
+test.describe(
+  "malformed cookies",
+  { tag: ["@www", "@requires-wordpress"] },
+  () => {
     test.beforeEach(async ({ context, baseURL }) => {
       await context.addCookies([
-        // New
         {
-          name: cookiePreferencesSetKey,
-          value: "true",
-          domain: getCookieDomainFromBaseUrl(baseURL),
-          path: "/",
-        },
-        // Old
-        {
-          name: cookiePreferencesSetKeyOld,
-          value: "true",
+          name: "cookies_policy",
+          value: "foobar",
           domain: getCookieDomainFromBaseUrl(baseURL),
           path: "/",
         },
@@ -236,8 +212,40 @@ test.describe("malformed cookies", { tag: ["@requires-wordpress"] }, () => {
 
     test("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
-      // This is incorrect behaviour - the ds-cookie-consent should still show even when the cookies_policy cookie is malformed
+      // This is incorrect behaviour - the ds-cookie-consent doesn't display when the cookies_policy cookie is malformed
       await expect(oldCookieBanner(page)).not.toBeVisible();
     });
-  });
-});
+
+    test.describe("with cookie preferences set", () => {
+      test.beforeEach(async ({ context, baseURL }) => {
+        await context.addCookies([
+          // New
+          {
+            name: cookiePreferencesSetKey,
+            value: "true",
+            domain: getCookieDomainFromBaseUrl(baseURL),
+            path: "/",
+          },
+          // Old
+          {
+            name: cookiePreferencesSetKeyOld,
+            value: "true",
+            domain: getCookieDomainFromBaseUrl(baseURL),
+            path: "/",
+          },
+        ]);
+      });
+
+      test("visit new page", async ({ page }) => {
+        await page.goto(newPagePath);
+        await expect(getCookieBanner(page)).toBeVisible();
+      });
+
+      test("visit old page", async ({ page }) => {
+        await page.goto(oldPagePath);
+        // This is incorrect behaviour - the ds-cookie-consent should still show even when the cookies_policy cookie is malformed
+        await expect(oldCookieBanner(page)).not.toBeVisible();
+      });
+    });
+  },
+);

@@ -7,7 +7,7 @@ acceptAllCookies();
 // Increase the retry count for this test suite - Rosetta may be flaky
 test.describe.configure({ retries: 5 });
 
-test("search for records", async ({ page }) => {
+test("search for records", { tag: ["@beta"] }, async ({ page }) => {
   test.slow();
 
   const response = await page.goto("/catalogue/");
@@ -46,29 +46,33 @@ test("search for records", async ({ page }) => {
   );
 });
 
-test("view the details of a record from a search and return to the same search results", async ({
-  page,
-}) => {
-  test.slow();
+test(
+  "view the details of a record from a search and return to the same search results",
+  { tag: ["@beta"] },
+  async ({ page }) => {
+    test.slow();
 
-  const response = await page.goto("/catalogue/search/?q=ufos&display=grid");
-  await expect(response?.ok()).toBeTruthy();
-  await expect(page.locator(".etna-results")).toBeVisible();
-  await page.locator(".etna-results").getByRole("link").first().click();
+    const response = await page.goto("/catalogue/search/?q=ufos&display=grid");
+    await expect(response?.ok()).toBeTruthy();
+    await expect(page.locator(".etna-results")).toBeVisible();
+    await page.locator(".etna-results").getByRole("link").first().click();
 
-  await expect(page).toHaveURL(new RegExp("/catalogue/id/"));
-  await expect(page).toHaveURL(/\?search=/);
-  await expect(page.locator("h1")).not.toBeEmpty();
+    await expect(page).toHaveURL(new RegExp("/catalogue/id/"));
+    await expect(page).toHaveURL(/\?search=/);
+    await expect(page.locator("h1")).not.toBeEmpty();
 
-  await expect(
-    page.getByRole("link", { name: "Back to search results" }),
-  ).toBeVisible();
-  await page.getByRole("link", { name: "Back to search results" }).click();
-  await expect(page.getByLabel("Catalogue search results")).toHaveValue("ufos");
-  await expect(page).toHaveURL(/(&|\?)display=grid/);
-});
+    await expect(
+      page.getByRole("link", { name: "Back to search results" }),
+    ).toBeVisible();
+    await page.getByRole("link", { name: "Back to search results" }).click();
+    await expect(page.getByLabel("Catalogue search results")).toHaveValue(
+      "ufos",
+    );
+    await expect(page).toHaveURL(/(&|\?)display=grid/);
+  },
+);
 
-test("record details page", async ({ page }) => {
+test("record details page", { tag: ["@beta"] }, async ({ page }) => {
   test.slow();
 
   const response = await page.goto("/catalogue/id/C4/");
@@ -82,7 +86,7 @@ test("record details page", async ({ page }) => {
   await expect(page.locator("#record-details-list")).toBeVisible();
 });
 
-test("record details page accordion", async ({ page }) => {
+test("record details page accordion", { tag: ["@beta"] }, async ({ page }) => {
   test.slow();
 
   const response = await page.goto("/catalogue/id/C4/");
@@ -93,19 +97,23 @@ test("record details page accordion", async ({ page }) => {
   await expect(page.locator(".record-hierarchy")).toBeVisible();
 });
 
-test("record details page field descriptions", async ({ page }) => {
-  test.slow();
+test(
+  "record details page field descriptions",
+  { tag: ["@beta"] },
+  async ({ page }) => {
+    test.slow();
 
-  const response = await page.goto("/catalogue/id/C4/");
-  await expect(response?.ok()).toBeTruthy();
+    const response = await page.goto("/catalogue/id/C4/");
+    await expect(response?.ok()).toBeTruthy();
 
-  if (await page.locator(".record-details__description").count()) {
-    await expect(
-      page.locator(".record-details__description").first(),
-    ).toBeVisible();
-    await page.locator('label[for="field-descriptions"]').click();
-    await expect(
-      page.locator(".record-details__description").first(),
-    ).not.toBeVisible();
-  }
-});
+    if (await page.locator(".record-details__description").count()) {
+      await expect(
+        page.locator(".record-details__description").first(),
+      ).toBeVisible();
+      await page.locator('label[for="field-descriptions"]').click();
+      await expect(
+        page.locator(".record-details__description").first(),
+      ).not.toBeVisible();
+    }
+  },
+);

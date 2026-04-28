@@ -3,7 +3,7 @@ import { acceptAllCookies } from "../lib/set-cookie-preferences.ts";
 
 acceptAllCookies();
 
-test("search for a page", async ({ page }) => {
+test("search for a page", { tag: ["@beta"] }, async ({ page }) => {
   test.slow();
 
   const response = await page.goto("/search/");

@@ -1,13 +1,17 @@
 import { test, expect } from "@playwright/test";
 
-test("redirect /sitemaps/ to main XML sitemap", async ({ page }) => {
-  const response = await page.goto("/sitemaps/");
-  await expect(response?.ok()).toBeTruthy();
-  const contentType = await response?.headerValue("content-type");
-  expect(contentType).toEqual("application/xml; charset=utf-8");
-});
+test(
+  "redirect /sitemaps/ to main XML sitemap",
+  { tag: ["@www"] },
+  async ({ page }) => {
+    const response = await page.goto("/sitemaps/");
+    await expect(response?.ok()).toBeTruthy();
+    const contentType = await response?.headerValue("content-type");
+    expect(contentType).toEqual("application/xml; charset=utf-8");
+  },
+);
 
-test("main sitemap", async ({ page, context, baseURL }) => {
+test("main sitemap", { tag: ["@www"] }, async ({ page, context, baseURL }) => {
   context.route("**/*.xsl", (route) => route.abort());
   const response = await page.goto("/sitemap.xml");
   await expect(response?.ok()).toBeTruthy();
@@ -22,18 +26,24 @@ test("main sitemap", async ({ page, context, baseURL }) => {
   // }
 });
 
-test("first dynamic pages sitemap", async ({ page, context, baseURL }) => {
-  context.route("**/*.xsl", (route) => route.abort());
-  const response = await page.goto("/sitemaps/sitemap_1.xml");
-  await expect(response?.ok()).toBeTruthy();
-  const contentType = await response?.headerValue("content-type");
-  expect(contentType).toEqual("application/xml; charset=utf-8");
-  const xmlContent = await response?.text();
-  expect(xmlContent).toContain(`<loc>${baseURL}/</loc>`);
-  expect(xmlContent).toContain(`<loc>${baseURL}/explore-the-collection/</loc>`);
-});
+test(
+  "first dynamic pages sitemap",
+  { tag: ["@www"] },
+  async ({ page, context, baseURL }) => {
+    context.route("**/*.xsl", (route) => route.abort());
+    const response = await page.goto("/sitemaps/sitemap_1.xml");
+    await expect(response?.ok()).toBeTruthy();
+    const contentType = await response?.headerValue("content-type");
+    expect(contentType).toEqual("application/xml; charset=utf-8");
+    const xmlContent = await response?.text();
+    expect(xmlContent).toContain(`<loc>${baseURL}/</loc>`);
+    expect(xmlContent).toContain(
+      `<loc>${baseURL}/explore-the-collection/</loc>`,
+    );
+  },
+);
 
-test("non-existant Wagtail sitemap", async ({ page }) => {
+test("non-existant Wagtail sitemap", { tag: ["@www"] }, async ({ page }) => {
   const response = await page.goto("/sitemaps/sitemap_99999.xml");
   await expect(response?.status()).toEqual(404);
   const contentType = await response?.headerValue("content-type");
@@ -45,7 +55,7 @@ test("non-existant Wagtail sitemap", async ({ page }) => {
 
 test(
   "WordPress sitemap index",
-  { tag: ["@requires-wordpress"] },
+  { tag: ["@www", "@requires-wordpress"] },
   async ({ page, context }) => {
     context.route("**/*.xsl", (route) => route.abort());
     const response = await page.goto("/sitemap_index.xml");
@@ -57,7 +67,7 @@ test(
 
 test(
   "WordPress page sitemap 1",
-  { tag: ["@requires-wordpress"] },
+  { tag: ["@www", "@requires-wordpress"] },
   async ({ page, context }) => {
     context.route("**/*.xsl", (route) => route.abort());
     const response = await page.goto("/page-sitemap.xml");

@@ -76,7 +76,7 @@ const apiEndpoints = [
 ];
 
 apiEndpoints.forEach(({ name, url, getUrlFrom, getUrlKey, schema }) => {
-  test(name, async ({ request, baseURL }) => {
+  test(name, { tag: ["@wagtail"] }, async ({ request, baseURL }) => {
     let response;
     if (url) {
       response = await request.get(url);

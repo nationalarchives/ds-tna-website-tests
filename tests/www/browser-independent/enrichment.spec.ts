@@ -3,7 +3,7 @@ import { acceptAllCookies } from "../../lib/set-cookie-preferences.ts";
 
 acceptAllCookies();
 
-test("logo adornments CSS", async ({ page }) => {
+test("logo adornments CSS", { tag: ["@www"] }, async ({ page }) => {
   const response = await page.goto("/enrichment/css/logo-adornments.css");
   await expect(response?.ok()).toBeTruthy();
   const contentType = await response?.headerValue("content-type");
@@ -12,7 +12,7 @@ test("logo adornments CSS", async ({ page }) => {
   expect(corsHeader).toEqual("*");
 });
 
-test("logo adornments JS", async ({ page }) => {
+test("logo adornments JS", { tag: ["@www"] }, async ({ page }) => {
   const response = await page.goto("/enrichment/js/logo-adornments.js");
   await expect(response?.ok()).toBeTruthy();
   const contentType = await response?.headerValue("content-type");

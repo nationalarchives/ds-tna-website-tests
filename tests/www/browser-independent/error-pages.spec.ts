@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import validateHtml from "../../lib/validate-html";
 import checkAccessibility from "../../lib/check-accessibility";
 
-test("page not found error page", async ({ page }) => {
+test("page not found error page", { tag: ["@www"] }, async ({ page }) => {
   const response = await page.goto("/foobar/");
   await expect(response?.status()).toEqual(404);
   await expect(page).toHaveTitle("Page not found - The National Archives");
