@@ -11,8 +11,7 @@ if (process.env.TEST_ACCESS_HEADER) {
 
 let baseURL: string = "https://www.nationalarchives.gov.uk";
 let betaBaseURL: string = "https://beta.nationalarchives.gov.uk";
-let wagtailApiBaseURL: string =
-  "https://wagtail.nationalarchives.gov.uk/api/v2";
+let wagtailApiBaseURL: string = "https://wagtail.nationalarchives.gov.uk";
 let wagtailSchemaBaseURL: string =
   "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/main/schemas";
 
@@ -20,25 +19,25 @@ switch (process.env.ENVIRONMENT) {
   case "localhost":
     baseURL = "https://localhost";
     betaBaseURL = "https://localhost";
-    wagtailApiBaseURL = "https://wagtail.localhost/api/v2";
+    wagtailApiBaseURL = "http://localhost:8000";
     wagtailSchemaBaseURL = "http://localhost:65493";
     break;
 
   case "develop":
     baseURL = "https://dev-www.nationalarchives.gov.uk";
     betaBaseURL = "https://dev-beta.nationalarchives.gov.uk";
-    wagtailApiBaseURL = "https://dev-wagtail.nationalarchives.gov.uk/api/v2";
+    wagtailApiBaseURL = "https://dev-wagtail.nationalarchives.gov.uk";
     break;
 
   case "staging":
     baseURL = "https://staging-www.nationalarchives.gov.uk";
     betaBaseURL = "https://staging-beta.nationalarchives.gov.uk";
-    wagtailApiBaseURL =
-      "https://staging-wagtail.nationalarchives.gov.uk/api/v2";
+    wagtailApiBaseURL = "https://staging-wagtail.nationalarchives.gov.uk";
     break;
 }
 
 process.env.WAGTAIL_SCHEMA_BASE_URL = wagtailSchemaBaseURL;
+process.env.WAGTAIL_SITE_DOMAIN = baseURL.replace(/^https?:\/\//, "");
 
 const extraWagtailHTTPHeaders: { [key: string]: string } = {};
 if (process.env.TEST_WAGTAIL_API_TOKEN) {

@@ -102,9 +102,8 @@ class JsonSchemaValidator {
       JsonSchemaValidator.schemas
         .filter((s) => s.schema === undefined)
         .map(async ({ name, url }) => {
-          const response = await fetch(
-            `${JsonSchemaValidator.wagtailSchemaBaseURL?.trimEnd("/")}/${url}?buster=${Date.now()}`,
-          );
+          const fullUrl = `${JsonSchemaValidator.wagtailSchemaBaseURL?.trimEnd("/")}/${url}`;
+          const response = await fetch(`${fullUrl}?buster=${Date.now()}`);
           const schema = await response.json();
           const schemaIndex = JsonSchemaValidator.schemas.findIndex(
             (s) => s.name === name,
