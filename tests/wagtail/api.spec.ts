@@ -21,7 +21,7 @@ const apiEndpoints = [
     getIdKey: "items.0.id",
     getDetailUrl: (id: number | string) =>
       `/api/v2/pages/${id.toString()}/?format=json`,
-    schema: "page",
+    schema: "pageType:home.HomePage",
   },
   {
     name: "/globals/notifications/",

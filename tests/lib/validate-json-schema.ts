@@ -86,6 +86,10 @@ class JsonSchemaValidator {
       name: "redirects",
       url: "redirects.schema.json",
     },
+    {
+      name: "pageType:home.HomePage",
+      url: "page-types/home.HomePage.schema.json",
+    },
   ];
 
   public constructor() {}
@@ -102,7 +106,7 @@ class JsonSchemaValidator {
       JsonSchemaValidator.schemas
         .filter((s) => s.schema === undefined)
         .map(async ({ name, url }) => {
-          const fullUrl = `${JsonSchemaValidator.wagtailSchemaBaseURL?.trimEnd("/")}/${url}`;
+          const fullUrl = `${JsonSchemaValidator.wagtailSchemaBaseURL?.replace(/\/$/, "")}/${url.replace(/^\//, "")}`;
           const response = await fetch(`${fullUrl}?buster=${Date.now()}`);
           const schema = await response.json();
           const schemaIndex = JsonSchemaValidator.schemas.findIndex(
