@@ -68,5 +68,5 @@ test:
   steps:
     - uses: actions/checkout@v6
     - name: Run tests
-      run: gh workflow run manual.yml --repo nationalarchives/ds-tna-website-tests --raw-field site=www --raw-field environment=production --raw-field notify-slack=true
+      run: gh workflow run manual.yml --repo nationalarchives/ds-tna-website-tests --raw-field environment=production --raw-field notify-slack=true
 ```

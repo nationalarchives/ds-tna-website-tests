@@ -1,5 +1,5 @@
-import spotCheck from "../../../lib/spot-check";
-import { SpotCheck } from "../../../lib/types";
+import spotCheck from "../../lib/spot-check";
+import { SpotCheck } from "../../lib/types";
 
 const urlsToTest: SpotCheck[] = [
   { url: "/explore-the-collection/" },

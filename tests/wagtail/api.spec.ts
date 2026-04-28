@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { JsonSchemaValidator } from "../../../lib/validate-json-schema.ts";
+import { JsonSchemaValidator } from "../lib/validate-json-schema.ts";
 
 const apiEndpoints = [
   {
@@ -81,7 +81,9 @@ apiEndpoints.forEach(({ name, url, getUrlFrom, getUrlKey, schema }) => {
     if (url) {
       response = await request.get(url);
     } else if (getUrlFrom && getUrlKey) {
-      const preResponse = await fetch(`${baseURL}${getUrlFrom}`);
+      const preResponse = await fetch(
+        `${baseURL?.replace(/\/$/, "")}/${getUrlFrom}`,
+      );
       if (preResponse) {
         const preJsonContent = await preResponse.json();
         const urlToTest = getUrlKey

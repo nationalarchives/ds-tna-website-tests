@@ -9,10 +9,6 @@ inputs:
     type: string
     description: Environment tested
     required: true
-  site:
-    type: string
-    description: Sites tested
-    required: true
   included-tests:
     type: string
     description: Included test tags
@@ -61,7 +57,6 @@ runs:
       id: report
       run: |
         touch report.txt
-        echo "Site(s): **${{ inputs.site }}**" >> report.txt
         echo "Environment: **${{ inputs.environment }}**" >> report.txt
         echo >> report.txt
         [[ -n "${{ inputs.included-tests }}" ]] && echo "- Included: \`${{ inputs.included-tests }}\`" >> report.txt

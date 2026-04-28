@@ -3,8 +3,8 @@ import {
   cookiePreferencesSetKey,
   cookiePreferencesSetKeyOld,
 } from "../../../playwright.config.ts";
-import getCookieDomainFromBaseUrl from "../../../lib/domains.ts";
-import { getCookieBanner } from "../../../lib/set-cookie-preferences.ts";
+import getCookieDomainFromBaseUrl from "../../lib/domains.ts";
+import { getCookieBanner } from "../../lib/set-cookie-preferences.ts";
 
 const newPagePath = "/"; // New frontend page
 const oldPagePath = "/contact-us/"; // WordPress page

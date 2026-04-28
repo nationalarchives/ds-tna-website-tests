@@ -1,8 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 require("dotenv").config({ quiet: true });
 
-const browserIndependentTests = ["browser-independent/**/*.spec.ts"];
-
 export const cookiePreferencesSetKey = "dontShowCookieNotice";
 export const cookiePreferencesSetKeyOld = "dontShowCookieNotice";
 
@@ -11,8 +9,54 @@ if (process.env.TEST_ACCESS_HEADER) {
   extraHTTPHeaders["x-external-access-key"] = process.env.TEST_ACCESS_HEADER;
 }
 
+let baseURL: string = "https://www.nationalarchives.gov.uk";
+let betaBaseURL: string = "https://beta.nationalarchives.gov.uk";
+let wagtailApiBaseURL: string =
+  "https://wagtail.nationalarchives.gov.uk/api/v2";
+let wagtailSchemaBaseURL: string =
+  "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/main/schemas";
+
+switch (process.env.ENVIRONMENT) {
+  case "localhost":
+    baseURL = "https://localhost";
+    betaBaseURL = "https://localhost";
+    wagtailApiBaseURL = "https://wagtail.localhost/api/v2";
+    wagtailSchemaBaseURL = "http://localhost:65493";
+    break;
+
+  case "develop":
+    baseURL = "https://dev-www.nationalarchives.gov.uk";
+    betaBaseURL = "https://dev-beta.nationalarchives.gov.uk";
+    wagtailApiBaseURL = "https://dev-wagtail.nationalarchives.gov.uk/api/v2";
+    break;
+
+  case "staging":
+    baseURL = "https://staging-www.nationalarchives.gov.uk";
+    betaBaseURL = "https://staging-beta.nationalarchives.gov.uk";
+    wagtailApiBaseURL =
+      "https://staging-wagtail.nationalarchives.gov.uk/api/v2";
+    break;
+}
+
+process.env.WAGTAIL_SCHEMA_BASE_URL = wagtailSchemaBaseURL;
+
+const extraWagtailHTTPHeaders: { [key: string]: string } = {};
+if (process.env.TEST_WAGTAIL_API_TOKEN) {
+  extraWagtailHTTPHeaders["Authorization"] =
+    `Token ${process.env.TEST_WAGTAIL_API_TOKEN}`;
+}
+
+const browsers: string[] = [
+  "Desktop Chrome",
+  "Desktop Firefox",
+  "Desktop Safari",
+  "Pixel 5",
+  "iPhone 12",
+];
+const headlessBrowser: string = "Desktop Chrome";
+
 export default defineConfig({
-  testDir: "./tests/www",
+  testDir: "./tests",
   fullyParallel: true,
   retries: 2,
   workers: undefined,
@@ -30,7 +74,7 @@ export default defineConfig({
       ]
     : "line",
   use: {
-    baseURL: process.env.TEST_DOMAIN || "https://www.nationalarchives.gov.uk",
+    baseURL,
     trace: "on-first-retry",
     extraHTTPHeaders,
     ignoreHTTPSErrors: true,
@@ -48,29 +92,36 @@ export default defineConfig({
     },
   },
   projects: [
+    ...browsers.map((device) => ({
+      name: `Main site, ${device}`,
+      use: { ...devices[device] },
+      testMatch: ["www/**/*.spec.ts"],
+      testIgnore: ["www/browser-independent/**/*.spec.ts"],
+    })),
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "Main site, browser independent",
+      use: { ...devices[headlessBrowser] },
+      testMatch: ["www/browser-independent/**/*.spec.ts"],
+    },
+    ...browsers.map((device) => ({
+      name: `Beta site, ${device}`,
+      use: { ...devices[device], baseURL: betaBaseURL },
+      testMatch: ["beta/**/*.spec.ts"],
+      testIgnore: ["beta/browser-independent/**/*.spec.ts"],
+    })),
+    {
+      name: "Beta site, browser independent",
+      use: { ...devices[headlessBrowser], baseURL: betaBaseURL },
+      testMatch: ["beta/browser-independent/**/*.spec.ts"],
     },
     {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-      testIgnore: browserIndependentTests,
-    },
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-      testIgnore: browserIndependentTests,
-    },
-    {
-      name: "Mobile Chrome",
-      use: { ...devices["Pixel 7"] },
-      testIgnore: browserIndependentTests,
-    },
-    {
-      name: "Mobile Safari",
-      use: { ...devices["iPhone 15"] },
-      testIgnore: browserIndependentTests,
+      name: "Wagtail API",
+      use: {
+        ...devices[headlessBrowser],
+        baseURL: wagtailApiBaseURL,
+        extraHTTPHeaders: { ...extraWagtailHTTPHeaders },
+      },
+      testMatch: ["wagtail/**/*.spec.ts"],
     },
   ],
 });

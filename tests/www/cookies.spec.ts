@@ -3,7 +3,7 @@ import {
   acceptAllCookies,
   declineAllCookies,
   getCookieBanner,
-} from "../../lib/set-cookie-preferences.ts";
+} from "../lib/set-cookie-preferences.ts";
 
 import { cookiePreferencesSetKey } from "../../playwright.config.ts";
 
