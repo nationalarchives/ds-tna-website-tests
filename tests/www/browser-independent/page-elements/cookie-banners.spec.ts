@@ -6,7 +6,7 @@ const getCookieBanner = (page: Page) =>
 
 test(
   "cookie banner has correct accessibility tree",
-  { tag: ["@www"] },
+  { tag: ["@site:www", "@service:ds-frontend"] },
   async ({ page }) => {
     await page.goto(newPagePath);
     await expect(getCookieBanner(page)).toBeVisible();

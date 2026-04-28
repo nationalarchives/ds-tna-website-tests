@@ -28,4 +28,4 @@ const devUrlsToTest: SpotCheck[] = [
   },
 ];
 
-spotCheck(urlsToTest, devUrlsToTest, ["@beta"]);
+spotCheck(urlsToTest, devUrlsToTest, ["@site:beta", "@service:ds-catalogue"]);

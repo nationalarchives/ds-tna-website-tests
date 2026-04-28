@@ -36,4 +36,9 @@ const devUrlsToTest: SpotCheck[] = [
   { url: "/about-us/our-role/our-plans/becoming-the-inclusive-archive/" },
 ];
 
-spotCheck(urlsToTest, devUrlsToTest, ["@www"]);
+spotCheck(urlsToTest, devUrlsToTest, [
+  "@site:www",
+  "@service:ds-frontend",
+  "@service:ds-wagtail",
+  "@service:ds-request-service-record",
+]);

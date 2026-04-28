@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test(
   "explore the collection without a trailing slash",
-  { tag: ["@www"] },
+  { tag: ["@site:www", "@service:ds-frontend", "@service:ds-wagtail"] },
   async ({ page }) => {
     // page.on("response", (response) => {
     //   expect(response.status()).toBeGreaterThanOrEqual(200);

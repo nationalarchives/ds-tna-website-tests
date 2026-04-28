@@ -2,7 +2,7 @@
   "scripts": {
     "postinstall": "npx playwright install --with-deps",
     "lint:fix": "npx -y prettier --write .",
-    "test:localhost": "npx playwright install && ENVIRONMENT=localhost npx playwright test --update-snapshots --ui --grep-invert \"@requires-wordpress\"",
+    "test:localhost": "npx playwright install && ENVIRONMENT=localhost npx playwright test --update-snapshots --ui --grep-invert \"@service:wordpress\"",
     "test:develop": "npx playwright install && ENVIRONMENT=develop npx playwright test --ui --grep-invert \"@wip\"",
     "test:staging": "npx playwright install && ENVIRONMENT=staging npx playwright test --ui --grep-invert \"@wip\"",
     "test:production": "npx playwright install && ENVIRONMENT=production npx playwright test --ui --grep-invert \"@wip\""

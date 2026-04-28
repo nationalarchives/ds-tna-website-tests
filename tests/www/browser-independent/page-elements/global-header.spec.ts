@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test(
   "global header has the correct markup with HTML only",
-  { tag: ["@www"] },
+  { tag: ["@site:www", "@service:ds-frontend"] },
   async ({ page, baseURL }) => {
     await page.route("**/*", (route) => {
       return ["script", "stylesheet"].includes(route.request().resourceType())
@@ -22,7 +22,7 @@ test(
 
 test(
   "global header has the correct markup after JS is added",
-  { tag: ["@www"] },
+  { tag: ["@site:www", "@service:ds-frontend"] },
   async ({ page, baseURL }) => {
     await page.goto("/explore-the-collection/");
     const headerMain = await page.locator(".tna-global-header__main");

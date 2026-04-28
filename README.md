@@ -34,13 +34,19 @@ These tests include checking redirects, content on the page, the validitiy of HT
 
 ### Tags
 
-| Tag                   | Purpose                             |
-| --------------------- | ----------------------------------- |
-| `@wip`                | Tests that aren't run in the CI     |
-| `@requires-wordpress` | Tests that require WordPress to run |
-| `@www`                | Main site tests                     |
-| `@beta`               | Beta site tests                     |
-| `@wagtail`            | Wagtail tests                       |
+| Tag                                  | Purpose                                                                                                     |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `@wip`                               | Tests that aren't run in the CI                                                                             |
+| `@site:www`                          | Main site tests                                                                                             |
+| `@site:beta`                         | Beta subdomain tests                                                                                        |
+| `@site:wagtail`                      | Wagtail subdomain tests                                                                                     |
+| `@service:ds-frontend`               | Tests covering [`ds-frontend`](https://github.com/nationalarchives/ds-frontend)                             |
+| `@service:ds-wagtail`                | Tests covering [`ds-wagtail`](https://github.com/nationalarchives/ds-wagtail)                               |
+| `@service:ds-catalogue`              | Tests covering [`ds-catalogue`](https://github.com/nationalarchives/ds-catalogue)                           |
+| `@service:ds-sitemap-search`         | Tests covering [`ds-sitemap-search`](https://github.com/nationalarchives/ds-sitemap-search)                 |
+| `@service:ds-frontend-enrichment`    | Tests covering [`ds-frontend-enrichment`](https://github.com/nationalarchives/ds-frontend-enrichment)       |
+| `@service:ds-request-service-record` | Tests covering [`ds-request-service-record`](https://github.com/nationalarchives/ds-request-service-record) |
+| `@service:wordpress`                 | Tests that require WordPress to run                                                                         |
 
 ## Updating Playwright
 

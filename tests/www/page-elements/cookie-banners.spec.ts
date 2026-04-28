@@ -41,7 +41,7 @@ test.beforeEach(async ({ context }) => {
 
 test.describe(
   "no existing cookies",
-  { tag: ["@www", "@requires-wordpress"] },
+  { tag: ["@site:www", "@service:ds-frontend", "@service:wordpress"] },
   () => {
     test("don't interact on new page then visit old page", async ({ page }) => {
       await page.goto(newPagePath);
@@ -128,7 +128,7 @@ test.describe(
 
 test.describe(
   "partial existing cookies",
-  { tag: ["@www", "@requires-wordpress"] },
+  { tag: ["@site:www", "@service:ds-frontend", "@service:wordpress"] },
   () => {
     test("visit new page", async ({ page, context, baseURL }) => {
       await context.addCookies([
@@ -192,7 +192,7 @@ test.describe(
 
 test.describe(
   "malformed cookies",
-  { tag: ["@www", "@requires-wordpress"] },
+  { tag: ["@site:www", "@service:ds-frontend", "@service:wordpress"] },
   () => {
     test.beforeEach(async ({ context, baseURL }) => {
       await context.addCookies([

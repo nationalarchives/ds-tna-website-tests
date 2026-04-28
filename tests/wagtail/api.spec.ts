@@ -76,35 +76,39 @@ const apiEndpoints = [
 ];
 
 apiEndpoints.forEach(({ name, url, getUrlFrom, getUrlKey, schema }) => {
-  test(name, { tag: ["@wagtail"] }, async ({ request, baseURL }) => {
-    let response;
-    if (url) {
-      response = await request.get(url);
-    } else if (getUrlFrom && getUrlKey) {
-      const preResponse = await fetch(
-        `${baseURL?.replace(/\/$/, "")}/${getUrlFrom}`,
-      );
-      if (preResponse) {
-        const preJsonContent = await preResponse.json();
-        const urlToTest = getUrlKey
-          .split(".")
-          .reduce((obj, key) => obj && obj[key], preJsonContent);
-        console.log(urlToTest);
-        response = await request.get(`${urlToTest}?format=json`);
+  test(
+    name,
+    { tag: ["@site:wagtail", "@service:ds-wagtail"] },
+    async ({ request, baseURL }) => {
+      let response;
+      if (url) {
+        response = await request.get(url);
+      } else if (getUrlFrom && getUrlKey) {
+        const preResponse = await fetch(
+          `${baseURL?.replace(/\/$/, "")}/${getUrlFrom}`,
+        );
+        if (preResponse) {
+          const preJsonContent = await preResponse.json();
+          const urlToTest = getUrlKey
+            .split(".")
+            .reduce((obj, key) => obj && obj[key], preJsonContent);
+          console.log(urlToTest);
+          response = await request.get(`${urlToTest}?format=json`);
+        }
+      } else {
+        throw new Error(`Invalid API endpoint configuration for ${name}`);
       }
-    } else {
-      throw new Error(`Invalid API endpoint configuration for ${name}`);
-    }
-    await expect(response).toBeTruthy();
-    if (response) {
-      await expect(response).toBeOK();
-    }
-    await expect(await response?.headers()["content-type"]).toEqual(
-      "application/json",
-    );
-    const jsonContent = await response?.json();
-    await expect(jsonContent).toBeTruthy();
-    const validator = new JsonSchemaValidator();
-    await validator.validateData(jsonContent, schema);
-  });
+      await expect(response).toBeTruthy();
+      if (response) {
+        await expect(response).toBeOK();
+      }
+      await expect(await response?.headers()["content-type"]).toEqual(
+        "application/json",
+      );
+      const jsonContent = await response?.json();
+      await expect(jsonContent).toBeTruthy();
+      const validator = new JsonSchemaValidator();
+      await validator.validateData(jsonContent, schema);
+    },
+  );
 });
