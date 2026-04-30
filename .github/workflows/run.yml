@@ -74,7 +74,7 @@ jobs:
           echo "Exclude: `${{ inputs.exclude-tests }}`" >> $GITHUB_STEP_SUMMARY
           echo "Description: `${{ inputs.description }}`" >> $GITHUB_STEP_SUMMARY
       - name: Run tests
-        run: ENVIRONMENT="${{ inputs.environment }}" TEST_ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" TEST_WAGTAIL_API_TOKEN="${{ env.TEST_WAGTAIL_API_TOKEN }}" CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}${{ inputs.exclude-tests && '|' }}@wip"
+        run: ENVIRONMENT="${{ inputs.environment }}" TEST_ACCESS_HEADER="${TEST_ACCESS_HEADER}" TEST_WAGTAIL_API_TOKEN="${TEST_WAGTAIL_API_TOKEN}" CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}${{ inputs.exclude-tests && '|' }}@wip"
       - name: Report summary
         if: always()
         run: |
@@ -88,12 +88,17 @@ jobs:
         uses: ./.github/actions/send-slack-report
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK }}
-          environment: ${{ inputs.environment }}
-          included-tests: ${{ inputs.include-tests }}
-          excluded-tests: ${{ inputs.exclude-tests }}
+          environment: ${{ env.ENVIRONMENT }}
+          included-tests: ${{ env.INCLUDED_TESTS }}
+          excluded-tests: ${{ env.EXCLUDED_TESTS }}
           pass-count: ${{ env.PASS_COUNT }}
           fail-count: ${{ env.FAIL_COUNT }}
           skip-count: ${{ env.SKIP_COUNT }}
           flake-count: ${{ env.FLAKE_COUNT }}
           duration: ${{ env.DURATION }}
-          description: ${{ inputs.description }}
+          description: ${{ env.DESCRIPTION }}
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+          INCLUDED_TESTS: ${{ inputs.include-tests }}
+          EXCLUDED_TESTS: ${{ inputs.exclude-tests }}
+          DESCRIPTION: ${{ inputs.description }}
