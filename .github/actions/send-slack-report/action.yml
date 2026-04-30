@@ -69,7 +69,7 @@ runs:
         TIME_TAKEN=$(date -u -d @"${DURATION}" +"%T")
         echo >> report.txt && echo "Time taken: **$TIME_TAKEN**" >> report.txt
         [[ -n "${DESCRIPTION}" ]] && echo >> report.txt && echo "${DESCRIPTION}" >> report.txt
-        echo >> report.txt && echo "[Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [WIP tests](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}+%28%40wip%29+language%3ATypeScript&type=code&l=TypeScript)" >> report.txt
+        echo >> report.txt && echo "[Full report](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) | [Source code](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/main/tests) | [WIP tests](${GITHUB_SERVER_URL}/search?q=repo%3A${GITHUB_REPOSITORY_OWNER}%2F${GITHUB_REPOSITORY}%20%28%40wip%29%20language%3ATypeScript&type=code&l=TypeScript)" >> report.txt
         cat report.txt
         {
           echo 'REPORT<<EOF'
@@ -86,6 +86,10 @@ runs:
         FLAKE_COUNT: ${{ inputs.flake-count }}
         DURATION: ${{ inputs.duration }}
         DESCRIPTION: ${{ inputs.description }}
+        GITHUB_SERVER_URL: ${{ github.server_url }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_RUN_ID: ${{ github.run_id }}
+        GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
       shell: bash
     - uses: rtCamp/action-slack-notify@e31e87e03dd19038e411e38ae27cbad084a90661 # v2.3.3
       env:
