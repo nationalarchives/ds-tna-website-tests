@@ -69,12 +69,21 @@ jobs:
           fi
       - name: Show test configuration
         run: |
-          echo "Environment: `${{ inputs.environment }}`" >> $GITHUB_STEP_SUMMARY
-          echo "Include: `${{ inputs.include-tests }}`" >> $GITHUB_STEP_SUMMARY
-          echo "Exclude: `${{ inputs.exclude-tests }}`" >> $GITHUB_STEP_SUMMARY
-          echo "Description: `${{ inputs.description }}`" >> $GITHUB_STEP_SUMMARY
+          echo "Environment: `${ENVIRONMENT}`" >> $GITHUB_STEP_SUMMARY
+          echo "Include: `${INCLUDED_TESTS}`" >> $GITHUB_STEP_SUMMARY
+          echo "Exclude: `${EXCLUDED_TESTS}`" >> $GITHUB_STEP_SUMMARY
+          echo "Description: `${DESCRIPTION}`" >> $GITHUB_STEP_SUMMARY
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+          INCLUDED_TESTS: ${{ inputs.include-tests }}
+          EXCLUDED_TESTS: ${{ inputs.exclude-tests }}
+          DESCRIPTION: ${{ inputs.description }}
       - name: Run tests
-        run: ENVIRONMENT="${{ inputs.environment }}" TEST_ACCESS_HEADER="${TEST_ACCESS_HEADER}" TEST_WAGTAIL_API_TOKEN="${TEST_WAGTAIL_API_TOKEN}" CI=true npx playwright test --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}${{ inputs.exclude-tests && '|' }}@wip"
+        run: ENVIRONMENT="${ENVIRONMENT}" TEST_ACCESS_HEADER="${TEST_ACCESS_HEADER}" TEST_WAGTAIL_API_TOKEN="${TEST_WAGTAIL_API_TOKEN}" CI=true npx playwright test --grep "${INCLUDED_TESTS}" --grep-invert "${EXCLUDED_TESTS}${{ env.EXCLUDED_TESTS && '|'}}@wip"
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+          INCLUDED_TESTS: ${{ inputs.include-tests }}
+          EXCLUDED_TESTS: ${{ inputs.exclude-tests }}
       - name: Report summary
         if: always()
         run: |
