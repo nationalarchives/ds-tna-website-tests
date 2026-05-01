@@ -25,6 +25,9 @@ test(
     ).toBeVisible();
     await validateHtml(page);
     await checkAccessibility(page);
+    await expect(page.getByRole("main")).toMatchAriaSnapshot({
+      name: "nginx.aria.yml",
+    });
   },
 );
 
@@ -51,5 +54,8 @@ test(
     ).toBeVisible();
     await validateHtml(page);
     await checkAccessibility(page);
+    await expect(page.getByRole("main")).toMatchAriaSnapshot({
+      name: "ds-frontend.aria.yml",
+    });
   },
 );

@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test(
-  "global header has the correct markup with HTML only",
+  "has the correct HTML with no JS",
   { tag: ["@site:www", "@service:ds-frontend"] },
   async ({ page, baseURL }) => {
     await page.route("**/*", (route) => {
@@ -21,7 +21,7 @@ test(
 );
 
 test(
-  "global header has the correct markup after JS is added",
+  "has the correct markup with JS enabled",
   { tag: ["@site:www", "@service:ds-frontend"] },
   async ({ page, baseURL }) => {
     await page.goto("/");
@@ -35,5 +35,22 @@ test(
       "global-header-html-with-js.txt",
     );
     // await expect(headerMain).toHaveScreenshot("global-header-html+js.png");
+  },
+);
+
+test(
+  "global header has the correct accessibility tree for desktop and mobile in open and closed states",
+  { tag: ["@site:www", "@service:ds-frontend"] },
+  async ({ page, isMobile }) => {
+    await page.goto("/");
+    const header = await page.getByRole("banner");
+    const headerMenuButton = await header.getByRole("button", { name: "Menu" });
+
+    if (isMobile) {
+      await expect(header).toMatchAriaSnapshot({ name: "closed.aria.yml" });
+      await headerMenuButton.click();
+    }
+
+    await expect(header).toMatchAriaSnapshot({ name: "open.aria.yml" });
   },
 );

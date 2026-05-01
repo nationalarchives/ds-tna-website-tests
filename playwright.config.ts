@@ -78,15 +78,15 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
   },
   snapshotPathTemplate:
-    "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}",
+    "{testDir}/{testFileDir}/__snapshots__/{testFileName}/{testName}-{arg}{ext}",
   expect: {
     toHaveScreenshot: {
       pathTemplate:
-        "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}-{platform}{ext}",
+        "{testDir}/{testFileDir}/__snapshots__/{testFileName}/{testName}-{arg}-{projectName}-{platform}{ext}",
     },
     toMatchAriaSnapshot: {
       pathTemplate:
-        "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}",
+        "{testDir}/{testFileDir}/__snapshots__/{testFileName}/{testName}-{arg}{ext}",
     },
   },
   projects: [

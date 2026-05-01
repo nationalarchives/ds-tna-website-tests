@@ -9,7 +9,7 @@ import { cookiePreferencesSetKey } from "../../playwright.config.ts";
 
 test.describe(
   "initial state",
-  { tag: ["@site:www", "@service:ds-frontend"] },
+  { tag: ["@site:www", "@service:ds-frontend", "@service:wordpress"] },
   () => {
     test.beforeEach(async ({ context }) => {
       await context.clearCookies();

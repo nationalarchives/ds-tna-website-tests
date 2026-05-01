@@ -15,14 +15,14 @@ const apiEndpoints = [
     url: "/api/v2/pages/find/?html_path=%2F&format=json",
     schema: "page",
   },
-  {
-    name: "/pages/?type=home.HomePage",
-    getUrlFrom: "/api/v2/pages/?type=home.HomePage&format=json",
-    getIdKey: "items.0.id",
-    getDetailUrl: (id: number | string) =>
-      `/api/v2/pages/${id.toString()}/?format=json`,
-    schema: "pageType:home.HomePage",
-  },
+  // {
+  //   name: "/pages/?type=home.HomePage",
+  //   getUrlFrom: "/api/v2/pages/?type=home.HomePage&format=json",
+  //   getIdKey: "items.0.id",
+  //   getDetailUrl: (id: number | string) =>
+  //     `/api/v2/pages/${id.toString()}/?format=json`,
+  //   schema: "pageType:home.HomePage",
+  // },
   {
     name: "/globals/notifications/",
     url: "/api/v2/globals/notifications/?format=json",
