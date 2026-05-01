@@ -17,7 +17,7 @@
             </button>
           </div>    <nav class="tna-column tna-column--full-small tna-column--full-tiny tna-column--order-3 tna-global-header__navigation-wrapper" id="tna-header__navigation" aria-label="Primary">
             <ul class="tna-global-header__navigation">        <li class="tna-global-header__navigation-item">
-                <a href="/about/visit-us/" class="tna-global-header__navigation-item-link" tabindex="0">Visit</a>
+                <a href="/visit/" class="tna-global-header__navigation-item-link" tabindex="0">Visit</a>
               </li>        <li class="tna-global-header__navigation-item">
                 <a href="/whats-on/" class="tna-global-header__navigation-item-link" tabindex="0">What’s on</a>
               </li>        <li class="tna-global-header__navigation-item">
