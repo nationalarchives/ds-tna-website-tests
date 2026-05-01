@@ -69,10 +69,10 @@ jobs:
           fi
       - name: Show test configuration
         run: |
-          echo "Environment: `${ENVIRONMENT}`" >> $GITHUB_STEP_SUMMARY
-          echo "Include: `${INCLUDED_TESTS}`" >> $GITHUB_STEP_SUMMARY
-          echo "Exclude: `${EXCLUDED_TESTS}`" >> $GITHUB_STEP_SUMMARY
-          echo "Description: `${DESCRIPTION}`" >> $GITHUB_STEP_SUMMARY
+          echo "Environment: ${ENVIRONMENT}" >> $GITHUB_STEP_SUMMARY
+          echo "Include: ${INCLUDED_TESTS}" >> $GITHUB_STEP_SUMMARY
+          echo "Exclude: ${EXCLUDED_TESTS}" >> $GITHUB_STEP_SUMMARY
+          echo "Description: ${DESCRIPTION}" >> $GITHUB_STEP_SUMMARY
         env:
           ENVIRONMENT: ${{ inputs.environment }}
           INCLUDED_TESTS: ${{ inputs.include-tests }}
