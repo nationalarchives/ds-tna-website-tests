@@ -9,7 +9,7 @@ test("global header has the correct markup with HTML only", async ({
       ? route.abort()
       : route.continue();
   });
-  await page.goto("/explore-the-collection/");
+  await page.goto("/");
   const headerMain = await page.locator(".tna-global-header__main");
   const domainRegEx = new RegExp(baseURL || "", "g");
   const headerMainHtml = (await headerMain.innerHTML()).replace(
@@ -23,7 +23,7 @@ test("global header has the correct markup after JS is added", async ({
   page,
   baseURL,
 }) => {
-  await page.goto("/explore-the-collection/");
+  await page.goto("/");
   const headerMain = await page.locator(".tna-global-header__main");
   const domainRegEx = new RegExp(baseURL || "", "g");
   const headerMainHtml = (await headerMain.innerHTML()).replace(
