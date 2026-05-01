@@ -4,7 +4,7 @@ test(
   "global header can be interacted with and has the correct accessibility tree",
   { tag: ["@site:www", "@service:ds-frontend"] },
   async ({ page, isMobile }) => {
-    await page.goto("/explore-the-collection/"); // TODO: Change to homepage once updated
+    await page.goto("/");
     const header = await page.locator(".tna-global-header__main");
     await expect(header).toBeVisible();
 
@@ -51,7 +51,7 @@ test(
         - list:
           - listitem:
             - link "Visit":
-              - /url: /about/visit-us/
+              - /url: /visit/
           - listitem:
             - link "What’s on":
               - /url: /whats-on/
