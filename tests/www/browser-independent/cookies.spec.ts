@@ -3,7 +3,7 @@ import { setCookiePolicy } from "../../lib/set-cookie-preferences.ts";
 
 test.describe(
   "accessibility tree",
-  { tag: ["@site:www", "@service:ds-frontend"] },
+  { tag: ["@site:www", "@service:ds-frontend", "@wip"] },
   () => {
     test("default state", async ({ page, context }) => {
       await context.clearCookies();
