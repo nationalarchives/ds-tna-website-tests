@@ -8,6 +8,11 @@ const extraHTTPHeaders: { [key: string]: string } = {};
 if (process.env.TEST_ACCESS_HEADER) {
   extraHTTPHeaders["x-external-access-key"] = process.env.TEST_ACCESS_HEADER;
 }
+const extraWagtailHTTPHeaders: { [key: string]: string } = {};
+if (process.env.TEST_WAGTAIL_API_TOKEN) {
+  extraWagtailHTTPHeaders["Authorization"] =
+    `Token ${process.env.TEST_WAGTAIL_API_TOKEN}`;
+}
 
 let baseURL: string = "https://www.nationalarchives.gov.uk";
 let betaBaseURL: string = "https://beta.nationalarchives.gov.uk";
@@ -38,12 +43,6 @@ switch (process.env.ENVIRONMENT) {
 
 process.env.WAGTAIL_SCHEMA_BASE_URL = wagtailSchemaBaseURL;
 process.env.WAGTAIL_SITE_DOMAIN = baseURL.replace(/^https?:\/\//, "");
-
-const extraWagtailHTTPHeaders: { [key: string]: string } = {};
-if (process.env.TEST_WAGTAIL_API_TOKEN) {
-  extraWagtailHTTPHeaders["Authorization"] =
-    `Token ${process.env.TEST_WAGTAIL_API_TOKEN}`;
-}
 
 const browsers: string[] = [
   "Desktop Chrome",
@@ -118,7 +117,7 @@ export default defineConfig({
       use: {
         ...devices[headlessBrowser],
         baseURL: wagtailApiBaseURL,
-        extraHTTPHeaders: { ...extraWagtailHTTPHeaders },
+        extraHTTPHeaders: { ...extraHTTPHeaders, ...extraWagtailHTTPHeaders },
       },
       testMatch: ["wagtail/**/*.spec.ts"],
     },
