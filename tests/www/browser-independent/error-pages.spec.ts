@@ -4,7 +4,7 @@ import checkAccessibility from "../../lib/check-accessibility";
 
 test(
   "page not found error page (nginx)",
-  { tag: ["@site:www"] },
+  { tag: ["@site:www", "@wip"] },
   async ({ page }) => {
     const response = await page.goto("/foobar/");
     await expect(response?.status()).toEqual(404);
@@ -33,7 +33,7 @@ test(
 
 test(
   "page not found error page (Wagtail)",
-  { tag: ["@site:www", "@service:ds-frontend", "@service:ds-wagtail"] },
+  { tag: ["@site:www", "@service:ds-frontend", "@wip"] },
   async ({ page }) => {
     const response = await page.goto("/explore-the-collection/foobar/");
     await expect(response?.status()).toEqual(404);
