@@ -113,7 +113,7 @@ export default defineConfig({
       testMatch: ["beta/browser-independent/**/*.spec.ts"],
     },
     {
-      name: "Wagtail API",
+      name: "Wagtail API, browser independent",
       use: {
         ...devices[headlessBrowser],
         baseURL: wagtailApiBaseURL,
