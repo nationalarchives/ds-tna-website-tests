@@ -1,1 +1,1 @@
-*.yml
+tests/**/*.yml
