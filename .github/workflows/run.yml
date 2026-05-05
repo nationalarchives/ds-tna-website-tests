@@ -1,9 +1,10 @@
 name: Run tests
 
-permissions:
-  contents: read
-
 on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
   workflow_dispatch:
     inputs:
       environment:
@@ -13,7 +14,7 @@ on:
           - production
           - staging
           - develop
-        default: "production"
+        default: "develop"
       include-tests:
         type: string
         description: Test tags to run, separated with a pipe "|" (leave blank to run all tests)
@@ -39,6 +40,9 @@ on:
         description: A description to add to the Slack report
         required: false
         default: ""
+
+permissions:
+  contents: read
 
 jobs:
   run-tests:
