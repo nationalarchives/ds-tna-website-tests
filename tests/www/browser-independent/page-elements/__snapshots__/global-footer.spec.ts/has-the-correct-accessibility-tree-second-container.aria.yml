@@ -1,0 +1,19 @@
+- heading "Legal information" [level=3]
+- navigation "Legal":
+  - list:
+    - listitem:
+      - link "Accessibility statement":
+        - /url: /help/web-accessibility/
+    - listitem:
+      - link "Freedom of information":
+        - /url: /freedom-of-information/
+    - listitem:
+      - link "Terms and conditions":
+        - /url: /terms-and-conditions/
+    - listitem:
+      - link "Privacy notice":
+        - /url: /terms-and-conditions/privacy-notice/
+    - listitem:
+      - link "Cookies":
+        - /url: /cookies/
+  - separator

@@ -1,37 +1,37 @@
 - banner:
-    - strong: "Service phase: Beta"
-    - paragraph:
-        - text: This is a new service. Help us improve it and
-        - link "give your feedback (opens in new tab)":
-            - /url: https://www.smartsurvey.co.uk/s/DN07V0/?area=header&source=http%3A%2F%2Fdev-www.nationalarchives.gov.uk%2F
-        - text: .
-    - link "The National Archives home page":
-        - /url: /
-    - navigation "Primary":
-        - list:
-            - listitem:
-                - link "Visit":
-                    - /url: /visit/
-            - listitem:
-                - link "What’s on":
-                    - /url: /whats-on/
-            - listitem:
-                - link "Explore the collection":
-                    - /url: /explore-the-collection/
-            - listitem:
-                - link "Help using the archive":
-                    - /url: /help-with-your-research/
-            - listitem:
-                - link "Education":
-                    - /url: /education/
-            - listitem:
-                - link "Professional guidance and services":
-                    - /url: /professional-guidance-and-services/
-    - navigation "Secondary":
-        - list:
-            - listitem:
-                - link "Search":
-                    - /url: /search/
-            - listitem:
-                - link "Shop":
-                    - /url: https://shop.nationalarchives.gov.uk/
+  - strong: "Service phase: Beta"
+  - paragraph:
+    - text: This is a new service. Help us improve it and
+    - link "give your feedback (opens in new tab)":
+      - /url: https://www.smartsurvey.co.uk/s/DN07V0/?area=header&source=http%3A%2F%2Fstaging-www.nationalarchives.gov.uk%2F
+    - text: .
+  - link "The National Archives home page":
+    - /url: /
+  - navigation "Primary":
+    - list:
+      - listitem:
+        - link "Visit":
+          - /url: /visit/
+      - listitem:
+        - link "What’s on":
+          - /url: /whats-on/
+      - listitem:
+        - link "Explore the collection":
+          - /url: /explore-the-collection/
+      - listitem:
+        - link "Help using the archive":
+          - /url: /help-with-your-research/
+      - listitem:
+        - link "Education":
+          - /url: /education/
+      - listitem:
+        - link "Professional guidance and services":
+          - /url: /professional-guidance-and-services/
+  - navigation "Secondary":
+    - list:
+      - listitem:
+        - link "Search":
+          - /url: /search/
+      - listitem:
+        - link "Shop":
+          - /url: https://shop.nationalarchives.gov.uk/
