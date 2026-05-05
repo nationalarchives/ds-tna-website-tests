@@ -1,8 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 require("dotenv").config({ quiet: true });
 
-const browserIndependentTests = ["browser-independent/**/*.spec.ts"];
-
 export const cookiePreferencesSetKey = "dontShowCookieNotice";
 export const cookiePreferencesSetKeyOld = "dontShowCookieNotice";
 
@@ -10,9 +8,53 @@ const extraHTTPHeaders: { [key: string]: string } = {};
 if (process.env.TEST_ACCESS_HEADER) {
   extraHTTPHeaders["x-external-access-key"] = process.env.TEST_ACCESS_HEADER;
 }
+const extraWagtailHTTPHeaders: { [key: string]: string } = {};
+if (process.env.TEST_WAGTAIL_API_TOKEN) {
+  extraWagtailHTTPHeaders["Authorization"] =
+    `Token ${process.env.TEST_WAGTAIL_API_TOKEN}`;
+}
+
+let baseURL: string = "https://www.nationalarchives.gov.uk";
+let betaBaseURL: string = "https://beta.nationalarchives.gov.uk";
+let wagtailApiBaseURL: string = "https://wagtail.nationalarchives.gov.uk";
+let wagtailSchemaBaseURL: string =
+  "https://raw.githubusercontent.com/nationalarchives/ds-wagtail/refs/heads/main/schemas";
+
+switch (process.env.ENVIRONMENT) {
+  case "localhost":
+    baseURL = "https://localhost";
+    betaBaseURL = "https://localhost";
+    wagtailApiBaseURL = "http://localhost:8000";
+    wagtailSchemaBaseURL = "http://localhost:65493";
+    break;
+
+  case "develop":
+    baseURL = "https://dev-www.nationalarchives.gov.uk";
+    betaBaseURL = "https://dev-beta.nationalarchives.gov.uk";
+    wagtailApiBaseURL = "https://dev-wagtail.nationalarchives.gov.uk";
+    break;
+
+  case "staging":
+    baseURL = "https://staging-www.nationalarchives.gov.uk";
+    betaBaseURL = "https://staging-beta.nationalarchives.gov.uk";
+    wagtailApiBaseURL = "https://staging-wagtail.nationalarchives.gov.uk";
+    break;
+}
+
+process.env.WAGTAIL_SCHEMA_BASE_URL = wagtailSchemaBaseURL;
+process.env.WAGTAIL_SITE_DOMAIN = baseURL.replace(/^https?:\/\//, "");
+
+const browsers: string[] = [
+  "Desktop Chrome",
+  "Desktop Firefox",
+  "Desktop Safari",
+  "Pixel 5",
+  "iPhone 12",
+];
+const headlessBrowser: string = "Desktop Chrome";
 
 export default defineConfig({
-  testDir: "./tests/www",
+  testDir: "./tests",
   fullyParallel: true,
   retries: 2,
   workers: undefined,
@@ -30,47 +72,54 @@ export default defineConfig({
       ]
     : "line",
   use: {
-    baseURL: process.env.TEST_DOMAIN || "https://www.nationalarchives.gov.uk",
+    baseURL,
     trace: "on-first-retry",
     extraHTTPHeaders,
     ignoreHTTPSErrors: true,
   },
   snapshotPathTemplate:
-    "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}",
+    "{testDir}/{testFileDir}/__snapshots__/{testFileName}/{testName}-{arg}{ext}",
   expect: {
     toHaveScreenshot: {
       pathTemplate:
-        "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}-{platform}{ext}",
+        "{testDir}/{testFileDir}/__snapshots__/{testFileName}/{testName}-{arg}-{projectName}-{platform}{ext}",
     },
     toMatchAriaSnapshot: {
       pathTemplate:
-        "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}",
+        "{testDir}/{testFileDir}/__snapshots__/{testFileName}/{testName}-{arg}{ext}",
     },
   },
   projects: [
+    ...browsers.map((device) => ({
+      name: `Main site, ${device}`,
+      use: { ...devices[device] },
+      testMatch: ["www/**/*.spec.ts"],
+      testIgnore: ["www/browser-independent/**/*.spec.ts"],
+    })),
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "Main site, browser independent",
+      use: { ...devices[headlessBrowser] },
+      testMatch: ["www/browser-independent/**/*.spec.ts"],
+    },
+    ...browsers.map((device) => ({
+      name: `Beta site, ${device}`,
+      use: { ...devices[device], baseURL: betaBaseURL },
+      testMatch: ["beta/**/*.spec.ts"],
+      testIgnore: ["beta/browser-independent/**/*.spec.ts"],
+    })),
+    {
+      name: "Beta site, browser independent",
+      use: { ...devices[headlessBrowser], baseURL: betaBaseURL },
+      testMatch: ["beta/browser-independent/**/*.spec.ts"],
     },
     {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-      testIgnore: browserIndependentTests,
-    },
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-      testIgnore: browserIndependentTests,
-    },
-    {
-      name: "Mobile Chrome",
-      use: { ...devices["Pixel 7"] },
-      testIgnore: browserIndependentTests,
-    },
-    {
-      name: "Mobile Safari",
-      use: { ...devices["iPhone 15"] },
-      testIgnore: browserIndependentTests,
+      name: "Wagtail API, browser independent",
+      use: {
+        ...devices[headlessBrowser],
+        baseURL: wagtailApiBaseURL,
+        extraHTTPHeaders: { ...extraHTTPHeaders, ...extraWagtailHTTPHeaders },
+      },
+      testMatch: ["wagtail/**/*.spec.ts"],
     },
   ],
 });

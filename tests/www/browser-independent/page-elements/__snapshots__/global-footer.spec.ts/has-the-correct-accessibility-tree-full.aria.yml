@@ -1,0 +1,114 @@
+- contentinfo:
+    - heading "The National Archives" [level=2]
+    - text: Kew, Richmond TW9 4DU
+    - heading "Follow us on social media" [level=3]
+    - navigation "Social":
+        - list:
+            - listitem:
+                - link "The National Archives X feed (formerly known as Twitter)":
+                    - /url: https://twitter.com/UKNatArchives
+                    - text: ""
+            - listitem:
+                - link "The National Archives YouTube channel":
+                    - /url: https://www.youtube.com/c/TheNationalArchivesUK
+                    - text: ""
+            - listitem:
+                - link "The National Archives Facebook page":
+                    - /url: https://www.facebook.com/TheNationalArchives
+                    - text: ""
+            - listitem:
+                - link "The National Archives Flickr feed":
+                    - /url: https://www.flickr.com/photos/nationalarchives
+                    - text: ""
+            - listitem:
+                - link "The National Archives Instagram feed":
+                    - /url: https://www.instagram.com/nationalarchivesuk/
+                    - text: ""
+    - navigation "Quick links":
+        - heading "Quick links" [level=3]
+        - list:
+            - listitem:
+                - link "About us":
+                    - /url: /about/
+            - listitem:
+                - link "Contact us":
+                    - /url: /contact-us/
+            - listitem:
+                - link "News":
+                    - /url: /news/
+            - listitem:
+                - link "Blogs":
+                    - /url: /blogs/
+            - listitem:
+                - link "Podcasts":
+                    - /url: /explore-the-collection/on-the-record-podcast/
+            - listitem:
+                - link "Image library":
+                    - /url: https://images.nationalarchives.gov.uk/
+            - listitem:
+                - link "Press room":
+                    - /url: /about/press-room/
+            - listitem:
+                - link "Jobs":
+                    - /url: /about/jobs/
+            - listitem:
+                - link "British citizenship services":
+                    - /url: /contact-us/british-citizenship-services/
+            - listitem:
+                - link "Historical Manuscripts Commission":
+                    - /url: /archives-sector/our-archives-sector-role/historical-manuscripts-commission/
+    - navigation "Other websites":
+        - heading "Other websites" [level=3]
+        - list:
+            - listitem:
+                - link "UK Government Web Archive":
+                    - /url: /webarchive/
+            - listitem:
+                - link "Legislation.gov.uk":
+                    - /url: https://www.legislation.gov.uk/
+            - listitem:
+                - link "Find Case Law":
+                    - /url: https://caselaw.nationalarchives.gov.uk/
+            - listitem:
+                - link "The Gazette":
+                    - /url: https://www.thegazette.co.uk/
+            - listitem:
+                - link "The National Archives Trust":
+                    - /url: https://www.nationalarchivestrust.org.uk/
+            - listitem:
+                - link "Friends of The National Archives":
+                    - /url: https://ftna.org.uk/
+            - listitem:
+                - link "National Archives Design System":
+                    - /url: https://design-system.nationalarchives.gov.uk/
+    - heading "Sign up to our emails" [level=3]
+    - paragraph: Hear about our latest news, stories from the collection and priority booking for events.
+    - link "Subscribe to the National Archives newsletter":
+        - /url: https://pages.enews.nationalarchives.gov.uk/pages/subscribe
+        - text: ""
+    - heading "Legal information" [level=3]
+    - navigation "Legal":
+        - list:
+            - listitem:
+                - link "Accessibility statement":
+                    - /url: /help/web-accessibility/
+            - listitem:
+                - link "Freedom of information":
+                    - /url: /freedom-of-information/
+            - listitem:
+                - link "Terms and conditions":
+                    - /url: /terms-and-conditions/
+            - listitem:
+                - link "Privacy notice":
+                    - /url: /terms-and-conditions/privacy-notice/
+            - listitem:
+                - link "Cookies":
+                    - /url: /cookies/
+        - separator
+    - paragraph:
+        - text: All content is available under the
+        - link "Open Government Licence v3.0":
+            - /url: https://dev-www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
+        - text: ", except where otherwise stated"
+    - link "GOV.UK":
+        - /url: https://www.gov.uk/

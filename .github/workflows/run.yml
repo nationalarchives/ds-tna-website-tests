@@ -6,15 +6,6 @@ permissions:
 on:
   workflow_dispatch:
     inputs:
-      site:
-        type: choice
-        description: Site to test
-        options:
-          - www
-          - beta
-          - wagtail
-          - all
-        default: "www"
       environment:
         type: choice
         description: Environment to test
@@ -59,116 +50,64 @@ jobs:
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: .nvmrc
-          cache: npm
-      - name: Get installed Playwright version
-        id: playwright-version
-        run: echo "PLAYWRIGHT_VERSION=$(jq -r '(.packages."node_modules/@playwright/test".version)' package-lock.json)" >> $GITHUB_OUTPUT
-      - name: Cache Playwright binaries
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.PLAYWRIGHT_VERSION }}-${{ github.ref_name }}
-      - name: Install test dependencies
-        run: npm install
-      - run: npx playwright install --with-deps
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-      - run: npx playwright install-deps
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-      - name: Install system dependencies for WebKit
-        # Some WebKit dependencies seem to lay outside the cache and will need to be installed separately
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps webkit
-      - name: Set site domains and get test header value
+      - name: Install dependencies
+        run: |
+          npm install
+          npx playwright install --with-deps
+          npx playwright install-deps
+      - name: Get header value
         run: |
           if [[ "${{ inputs.environment }}" == "develop" ]]; then
-            echo "TEST_DOMAIN=https://dev-www.nationalarchives.gov.uk" >> $GITHUB_ENV
-            echo "TEST_BETA_DOMAIN=https://dev-beta.nationalarchives.gov.uk" >> $GITHUB_ENV
-            echo "TEST_WAGTAIL_DOMAIN=https://dev-wagtail.nationalarchives.gov.uk" >> $GITHUB_ENV
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_DEV }}" >> $GITHUB_ENV
             echo "TEST_WAGTAIL_API_TOKEN=${{ secrets.TEST_WAGTAIL_API_TOKEN_DEV }}" >> $GITHUB_ENV
           elif [[ "${{ inputs.environment }}" == "staging" ]]; then
-            echo "TEST_DOMAIN=https://staging-www.nationalarchives.gov.uk" >> $GITHUB_ENV
-            echo "TEST_BETA_DOMAIN=https://staging-beta.nationalarchives.gov.uk" >> $GITHUB_ENV
-            echo "TEST_WAGTAIL_DOMAIN=https://staging-wagtail.nationalarchives.gov.uk" >> $GITHUB_ENV
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_STAGING }}" >> $GITHUB_ENV
             echo "TEST_WAGTAIL_API_TOKEN=${{ secrets.TEST_WAGTAIL_API_TOKEN_STAGING }}" >> $GITHUB_ENV
           else
-            echo "TEST_DOMAIN=https://www.nationalarchives.gov.uk" >> $GITHUB_ENV
-            echo "TEST_BETA_DOMAIN=https://beta.nationalarchives.gov.uk" >> $GITHUB_ENV
-            echo "TEST_WAGTAIL_DOMAIN=https://wagtail.nationalarchives.gov.uk" >> $GITHUB_ENV
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_PROD }}" >> $GITHUB_ENV
             echo "TEST_WAGTAIL_API_TOKEN=${{ secrets.TEST_WAGTAIL_API_TOKEN_PROD }}" >> $GITHUB_ENV
           fi
-      - name: Install jq
-        run: sudo apt-get install jq
-      - name: Report summary preparation
+      - name: Show test configuration
         run: |
-          echo "PASS_COUNT=0" >> "$GITHUB_ENV"
-          echo "FAIL_COUNT=0" >> "$GITHUB_ENV"
-          echo "SKIP_COUNT=0" >> "$GITHUB_ENV"
-          echo "FLAKE_COUNT=0" >> "$GITHUB_ENV"
-          echo "DURATION=0" >> "$GITHUB_ENV"
-      - name: Run www tests
-        if: inputs.site == 'www' || inputs.site == 'all'
-        run: TEST_DOMAIN="${{ env.TEST_DOMAIN }}" TEST_ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}${{ inputs.exclude-tests && '|' }}@wip"
-      - name: www report summary
-        if: always() && (inputs.site == 'www' || inputs.site == 'all')
+          echo "Environment: ${ENVIRONMENT}" >> $GITHUB_STEP_SUMMARY
+          echo "Include: ${INCLUDED_TESTS}" >> $GITHUB_STEP_SUMMARY
+          echo "Exclude: ${EXCLUDED_TESTS}" >> $GITHUB_STEP_SUMMARY
+          echo "Description: ${DESCRIPTION}" >> $GITHUB_STEP_SUMMARY
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+          INCLUDED_TESTS: ${{ inputs.include-tests }}
+          EXCLUDED_TESTS: ${{ inputs.exclude-tests }}
+          DESCRIPTION: ${{ inputs.description }}
+      - name: Run tests
+        run: ENVIRONMENT="${ENVIRONMENT}" TEST_ACCESS_HEADER="${TEST_ACCESS_HEADER}" TEST_WAGTAIL_API_TOKEN="${TEST_WAGTAIL_API_TOKEN}" CI=true npx playwright test --grep "${INCLUDED_TESTS}" --grep-invert "${EXCLUDED_TESTS}${{ env.EXCLUDED_TESTS && '|'}}@wip"
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+          INCLUDED_TESTS: ${{ inputs.include-tests }}
+          EXCLUDED_TESTS: ${{ inputs.exclude-tests }}
+      - name: Report summary
+        if: always()
         run: |
-          PASS_COUNT_WWW=$(jq '(.stats.expected)' test-results.json)
-          echo "PASS_COUNT=$((PASS_COUNT + PASS_COUNT_WWW))" >> "$GITHUB_ENV"
-          FAIL_COUNT_WWW=$(jq '(.stats.unexpected)' test-results.json)
-          echo "FAIL_COUNT=$((FAIL_COUNT + FAIL_COUNT_WWW))" >> "$GITHUB_ENV"
-          SKIP_COUNT_WWW=$(jq '(.stats.skipped)' test-results.json)
-          echo "SKIP_COUNT=$((SKIP_COUNT + SKIP_COUNT_WWW))" >> "$GITHUB_ENV"
-          FLAKE_COUNT_WWW=$(jq '(.stats.flaky)' test-results.json)
-          echo "FLAKE_COUNT=$((FLAKE_COUNT + FLAKE_COUNT_WWW))" >> "$GITHUB_ENV"
-          DURATION_WWW=$(jq '(.stats.duration/1000|tonumber|floor)' test-results.json)
-          echo "DURATION=$((DURATION + DURATION_WWW))" >> "$GITHUB_ENV"
-      - name: Run beta tests
-        if: inputs.site == 'beta' || inputs.site == 'all'
-        run: TEST_DOMAIN="${{ env.TEST_BETA_DOMAIN }}" TEST_ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" CI=true npx playwright test --config playwright-beta.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}${{ inputs.exclude-tests && '|' }}@wip"
-      - name: beta report summary
-        if: always() && (inputs.site == 'beta' || inputs.site == 'all')
-        run: |
-          PASS_COUNT_BETA=$(jq '(.stats.expected)' test-results.json)
-          echo "PASS_COUNT=$((PASS_COUNT + PASS_COUNT_BETA))" >> "$GITHUB_ENV"
-          FAIL_COUNT_BETA=$(jq '(.stats.unexpected)' test-results.json)
-          echo "FAIL_COUNT=$((FAIL_COUNT + FAIL_COUNT_BETA))" >> "$GITHUB_ENV"
-          SKIP_COUNT_BETA=$(jq '(.stats.skipped)' test-results.json)
-          echo "SKIP_COUNT=$((SKIP_COUNT + SKIP_COUNT_BETA))" >> "$GITHUB_ENV"
-          FLAKE_COUNT_BETA=$(jq '(.stats.flaky)' test-results.json)
-          echo "FLAKE_COUNT=$((FLAKE_COUNT + FLAKE_COUNT_BETA))" >> "$GITHUB_ENV"
-          DURATION_BETA=$(jq '(.stats.duration/1000|tonumber|floor)' test-results.json)
-          echo "DURATION=$((DURATION + DURATION_BETA))" >> "$GITHUB_ENV"
-      - name: Run wagtail tests
-        if: inputs.site == 'wagtail' || inputs.site == 'all'
-        run: TEST_DOMAIN="${{ env.TEST_WAGTAIL_DOMAIN }}" TEST_ACCESS_HEADER="${{ env.TEST_ACCESS_HEADER }}" TEST_WAGTAIL_API_TOKEN="${{ env.TEST_WAGTAIL_API_TOKEN }}" CI=true npx playwright test --config playwright-wagtail.config.ts --grep "${{ inputs.include-tests }}" --grep-invert "${{ inputs.exclude-tests }}${{ inputs.exclude-tests && '|' }}@wip"
-      - name: wagtail report summary
-        if: always() && (inputs.site == 'wagtail' || inputs.site == 'all')
-        run: |
-          PASS_COUNT_WAGTAIL=$(jq '(.stats.expected)' test-results.json)
-          echo "PASS_COUNT=$((PASS_COUNT + PASS_COUNT_WAGTAIL))" >> "$GITHUB_ENV"
-          FAIL_COUNT_WAGTAIL=$(jq '(.stats.unexpected)' test-results.json)
-          echo "FAIL_COUNT=$((FAIL_COUNT + FAIL_COUNT_WAGTAIL))" >> "$GITHUB_ENV"
-          SKIP_COUNT_WAGTAIL=$(jq '(.stats.skipped)' test-results.json)
-          echo "SKIP_COUNT=$((SKIP_COUNT + SKIP_COUNT_WAGTAIL))" >> "$GITHUB_ENV"
-          FLAKE_COUNT_WAGTAIL=$(jq '(.stats.flaky)' test-results.json)
-          echo "FLAKE_COUNT=$((FLAKE_COUNT + FLAKE_COUNT_WAGTAIL))" >> "$GITHUB_ENV"
-          DURATION_WAGTAIL=$(jq '(.stats.duration/1000|tonumber|floor)' test-results.json)
-          echo "DURATION=$((DURATION + DURATION_WAGTAIL))" >> "$GITHUB_ENV"
+          echo "PASS_COUNT=$(jq '(.stats.expected)' test-results.json)" >> "$GITHUB_ENV"
+          echo "FAIL_COUNT=$(jq '(.stats.unexpected)' test-results.json)" >> "$GITHUB_ENV"
+          echo "SKIP_COUNT=$(jq '(.stats.skipped)' test-results.json)" >> "$GITHUB_ENV"
+          echo "FLAKE_COUNT=$(jq '(.stats.flaky)' test-results.json)" >> "$GITHUB_ENV"
+          echo "DURATION=$(jq '(.stats.duration/1000|tonumber|floor)' test-results.json)" >> "$GITHUB_ENV"
       - name: Send report to Slack
         if: (success() && inputs.notify-slack-on-pass) || (failure() && inputs.notify-slack-on-fail)
         uses: ./.github/actions/send-slack-report
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK }}
-          environment: ${{ inputs.environment }}
-          site: ${{ inputs.site }}
-          included-tests: ${{ inputs.include-tests }}
-          excluded-tests: ${{ inputs.exclude-tests }}
+          environment: ${{ env.ENVIRONMENT }}
+          included-tests: ${{ env.INCLUDED_TESTS }}
+          excluded-tests: ${{ env.EXCLUDED_TESTS }}
           pass-count: ${{ env.PASS_COUNT }}
           fail-count: ${{ env.FAIL_COUNT }}
           skip-count: ${{ env.SKIP_COUNT }}
           flake-count: ${{ env.FLAKE_COUNT }}
           duration: ${{ env.DURATION }}
-          description: ${{ inputs.description }}
+          description: ${{ env.DESCRIPTION }}
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+          INCLUDED_TESTS: ${{ inputs.include-tests }}
+          EXCLUDED_TESTS: ${{ inputs.exclude-tests }}
+          DESCRIPTION: ${{ inputs.description }}

@@ -9,6 +9,7 @@ const checkAccessibility: (
     /* Ignore skip links */
     const accessibilityScanResults = await new AxeBuilder({ page })
       .exclude(".tna-skip-link")
+      .exclude("#djDebugToolbarHandle")
       .disableRules(disableRules)
       .analyze();
     const accessibilityScanViolations = accessibilityScanResults.violations;

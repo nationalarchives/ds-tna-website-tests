@@ -1,0 +1,38 @@
+- heading "Cookie settings" [level=2]
+- paragraph: This page has a brief explanation of each of the four types of cookie The National Archives uses. You can choose which cookies you’re happy for us to use.
+- paragraph:
+    - text: For a full breakdown, see
+    - link "our detailed cookie information":
+        - /url: https://dev-www.nationalarchives.gov.uk/cookies/details/
+    - text: .
+- heading "Strictly necessary cookies" [level=3]
+- paragraph: These essential cookies do things like allow you to remain logged in to some of our services.
+- paragraph: They always need to be on.
+- group "Cookies that measure website use":
+    - heading "Cookies that measure website use" [level=3]
+    - paragraph: We use Google Analytics cookies to measure how you use National Archives websites.
+    - paragraph: "These cookies collect information about:"
+    - list:
+        - listitem: how you got to these sites
+        - listitem: the pages you visit and how long you spend on each page
+        - listitem: what you click on while you’re visiting these sites
+    - paragraph: We do not allow Google to use or share this data for their own purposes.
+    - radio "Use cookies that measure my website use" [checked]
+    - text: Use cookies that measure my website use
+    - radio "Do not use cookies that measure my website use"
+    - text: Do not use cookies that measure my website use
+- group "Cookies that remember your settings":
+    - heading "Cookies that remember your settings" [level=3]
+    - paragraph: These cookies do things like remember your preferences and the choices you make, to personalise your experience of using the site.
+    - radio "Use cookies that remember my settings on the site" [checked]
+    - text: Use cookies that remember my settings on the site
+    - radio "Do not use cookies that remember my settings on the site"
+    - text: Do not use cookies that remember my settings on the site
+- group "Cookies that are used for marketing":
+    - heading "Cookies that are used for marketing" [level=3]
+    - paragraph: These cookies track your preferences for marketing purposes. They are often used by third party services such as YouTube to allow better video suggestions.
+    - radio "Use cookies that are for marketing purposes" [checked]
+    - text: Use cookies that are for marketing purposes
+    - radio "Do not use cookies that are for marketing purposes"
+    - text: Do not use cookies that are for marketing purposes
+- button "Save changes"

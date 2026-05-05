@@ -1,0 +1,42 @@
+- main:
+    - heading "Page not found" [level=1]
+    - paragraph: If you typed the web address, check it is correct.
+    - paragraph: If you pasted the web address, check you copied the entire address.
+    - paragraph:
+        - text: If the web address is correct or you selected a link or button,
+        - link "contact us":
+            - /url: https://dev-www.nationalarchives.gov.uk/contact-us/
+        - text: to let us help.
+    - heading "Helpful links" [level=2]
+    - list:
+        - listitem:
+            - text: Check the UK Government Web Archive for an
+            - link "archived version of this page":
+                - /url: https://webarchive.nationalarchives.gov.uk/ukgwa/+/http://dev-www.nationalarchives.gov.uk/explore-the-collection/foobar/
+        - listitem:
+            - text: Return to the
+            - link "homepage":
+                - /url: /
+        - listitem:
+            - text: Search
+            - link "Discovery":
+                - /url: https://discovery.nationalarchives.gov.uk
+            - text: ", our catalogue"
+        - listitem:
+            - text: Use a
+            - link "research guide":
+                - /url: https://dev-www.nationalarchives.gov.uk/help-with-your-research/research-guides/
+            - text: to help with your historical research
+        - listitem:
+            - text: Find something in the
+            - link "A-Z":
+                - /url: https://dev-www.nationalarchives.gov.uk/help/a-to-z/
+        - listitem:
+            - text: Visit the online
+            - link "shop":
+                - /url: https://shop.nationalarchives.gov.uk/
+        - listitem:
+            - text: See
+            - link "what’s on":
+                - /url: https://dev-www.nationalarchives.gov.uk/whats-on/
+            - text: at The National Archives

@@ -9,10 +9,6 @@ inputs:
     type: string
     description: Environment tested
     required: true
-  site:
-    type: string
-    description: Sites tested
-    required: true
   included-tests:
     type: string
     description: Included test tags
@@ -61,26 +57,39 @@ runs:
       id: report
       run: |
         touch report.txt
-        echo "Site(s): **${{ inputs.site }}**" >> report.txt
-        echo "Environment: **${{ inputs.environment }}**" >> report.txt
+        echo "Environment: **${ENVIRONMENT}**" >> report.txt
         echo >> report.txt
-        [[ -n "${{ inputs.included-tests }}" ]] && echo "- Included: \`${{ inputs.included-tests }}\`" >> report.txt
-        [[ -n "${{ inputs.excluded-tests }}" ]] && echo "- Excluded: \`${{ inputs.excluded-tests }}\`" >> report.txt
+        [[ -n "${INCLUDED_TESTS}" ]] && echo "- Included: \`${INCLUDED_TESTS}\`" >> report.txt
+        [[ -n "${EXCLUDED_TESTS}" ]] && echo "- Excluded: \`${EXCLUDED_TESTS}\`" >> report.txt
         echo >> report.txt
-        echo >> report.txt && echo "✅ **${{ inputs.pass-count }}** tests passed" >> report.txt
-        [[ "${{ inputs.fail-count }}" -gt 0 ]] && echo >> report.txt && echo "❌ **${{ inputs.fail-count }}** tests failed" >> report.txt
-        [[ "${{ inputs.skip-count }}" -gt 0 ]] && echo >> report.txt && echo "🙈 **${{ inputs.skip-count }}** tests skipped" >> report.txt
-        [[ "${{ inputs.flake-count }}" -gt 0 ]] && echo >> report.txt && echo "🤕 **${{ inputs.flake-count }}** flaky tests" >> report.txt
-        TIME_TAKEN=$(date -u -d @"${{ inputs.duration }}" +"%T")
+        echo >> report.txt && echo "✅ **${PASS_COUNT}** tests passed" >> report.txt
+        [[ "${FAIL_COUNT}" -gt 0 ]] && echo >> report.txt && echo "❌ **${FAIL_COUNT}** tests failed" >> report.txt
+        [[ "${SKIP_COUNT}" -gt 0 ]] && echo >> report.txt && echo "🙈 **${SKIP_COUNT}** tests skipped" >> report.txt
+        [[ "${FLAKE_COUNT}" -gt 0 ]] && echo >> report.txt && echo "🤕 **${FLAKE_COUNT}** flaky tests" >> report.txt
+        TIME_TAKEN=$(date -u -d @"${DURATION}" +"%T")
         echo >> report.txt && echo "Time taken: **$TIME_TAKEN**" >> report.txt
-        [[ -n "${{ inputs.description }}" ]] && echo >> report.txt && echo "${{ inputs.description }}" >> report.txt
-        echo >> report.txt && echo "[Full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Source code](${{ github.server_url }}/${{ github.repository }}/tree/main/tests) | [WIP tests](${{ github.server_url }}/search?q=repo%3A${{ github.repository_owner }}%2F${{ github.event.repository.name }}+%28%40wip%29+language%3ATypeScript&type=code&l=TypeScript)" >> report.txt
+        [[ -n "${DESCRIPTION}" ]] && echo >> report.txt && echo "${DESCRIPTION}" >> report.txt
+        echo >> report.txt && echo "[Full report](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) | [Source code](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/main/tests) | [WIP tests](${GITHUB_SERVER_URL}/search?q=repo%3A${GITHUB_REPOSITORY_OWNER}%2F${GITHUB_REPOSITORY}%20%28%40wip%29%20language%3ATypeScript&type=code&l=TypeScript)" >> report.txt
         cat report.txt
         {
           echo 'REPORT<<EOF'
           cat report.txt
           echo EOF
         } >> "$GITHUB_OUTPUT"
+      env:
+        ENVIRONMENT: ${{ inputs.environment }}
+        INCLUDED_TESTS: ${{ inputs.included-tests }}
+        EXCLUDED_TESTS: ${{ inputs.excluded-tests }}
+        PASS_COUNT: ${{ inputs.pass-count }}
+        FAIL_COUNT: ${{ inputs.fail-count }}
+        SKIP_COUNT: ${{ inputs.skip-count }}
+        FLAKE_COUNT: ${{ inputs.flake-count }}
+        DURATION: ${{ inputs.duration }}
+        DESCRIPTION: ${{ inputs.description }}
+        GITHUB_SERVER_URL: ${{ github.server_url }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_RUN_ID: ${{ github.run_id }}
+        GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
       shell: bash
     - uses: rtCamp/action-slack-notify@e31e87e03dd19038e411e38ae27cbad084a90661 # v2.3.3
       env:
