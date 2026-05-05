@@ -16,7 +16,10 @@ test(
       domainRegEx,
       "https://www.nationalarchives.gov.uk",
     );
-    await expect(headerMainHtml).toMatchSnapshot("global-header-html.txt");
+    await expect(headerMainHtml).toMatchSnapshot("no-js.txt");
+    await expect(await headerMain).toMatchAriaSnapshot({
+      name: "no-js.aria.yml",
+    });
   },
 );
 
@@ -31,9 +34,10 @@ test(
       domainRegEx,
       "https://www.nationalarchives.gov.uk",
     );
-    await expect(headerMainHtml).toMatchSnapshot(
-      "global-header-html-with-js.txt",
-    );
+    await expect(headerMainHtml).toMatchSnapshot("with-js.txt");
     // await expect(headerMain).toHaveScreenshot("global-header-html+js.png");
+    await expect(await headerMain).toMatchAriaSnapshot({
+      name: "with-js.aria.yml",
+    });
   },
 );
