@@ -53,12 +53,15 @@ test(
     if (isMobile) {
       await expect(
         await header.locator(".tna-global-header__main"),
-      ).toMatchAriaSnapshot({ name: "closed.aria.yml" });
+      ).toMatchAriaSnapshot({ name: "mobile-closed.aria.yml" });
       await headerMenuButton.click();
+      await expect(
+        await header.locator(".tna-global-header__main"),
+      ).toMatchAriaSnapshot({ name: "mobile-open.aria.yml" });
+    } else {
+      await expect(
+        await header.locator(".tna-global-header__main"),
+      ).toMatchAriaSnapshot({ name: "desktop.aria.yml" });
     }
-
-    await expect(
-      await header.locator(".tna-global-header__main"),
-    ).toMatchAriaSnapshot({ name: "open.aria.yml" });
   },
 );
