@@ -15,14 +15,14 @@ const apiEndpoints = [
     url: "/api/v2/pages/find/?html_path=%2F&format=json",
     schema: "page",
   },
-  // {
-  //   name: "/pages/?type=home.HomePage",
-  //   getUrlFrom: "/api/v2/pages/?type=home.HomePage&format=json",
-  //   getIdKey: "items.0.id",
-  //   getDetailUrl: (id: number | string) =>
-  //     `/api/v2/pages/${id.toString()}/?format=json`,
-  //   schema: "pageType:home.HomePage",
-  // },
+  {
+    name: "/pages/?type=home.HomePage",
+    getUrlFrom: "/api/v2/pages/?type=home.HomePage&format=json",
+    getIdKey: "items.0.id",
+    getDetailUrl: (id: number | string) =>
+      `/api/v2/pages/${id.toString()}/?format=json`,
+    schema: "pageType:home.HomePage",
+  },
   {
     name: "/globals/notifications/",
     url: "/api/v2/globals/notifications/?format=json",
@@ -112,17 +112,20 @@ apiEndpoints.forEach(
             response = await request.get(newLocation);
           }
         } else if (getUrlFrom) {
-          const preResponse = await fetch(
+          const preResponse = await request.get(
             `${baseURL?.replace(/\/$/, "")}/${getUrlFrom.replace(/^\//, "")}`,
             {
-              headers: extraHTTPHeaders,
+              maxRedirects: 0,
             },
           );
-          // console.log(extraHTTPHeaders)
-          // console.log(preResponse)
-          // await expect(preResponse.ok).toEqual(true);
+          if (preResponse.status() === 301 || preResponse.status() === 302) {
+            const newLocation = preResponse
+              .headers()
+              ["location"]?.replace(/host\.docker\.internal/g, "localhost");
+            response = await request.get(newLocation);
+          }
+          await expect(preResponse).toBeOK();
           const preTextContent = await preResponse.text();
-          // console.log(preTextContent)
           const replacedTextContent = preTextContent.replace(
             /host\.docker\.internal/g,
             "localhost",

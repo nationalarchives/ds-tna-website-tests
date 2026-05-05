@@ -16,7 +16,10 @@ test(
       domainRegEx,
       "https://www.nationalarchives.gov.uk",
     );
-    await expect(headerMainHtml).toMatchSnapshot("global-header-html.txt");
+    await expect(headerMainHtml).toMatchSnapshot("no-js.txt");
+    await expect(await headerMain).toMatchAriaSnapshot({
+      name: "no-js.aria.yml",
+    });
   },
 );
 
@@ -31,26 +34,10 @@ test(
       domainRegEx,
       "https://www.nationalarchives.gov.uk",
     );
-    await expect(headerMainHtml).toMatchSnapshot(
-      "global-header-html-with-js.txt",
-    );
+    await expect(headerMainHtml).toMatchSnapshot("with-js.txt");
     // await expect(headerMain).toHaveScreenshot("global-header-html+js.png");
-  },
-);
-
-test(
-  "global header has the correct accessibility tree for desktop and mobile in open and closed states",
-  { tag: ["@site:www", "@service:ds-frontend"] },
-  async ({ page, isMobile }) => {
-    await page.goto("/");
-    const header = await page.getByRole("banner");
-    const headerMenuButton = await header.getByRole("button", { name: "Menu" });
-
-    if (isMobile) {
-      await expect(header).toMatchAriaSnapshot({ name: "closed.aria.yml" });
-      await headerMenuButton.click();
-    }
-
-    await expect(header).toMatchAriaSnapshot({ name: "open.aria.yml" });
+    await expect(await headerMain).toMatchAriaSnapshot({
+      name: "with-js.aria.yml",
+    });
   },
 );

@@ -1,9 +1,10 @@
 name: Run tests
 
-permissions:
-  contents: read
-
 on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
   workflow_dispatch:
     inputs:
       environment:
@@ -13,7 +14,7 @@ on:
           - production
           - staging
           - develop
-        default: "production"
+        default: "develop"
       include-tests:
         type: string
         description: Test tags to run, separated with a pipe "|" (leave blank to run all tests)
@@ -40,6 +41,9 @@ on:
         required: false
         default: ""
 
+permissions:
+  contents: read
+
 jobs:
   run-tests:
     runs-on: ubuntu-latest
@@ -52,9 +56,9 @@ jobs:
           node-version-file: .nvmrc
       - name: Install dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install -y libnss3 libatk-bridge2.0-0 libdrm2 libxcomposite1 libxdamage1 libxrandr2 libgbm1
           npm install
-          npx playwright install --with-deps
-          npx playwright install-deps
       - name: Get header value
         run: |
           if [[ "${{ inputs.environment }}" == "develop" ]]; then

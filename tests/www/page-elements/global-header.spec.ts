@@ -41,3 +41,27 @@ test(
     }
   },
 );
+
+test(
+  "global header has the correct accessibility tree for desktop and mobile in open and closed states",
+  { tag: ["@site:www", "@service:ds-frontend"] },
+  async ({ page, isMobile }) => {
+    await page.goto("/");
+    const header = await page.getByRole("banner");
+    const headerMenuButton = await header.getByRole("button", { name: "Menu" });
+
+    if (isMobile) {
+      await expect(
+        await header.locator(".tna-global-header__main"),
+      ).toMatchAriaSnapshot({ name: "mobile-closed.aria.yml" });
+      await headerMenuButton.click();
+      await expect(
+        await header.locator(".tna-global-header__main"),
+      ).toMatchAriaSnapshot({ name: "mobile-open.aria.yml" });
+    } else {
+      await expect(
+        await header.locator(".tna-global-header__main"),
+      ).toMatchAriaSnapshot({ name: "desktop.aria.yml" });
+    }
+  },
+);
