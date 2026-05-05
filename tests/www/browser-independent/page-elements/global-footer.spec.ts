@@ -20,6 +20,17 @@ test(
       footer.getByRole("navigation", { name: "Legal" }),
     ).toBeVisible();
 
-    await expect(footer).toMatchAriaSnapshot({ name: "full.aria.yml" });
+    // await expect(footer).toMatchAriaSnapshot({ name: "full.aria.yml" });
+    await expect(
+      await footer.locator(
+        "> .tna-footer__inner > .tna-container:nth-child(1)",
+      ),
+    ).toMatchAriaSnapshot({ name: "first-container.aria.yml" });
+    await expect(
+      await footer.locator(
+        "> .tna-footer__inner > .tna-container:nth-child(2)",
+      ),
+    ).toMatchAriaSnapshot({ name: "second-container.aria.yml" });
+    // TODO: The third container has an absolute link which changes per environment
   },
 );
