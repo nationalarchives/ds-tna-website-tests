@@ -47,6 +47,7 @@ These tests include checking redirects, content on the page, the validitiy of HT
 | `@service:ds-frontend-enrichment`    | Tests covering [`ds-frontend-enrichment`](https://github.com/nationalarchives/ds-frontend-enrichment)       |
 | `@service:ds-request-service-record` | Tests covering [`ds-request-service-record`](https://github.com/nationalarchives/ds-request-service-record) |
 | `@service:wordpress`                 | Tests that require WordPress to run                                                                         |
+| `@requires:aws`                      | Tests that require the site to be hosted on AWS infrastructure                                              |
 
 ## Updating Playwright
 
