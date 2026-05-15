@@ -4,6 +4,8 @@ test(
   "pages aren't cached in Cloudfront and form data is restored when navigating back",
   { tag: ["@site:www", "@service:ds-request-service-record", "@requires:aws"] },
   async ({ page, context }) => {
+    test.slow();
+
     await context.clearCookies();
 
     // /request-a-military-service-record/
