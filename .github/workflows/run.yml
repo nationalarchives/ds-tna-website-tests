@@ -84,7 +84,7 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
       - name: Run tests
-        run: ENVIRONMENT="${ENVIRONMENT}" TEST_ACCESS_HEADER="${TEST_ACCESS_HEADER}" TEST_WAGTAIL_API_TOKEN="${TEST_WAGTAIL_API_TOKEN}" CI=true playwright test --grep "${INCLUDED_TESTS}" --grep-invert "${EXCLUDED_TESTS}${{ env.EXCLUDED_TESTS && '|'}}@wip"
+        run: ENVIRONMENT="${ENVIRONMENT}" TEST_ACCESS_HEADER="${TEST_ACCESS_HEADER}" TEST_WAGTAIL_API_TOKEN="${TEST_WAGTAIL_API_TOKEN}" CI=true npx playwright test --grep "${INCLUDED_TESTS}" --grep-invert "${EXCLUDED_TESTS}${{ env.EXCLUDED_TESTS && '|'}}@wip"
         env:
           ENVIRONMENT: ${{ inputs.environment }}
           INCLUDED_TESTS: ${{ inputs.include-tests }}
