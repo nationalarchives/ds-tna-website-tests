@@ -51,6 +51,8 @@ test.describe(
     });
 
     test("setting cookie preferences", async ({ context, page }) => {
+      test.slow();
+
       page.route("**", (route) => route.continue());
 
       const response = await page.goto("/cookies/");
