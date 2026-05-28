@@ -14,6 +14,7 @@
     "ajv": "^8.18.0",
     "ajv-formats": "^3.0.1",
     "dotenv": "^17.2.3",
-    "html-validate": "^10.1.1"
+    "html-validate": "^10.1.1",
+    "playwright": "^1.60.0"
   }
 }
