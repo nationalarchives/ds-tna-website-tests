@@ -1,19 +1,19 @@
 {
   "scripts": {
     "postinstall": "npx playwright install --with-deps",
-    "lint:fix": "npx -y prettier --write .",
-    "test:localhost": "npx playwright install && ENVIRONMENT=localhost NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright test --update-snapshots --ui --grep-invert \"@service:wordpress @requires:aws\"",
-    "test:develop": "npx playwright install && ENVIRONMENT=develop npx playwright test --ui --grep-invert \"@wip\"",
-    "test:staging": "npx playwright install && ENVIRONMENT=staging npx playwright test --ui --grep-invert \"@wip\"",
-    "test:production": "npx playwright install && ENVIRONMENT=production npx playwright test --ui --grep-invert \"@wip\""
+    "lint:fix": "npx prettier --write .",
+    "test:localhost": "ENVIRONMENT=localhost NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright test --update-snapshots --ui --grep-invert \"@service:wordpress @requires:aws\"",
+    "test:develop": "ENVIRONMENT=develop npx playwright test --ui --grep-invert \"@wip\"",
+    "test:staging": "ENVIRONMENT=staging npx playwright test --ui --grep-invert \"@wip\"",
+    "test:production": "ENVIRONMENT=production npx playwright test --ui --grep-invert \"@wip\""
   },
   "dependencies": {
     "@axe-core/playwright": "^4.10.1",
     "@estruyf/github-actions-reporter": "^1.9.2",
-    "@playwright/test": "^1.59.1",
+    "@playwright/test": "^1.60.0",
     "ajv": "^8.18.0",
     "ajv-formats": "^3.0.1",
     "dotenv": "^17.2.3",
-    "html-validate": "^10.1.1"
+    "html-validate": "^11.4.0"
   }
 }
