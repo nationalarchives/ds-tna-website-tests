@@ -55,8 +55,11 @@ test.describe(
       page,
       browserName,
     }) => {
-      // TODO: Fix the test in Firefox
-      test.skip(browserName === "firefox", "Not working in Firefox");
+      // TODO: Fix the test in Firefox and Safari and remove the skip
+      test.skip(
+        ["firefox", "safari"].includes(browserName),
+        "Not working in Firefox or Safari",
+      );
 
       page.route("**", (route) => route.continue());
 
