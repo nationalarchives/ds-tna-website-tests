@@ -28,7 +28,7 @@
   - list:
     - listitem:
       - link "About us":
-        - /url: /about/
+        - /url: /about-us/
     - listitem:
       - link "Contact us":
         - /url: /contact-us/
@@ -46,10 +46,10 @@
         - /url: https://images.nationalarchives.gov.uk/
     - listitem:
       - link "Press room":
-        - /url: /about/press-room/
+        - /url: /about-us/press-and-media/
     - listitem:
       - link "Jobs":
-        - /url: /about/jobs/
+        - /url: /about-us/jobs-and-opportunities/
     - listitem:
       - link "British citizenship services":
         - /url: /contact-us/british-citizenship-services/
