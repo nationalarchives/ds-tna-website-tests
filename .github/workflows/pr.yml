@@ -1,6 +1,7 @@
-name: Run tests
+name: Run tests for PR against develop
 
 on:
+  workflow_dispatch:
   pull_request:
     types:
       - opened
