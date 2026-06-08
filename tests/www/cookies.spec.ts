@@ -57,7 +57,7 @@ test.describe(
     }) => {
       // TODO: Fix the test in Firefox and Safari and remove the skip
       test.skip(
-        ["firefox", "safari"].includes(browserName),
+        ["Desktop Firefox", "Desktop Safari"].includes(browserName),
         "Not working in Firefox or Safari",
       );
 
