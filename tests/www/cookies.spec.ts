@@ -56,8 +56,8 @@ test.describe(
       browserName,
     }) => {
       // TODO: Fix the test in Firefox and Safari and remove the skips
-      test.skip(browserName.includes("firefox"));
-      test.skip(browserName.includes("safari"));
+      test.skip(browserName.toLowerCase().includes("firefox"));
+      test.skip(browserName.toLowerCase().includes("safari"));
 
       page.route("**", (route) => route.continue());
 
