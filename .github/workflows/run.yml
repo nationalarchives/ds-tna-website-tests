@@ -56,16 +56,18 @@ jobs:
           sudo apt-get install -y libnss3 libatk-bridge2.0-0 libdrm2 libxcomposite1 libxdamage1 libxrandr2 libgbm1
       - name: Get header value
         run: |
-          if [[ "${{ inputs.environment }}" == "develop" ]]; then
+          if [[ "${ENVIRONMENT}" == "develop" ]]; then
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_DEV }}" >> $GITHUB_ENV
             echo "TEST_WAGTAIL_API_TOKEN=${{ secrets.TEST_WAGTAIL_API_TOKEN_DEV }}" >> $GITHUB_ENV
-          elif [[ "${{ inputs.environment }}" == "staging" ]]; then
+          elif [[ "${ENVIRONMENT}" == "staging" ]]; then
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_STAGING }}" >> $GITHUB_ENV
             echo "TEST_WAGTAIL_API_TOKEN=${{ secrets.TEST_WAGTAIL_API_TOKEN_STAGING }}" >> $GITHUB_ENV
           else
             echo "TEST_ACCESS_HEADER=${{ secrets.TEST_HEADER_PROD }}" >> $GITHUB_ENV
             echo "TEST_WAGTAIL_API_TOKEN=${{ secrets.TEST_WAGTAIL_API_TOKEN_PROD }}" >> $GITHUB_ENV
           fi
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
       - name: Show test configuration
         run: |
           echo "Environment: ${ENVIRONMENT}" >> $GITHUB_STEP_SUMMARY
@@ -80,7 +82,7 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
       - name: Run tests
-        run: ENVIRONMENT="${ENVIRONMENT}" TEST_ACCESS_HEADER="${TEST_ACCESS_HEADER}" TEST_WAGTAIL_API_TOKEN="${TEST_WAGTAIL_API_TOKEN}" CI=true npx playwright test --grep "${INCLUDED_TESTS}" --grep-invert "${EXCLUDED_TESTS}${{ env.EXCLUDED_TESTS && '|'}}@wip"
+        run: ENVIRONMENT="${ENVIRONMENT}" TEST_ACCESS_HEADER="${TEST_ACCESS_HEADER}" TEST_WAGTAIL_API_TOKEN="${TEST_WAGTAIL_API_TOKEN}" CI=true npx playwright test --grep "${INCLUDED_TESTS}" --grep-invert "${EXCLUDED_TESTS}${EXCLUDED_TESTS:+|}@wip"
         env:
           ENVIRONMENT: ${{ inputs.environment }}
           INCLUDED_TESTS: ${{ inputs.include-tests }}
