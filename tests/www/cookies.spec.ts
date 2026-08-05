@@ -1,11 +1,14 @@
-import { test, expect, Cookie, Page } from "@playwright/test";
+import { test, expect, Cookie } from "@playwright/test";
 import {
   acceptAllCookies,
   declineAllCookies,
   getCookieBanner,
 } from "../lib/set-cookie-preferences.ts";
 
-import { cookiePreferencesSetKey } from "../../playwright.config.ts";
+import {
+  cookiePreferencesSetKey,
+  cookiePreferencesKey,
+} from "../../playwright.config.ts";
 
 test.describe(
   "initial state",
@@ -68,7 +71,7 @@ test.describe(
       );
       await expect(cookiePreferencesSet).toBeUndefined();
       let policy = await cookies.find(
-        (cookie: Cookie) => cookie.name === "cookies_policy",
+        (cookie: Cookie) => cookie.name === cookiePreferencesKey,
       );
       await expect(policy).not.toBeUndefined();
       let policyValues = JSON.parse(
@@ -132,7 +135,7 @@ test.describe(
         await expect(cookiePreferencesSet.value).toEqual("true");
       }
       policy = await cookies.find(
-        (cookie: Cookie) => cookie.name === "cookies_policy",
+        (cookie: Cookie) => cookie.name === cookiePreferencesKey,
       );
       await expect(policy).not.toBeUndefined();
       policyValues = JSON.parse(
@@ -165,7 +168,7 @@ test.describe(
 
       cookies = await context.cookies();
       policy = await cookies.find(
-        (cookie: Cookie) => cookie.name === "cookies_policy",
+        (cookie: Cookie) => cookie.name === cookiePreferencesKey,
       );
       await expect(policy).not.toBeUndefined();
       policyValues = JSON.parse(
@@ -236,7 +239,7 @@ test.describe(
         await expect(cookiePreferencesSet.value).toEqual("true");
       }
       const policy = await cookies.find(
-        (cookie: Cookie) => cookie.name === "cookies_policy",
+        (cookie: Cookie) => cookie.name === cookiePreferencesKey,
       );
       await expect(policy).not.toBeUndefined();
       const policyValues = JSON.parse(
@@ -305,7 +308,7 @@ test.describe(
         await expect(cookiePreferencesSet.value).toEqual("true");
       }
       const policy = await cookies.find(
-        (cookie: Cookie) => cookie.name === "cookies_policy",
+        (cookie: Cookie) => cookie.name === cookiePreferencesKey,
       );
       await expect(policy).not.toBeUndefined();
       const policyValues = JSON.parse(

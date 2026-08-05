@@ -1,5 +1,6 @@
 import { test, expect, Cookie, Page } from "@playwright/test";
 import {
+  cookiePreferencesKey,
   cookiePreferencesSetKey,
   cookiePreferencesSetKeyOld,
 } from "../../../playwright.config.ts";
@@ -17,7 +18,7 @@ test.beforeEach(async ({ context }) => {
 // test.afterEach(async ({ context }) => {
 //   const cookies = await context.cookies();
 //   const cookiesPolicy: Cookie | undefined = await cookies.find(
-//     (cookie) => cookie.name === "cookies_policy",
+//     (cookie) => cookie.name === cookiePreferencesKey,
 //   );
 //   expect(cookiesPolicy).toBeDefined();
 //   if (cookiesPolicy) {
@@ -133,7 +134,7 @@ test.describe(
     test("visit new page", async ({ page, context, baseURL }) => {
       await context.addCookies([
         {
-          name: "cookies_policy",
+          name: cookiePreferencesKey,
           value: "%7B%22usage%22%3Atrue%7D",
           domain: getCookieDomainFromBaseUrl(baseURL),
           path: "/",
@@ -146,7 +147,7 @@ test.describe(
     test("visit old page", async ({ page, context, baseURL }) => {
       await context.addCookies([
         {
-          name: "cookies_policy",
+          name: cookiePreferencesKey,
           value: "%7B%22usage%22%3Atrue%7D",
           domain: getCookieDomainFromBaseUrl(baseURL),
           path: "/",
@@ -183,7 +184,7 @@ test.describe(
 
       test("visit old page", async ({ page }) => {
         await page.goto(oldPagePath);
-        // This is incorrect behaviour - the ds-cookie-consent doesn't display when the cookies_policy only contains some of the expected policies
+        // This is incorrect behaviour - the ds-cookie-consent doesn't display when the cookie_preferences only contains some of the expected policies
         await expect(oldCookieBanner(page)).not.toBeVisible();
       });
     });
@@ -197,7 +198,7 @@ test.describe(
     test.beforeEach(async ({ context, baseURL }) => {
       await context.addCookies([
         {
-          name: "cookies_policy",
+          name: cookiePreferencesKey,
           value: "foobar",
           domain: getCookieDomainFromBaseUrl(baseURL),
           path: "/",
@@ -212,7 +213,7 @@ test.describe(
 
     test("visit old page", async ({ page }) => {
       await page.goto(oldPagePath);
-      // This is incorrect behaviour - the ds-cookie-consent doesn't display when the cookies_policy cookie is malformed
+      // This is incorrect behaviour - the ds-cookie-consent doesn't display when the cookie_preferences cookie is malformed
       await expect(oldCookieBanner(page)).not.toBeVisible();
     });
 
@@ -243,7 +244,7 @@ test.describe(
 
       test("visit old page", async ({ page }) => {
         await page.goto(oldPagePath);
-        // This is incorrect behaviour - the ds-cookie-consent should still show even when the cookies_policy cookie is malformed
+        // This is incorrect behaviour - the ds-cookie-consent should still show even when the cookie_preferences cookie is malformed
         await expect(oldCookieBanner(page)).not.toBeVisible();
       });
     });
