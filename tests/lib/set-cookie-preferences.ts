@@ -1,6 +1,9 @@
 import { test, BrowserContext, Page } from "@playwright/test";
 import getCookieDomainFromBaseUrl from "./domains.ts";
-import { cookiePreferencesSetKey } from "../../playwright.config.ts";
+import {
+  cookiePreferencesSetKey,
+  cookiePreferencesKey,
+} from "../../playwright.config.ts";
 
 const setCookiePolicy = async (
   context: BrowserContext,
@@ -23,7 +26,7 @@ const setCookiePolicy = async (
   }
   await context.addCookies([
     {
-      name: "cookies_policy",
+      name: cookiePreferencesKey,
       value: `%7B%22usage%22%3A${usage.toString()}%2C%22settings%22%3A${settings.toString()}%2C%22marketing%22%3A${marketing.toString()}%2C%22essential%22%3Atrue%7D`,
       domain: getCookieDomainFromBaseUrl(baseURL),
       path: "/",
