@@ -2,8 +2,8 @@ import { defineConfig, devices } from "@playwright/test";
 require("dotenv").config({ quiet: true });
 
 export const cookiePreferencesKey = "cookie_preferences";
+export const cookiePreferencesSetKey = "cookie_preferences_set";
 export const cookiePreferencesKeyOld = "cookies_policy";
-export const cookiePreferencesSetKey = "dontShowCookieNotice";
 export const cookiePreferencesSetKeyOld = "dontShowCookieNotice";
 
 const extraHTTPHeaders: { [key: string]: string } = {};
