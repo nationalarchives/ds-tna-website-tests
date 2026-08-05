@@ -127,7 +127,6 @@ test.describe(
       await page.getByRole("button", { name: "Save changes" }).click();
 
       cookies = await context.cookies();
-      console.log(cookies);
       cookiePreferencesSet = await cookies.find(
         (cookie: Cookie) => cookie.name === cookiePreferencesSetKey,
       );
