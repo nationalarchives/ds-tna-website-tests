@@ -12,35 +12,44 @@ import {
 
 test.describe(
   "initial state",
-  { tag: ["@site:www", "@service:ds-frontend", "@service:wordpress"] },
+  {
+    tag: [
+      "@site:www",
+      "@service:ds-frontend",
+      "@service:wordpress",
+      "@service:ds-request-service-record",
+    ],
+  },
   () => {
     test.beforeEach(async ({ context }) => {
       await context.clearCookies();
     });
 
-    test("continue to show cookie banners if preferences not changed", async ({
-      page,
-    }) => {
+    test("cookie banner shows on all pages", async ({ page }) => {
       await page.goto("/");
       await expect(getCookieBanner(page)).toBeVisible();
-      await page.goto("/cookies/");
-      await expect(getCookieBanner(page)).not.toBeVisible();
-      await page.goto("/");
+      await page.goto("/request-a-military-service-record/");
       await expect(getCookieBanner(page)).toBeVisible();
-      // await page.goto("/contact-us/"); // WordPress page
-      // await expect(getCookieBanner(page)).toBeVisible();
+      await page.goto("/contact-us/");
+      await expect(getCookieBanner(page)).toBeVisible();
     });
 
-    test("hide cookie banners after changing preferences", async ({ page }) => {
+    test("cookie banner doesn't show on cookies page", async ({ page }) => {
+      await page.goto("/cookies/");
+      await expect(getCookieBanner(page)).not.toBeVisible();
+    });
+
+    test("cookie banner hidden after setting preferences", async ({ page }) => {
       await page.goto("/");
       await expect(getCookieBanner(page)).toBeVisible();
       await page.goto("/cookies/");
-      await expect(getCookieBanner(page)).not.toBeVisible();
       await page.getByRole("button", { name: "Save changes" }).click();
       await page.goto("/");
       await expect(getCookieBanner(page)).not.toBeVisible();
-      // await page.goto("/contact-us/"); // WordPress page
-      // await expect(getCookieBanner(page)).not.toBeVisible();
+      await page.goto("/request-a-military-service-record/");
+      await expect(getCookieBanner(page)).not.toBeVisible();
+      await page.goto("/contact-us/"); // WordPress page
+      await expect(getCookieBanner(page)).toBeVisible(); // WordPress pages use different cookie names
     });
   },
 );
