@@ -3,7 +3,7 @@
 - paragraph:
   - text: For a full breakdown, see
   - link "our detailed cookie information":
-    - /url: https://www.nationalarchives.gov.uk/cookies/details/
+    - /url: /https:\/\/((dev-|staging-)?www.nationalarchives.gov.uk|localhost)\/cookies\/details\//
   - text: .
 - heading "Strictly necessary cookies" [level=3]
 - paragraph: These essential cookies do things like allow you to remain logged in to some of our services.
