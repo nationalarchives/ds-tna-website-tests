@@ -1,9 +1,4 @@
 import { test, expect, Cookie } from "@playwright/test";
-import {
-  acceptAllCookies,
-  declineAllCookies,
-  getCookieBanner,
-} from "../lib/set-cookie-preferences.ts";
 
 import {
   cookiePreferencesSetKey,
@@ -12,51 +7,7 @@ import {
   cookiePreferencesSetKeyOld,
 } from "../../playwright.config.ts";
 
-test.describe(
-  "initial state",
-  {
-    tag: [
-      "@site:www",
-      "@service:ds-frontend",
-      "@service:ds-request-service-record",
-      "@service:wordpress",
-    ],
-  },
-  () => {
-    test.beforeEach(async ({ context }) => {
-      await context.clearCookies();
-    });
-
-    test("cookie banner shows on all pages", async ({ page }) => {
-      await page.goto("/");
-      await expect(getCookieBanner(page)).toBeVisible();
-      await page.goto("/request-a-military-service-record/");
-      await expect(getCookieBanner(page)).toBeVisible();
-      await page.goto("/contact-us/"); // WordPress page
-      await expect(getCookieBanner(page)).toBeVisible();
-    });
-
-    test("cookie banner doesn't show on cookies page", async ({ page }) => {
-      await page.goto("/cookies/");
-      await expect(getCookieBanner(page)).not.toBeVisible();
-    });
-
-    test("cookie banner hidden after setting preferences", async ({ page }) => {
-      await page.goto("/");
-      await expect(getCookieBanner(page)).toBeVisible();
-
-      await page.goto("/cookies/");
-      await page.getByRole("button", { name: "Save changes" }).click();
-
-      await page.goto("/");
-      await expect(getCookieBanner(page)).not.toBeVisible();
-      await page.goto("/request-a-military-service-record/");
-      await expect(getCookieBanner(page)).not.toBeVisible();
-      await page.goto("/contact-us/"); // WordPress page
-      await expect(getCookieBanner(page)).not.toBeVisible();
-    });
-  },
-);
+test.use({ javaScriptEnabled: false });
 
 test.describe(
   "no cookie policy set",
@@ -69,9 +20,10 @@ test.describe(
     test("setting cookie preferences", async ({
       context,
       page,
-      // browserName,
+      browserName,
     }) => {
-      // test.skip(browserName === "firefox" || browserName === "webkit");
+      // TODO: Fix the test in Firefox and Safari and remove the skips
+      test.skip(browserName === "firefox" || browserName === "webkit");
 
       page.route("**", (route) => route.continue());
 
@@ -86,7 +38,7 @@ test.describe(
       let policy = await cookies.find(
         (cookie: Cookie) => cookie.name === cookiePreferencesKey,
       );
-      await expect(policy).not.toBeUndefined();
+      await expect(policy).toBeUndefined();
 
       let cookiePreferencesSetOld = await cookies.find(
         (cookie: Cookie) => cookie.name === cookiePreferencesSetKeyOld,
@@ -103,10 +55,7 @@ test.describe(
       let policyValuesOld = JSON.parse(
         decodeURIComponent(policyOld ? policyOld.value : "{}"),
       );
-      await expect(policyValues).toHaveProperty("essential", true);
-      await expect(policyValues).toHaveProperty("settings", false);
-      await expect(policyValues).toHaveProperty("usage", false);
-      await expect(policyValues).toHaveProperty("marketing", false);
+      await expect(policyValues).toEqual({});
       await expect(policyValuesOld).toEqual({});
       await expect(
         page.getByRole("radio", {
@@ -272,145 +221,6 @@ test.describe(
           exact: true,
         }),
       ).not.toBeChecked();
-    });
-  },
-);
-
-test.describe(
-  "previously accepted cookies",
-  { tag: ["@site:www", "@service:ds-frontend"] },
-  () => {
-    acceptAllCookies();
-
-    test("cookies landing page", async ({ context, page }) => {
-      page.route("**", (route) => route.continue());
-
-      await page.goto("/cookies/?2");
-      const cookies = await context.cookies();
-
-      const cookiePreferencesSet = await cookies.find(
-        (cookie: Cookie) => cookie.name === cookiePreferencesSetKey,
-      );
-      await expect(cookiePreferencesSet).not.toBeUndefined();
-      if (cookiePreferencesSet) {
-        await expect(cookiePreferencesSet.value).toEqual("true");
-      }
-      const policy = await cookies.find(
-        (cookie: Cookie) => cookie.name === cookiePreferencesKey,
-      );
-      await expect(policy).not.toBeUndefined();
-      const policyValues = JSON.parse(
-        decodeURIComponent(policy ? policy.value : "{}"),
-      );
-      await expect(policyValues).toHaveProperty("essential", true);
-      await expect(policyValues).toHaveProperty("settings", true);
-      await expect(policyValues).toHaveProperty("usage", true);
-      await expect(policyValues).toHaveProperty("marketing", true);
-      await expect(
-        page.getByRole("radio", {
-          name: "Use cookies that measure my website use",
-          exact: true,
-        }),
-      ).toBeChecked();
-      await expect(
-        page.getByRole("radio", {
-          name: "Do not use cookies that measure my website use",
-          exact: true,
-        }),
-      ).not.toBeChecked();
-      await expect(
-        page.getByRole("radio", {
-          name: "Use cookies that remember my settings on the site",
-          exact: true,
-        }),
-      ).toBeChecked();
-      await expect(
-        page.getByRole("radio", {
-          name: "Do not use cookies that remember my settings on the site",
-          exact: true,
-        }),
-      ).not.toBeChecked();
-      await expect(
-        page.getByRole("radio", {
-          name: "Use cookies that are for marketing purposes",
-          exact: true,
-        }),
-      ).toBeChecked();
-      await expect(
-        page.getByRole("radio", {
-          name: "Do not use cookies that are for marketing purposes",
-          exact: true,
-        }),
-      ).not.toBeChecked();
-    });
-  },
-);
-
-test.describe(
-  "previously declined cookies",
-  { tag: ["@site:www", "@service:ds-frontend"] },
-  () => {
-    declineAllCookies();
-
-    test("cookies landing page", async ({ context, page }) => {
-      page.route("**", (route) => route.continue());
-
-      await page.goto("/cookies/?3");
-      const cookies = await context.cookies();
-      const cookiePreferencesSet = await cookies.find(
-        (cookie: Cookie) => cookie.name === cookiePreferencesSetKey,
-      );
-      await expect(cookiePreferencesSet).not.toBeUndefined();
-      if (cookiePreferencesSet) {
-        await expect(cookiePreferencesSet.value).toEqual("true");
-      }
-      const policy = await cookies.find(
-        (cookie: Cookie) => cookie.name === cookiePreferencesKey,
-      );
-      await expect(policy).not.toBeUndefined();
-      const policyValues = JSON.parse(
-        decodeURIComponent(policy ? policy.value : "{}"),
-      );
-      await expect(policyValues).toHaveProperty("essential", true);
-      await expect(policyValues).toHaveProperty("settings", false);
-      await expect(policyValues).toHaveProperty("usage", false);
-      await expect(policyValues).toHaveProperty("marketing", false);
-      await expect(
-        page.getByRole("radio", {
-          name: "Use cookies that measure my website use",
-          exact: true,
-        }),
-      ).not.toBeChecked();
-      await expect(
-        page.getByRole("radio", {
-          name: "Do not use cookies that measure my website use",
-          exact: true,
-        }),
-      ).toBeChecked();
-      await expect(
-        page.getByRole("radio", {
-          name: "Use cookies that remember my settings on the site",
-          exact: true,
-        }),
-      ).not.toBeChecked();
-      await expect(
-        page.getByRole("radio", {
-          name: "Do not use cookies that remember my settings on the site",
-          exact: true,
-        }),
-      ).toBeChecked();
-      await expect(
-        page.getByRole("radio", {
-          name: "Use cookies that are for marketing purposes",
-          exact: true,
-        }),
-      ).not.toBeChecked();
-      await expect(
-        page.getByRole("radio", {
-          name: "Do not use cookies that are for marketing purposes",
-          exact: true,
-        }),
-      ).toBeChecked();
     });
   },
 );

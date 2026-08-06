@@ -5,32 +5,34 @@ test(
   { tag: ["@site:www", "@service:ds-frontend"] },
   async ({ page }) => {
     await page.goto("/");
-    const footer = await page.getByRole("contentinfo");
+    const footer = await page.locator(".tna-footer");
+    await expect(footer).toMatchAriaSnapshot({
+      name: "footer.aria.yml",
+    });
+  },
+);
 
-    await expect(
-      footer.getByRole("navigation", { name: "Social" }),
-    ).toBeVisible();
-    await expect(
-      footer.getByRole("navigation", { name: "Quick links" }),
-    ).toBeVisible();
-    await expect(
-      footer.getByRole("navigation", { name: "Other websites" }),
-    ).toBeVisible();
-    await expect(
-      footer.getByRole("navigation", { name: "Legal" }),
-    ).toBeVisible();
+test(
+  "has the correct screenshot",
+  { tag: ["@site:www", "@service:ds-frontend"] },
+  async ({ page }) => {
+    await page.goto("/");
+    const footer = await page.locator(".tna-footer");
+    await expect(footer).toHaveScreenshot("global-footer.png");
+  },
+);
 
-    // await expect(footer).toMatchAriaSnapshot({ name: "full.aria.yml" });
-    await expect(
-      await footer.locator(
-        "> .tna-footer__inner > .tna-container:nth-child(1)",
-      ),
-    ).toMatchAriaSnapshot({ name: "first-container.aria.yml" });
-    await expect(
-      await footer.locator(
-        "> .tna-footer__inner > .tna-container:nth-child(2)",
-      ),
-    ).toMatchAriaSnapshot({ name: "second-container.aria.yml" });
-    // TODO: The third container has an absolute link which changes per environment
+test(
+  "has the correct screenshot with no JS or CSS",
+  { tag: ["@site:www", "@service:ds-frontend"] },
+  async ({ page }) => {
+    await page.route("**/*", (route) => {
+      return ["script", "stylesheet"].includes(route.request().resourceType())
+        ? route.abort()
+        : route.continue();
+    });
+    await page.goto("/");
+    const footer = await page.locator(".tna-footer");
+    await expect(footer).toHaveScreenshot("global-footer.png");
   },
 );
