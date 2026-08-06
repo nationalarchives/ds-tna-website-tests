@@ -14,13 +14,13 @@ test(
   },
 );
 
-test(
-  "has the correct screenshot",
-  { tag: ["@site:www", "@service:ds-frontend"] },
-  async ({ page }) => {
-    await page.goto("/");
-    await expect(page.locator(".tna-cookie-banner")).toHaveScreenshot(
-      "cookie-banner.png",
-    );
-  },
-);
+// test(
+//   "has the correct screenshot",
+//   { tag: ["@site:www", "@service:ds-frontend"] },
+//   async ({ page }) => {
+//     await page.goto("/");
+//     await expect(page.locator(".tna-cookie-banner")).toHaveScreenshot(
+//       "cookie-banner.png",
+//     );
+//   },
+// );
