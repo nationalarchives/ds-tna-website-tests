@@ -5,7 +5,7 @@ import {
   cookiePreferencesKey,
   cookiePreferencesKeyOld,
   cookiePreferencesSetKeyOld,
-} from "../../playwright.config.ts";
+} from "../../../playwright.config.ts";
 
 test.use({ javaScriptEnabled: false });
 
@@ -17,14 +17,7 @@ test.describe(
       await context.clearCookies();
     });
 
-    test("setting cookie preferences", async ({
-      context,
-      page,
-      browserName,
-    }) => {
-      // TODO: Fix the test in Firefox and Safari and remove the skips
-      test.skip(browserName === "firefox" || browserName === "webkit");
-
+    test("setting cookie preferences", async ({ context, page }) => {
       page.route("**", (route) => route.continue());
 
       const response = await page.goto("/cookies/");
@@ -83,13 +76,13 @@ test.describe(
       ).toBeChecked();
       await expect(
         page.getByRole("radio", {
-          name: "Use cookies that are for marketing purposes",
+          name: "Use cookies that help with communications and marketing",
           exact: true,
         }),
       ).not.toBeChecked();
       await expect(
         page.getByRole("radio", {
-          name: "Do not use cookies that are for marketing purposes",
+          name: "Do not use cookies that help with communications and marketing",
           exact: true,
         }),
       ).toBeChecked();
@@ -154,7 +147,7 @@ test.describe(
         .check();
       await page
         .getByRole("radio", {
-          name: "Use cookies that are for marketing purposes",
+          name: "Use cookies that help with communications and marketing",
           exact: true,
         })
         .check();
@@ -211,13 +204,13 @@ test.describe(
       ).not.toBeChecked();
       await expect(
         page.getByRole("radio", {
-          name: "Use cookies that are for marketing purposes",
+          name: "Use cookies that help with communications and marketing",
           exact: true,
         }),
       ).toBeChecked();
       await expect(
         page.getByRole("radio", {
-          name: "Do not use cookies that are for marketing purposes",
+          name: "Do not use cookies that help with communications and marketing",
           exact: true,
         }),
       ).not.toBeChecked();

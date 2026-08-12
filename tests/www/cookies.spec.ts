@@ -134,13 +134,13 @@ test.describe(
       ).toBeChecked();
       await expect(
         page.getByRole("radio", {
-          name: "Use cookies that are for marketing purposes",
+          name: "Use cookies that help with communications and marketing",
           exact: true,
         }),
       ).not.toBeChecked();
       await expect(
         page.getByRole("radio", {
-          name: "Do not use cookies that are for marketing purposes",
+          name: "Do not use cookies that help with communications and marketing",
           exact: true,
         }),
       ).toBeChecked();
@@ -205,7 +205,7 @@ test.describe(
         .check();
       await page
         .getByRole("radio", {
-          name: "Use cookies that are for marketing purposes",
+          name: "Use cookies that help with communications and marketing",
           exact: true,
         })
         .check();
@@ -262,13 +262,13 @@ test.describe(
       ).not.toBeChecked();
       await expect(
         page.getByRole("radio", {
-          name: "Use cookies that are for marketing purposes",
+          name: "Use cookies that help with communications and marketing",
           exact: true,
         }),
       ).toBeChecked();
       await expect(
         page.getByRole("radio", {
-          name: "Do not use cookies that are for marketing purposes",
+          name: "Do not use cookies that help with communications and marketing",
           exact: true,
         }),
       ).not.toBeChecked();
@@ -332,13 +332,13 @@ test.describe(
       ).not.toBeChecked();
       await expect(
         page.getByRole("radio", {
-          name: "Use cookies that are for marketing purposes",
+          name: "Use cookies that help with communications and marketing",
           exact: true,
         }),
       ).toBeChecked();
       await expect(
         page.getByRole("radio", {
-          name: "Do not use cookies that are for marketing purposes",
+          name: "Do not use cookies that help with communications and marketing",
           exact: true,
         }),
       ).not.toBeChecked();
@@ -401,13 +401,13 @@ test.describe(
       ).toBeChecked();
       await expect(
         page.getByRole("radio", {
-          name: "Use cookies that are for marketing purposes",
+          name: "Use cookies that help with communications and marketing",
           exact: true,
         }),
       ).not.toBeChecked();
       await expect(
         page.getByRole("radio", {
-          name: "Do not use cookies that are for marketing purposes",
+          name: "Do not use cookies that help with communications and marketing",
           exact: true,
         }),
       ).toBeChecked();
