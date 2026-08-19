@@ -90,6 +90,26 @@ class JsonSchemaValidator {
       name: "pageType:home.HomePage",
       url: "page-types/home.HomePage.schema.json",
     },
+    {
+      name: "pageType:generic_pages.HubPage",
+      url: "page-types/generic_pages.HubPage.schema.json",
+    },
+    {
+      name: "block:Paragraph",
+      url: "blocks/Paragraph.schema.json",
+    },
+    {
+      name: "pageParts:Hero",
+      url: "page-parts/hero.schema.json",
+    },
+    {
+      name: "pageParts:Image",
+      url: "page-parts/image.schema.json",
+    },
+    {
+      name: "pageParts:Streamfield",
+      url: "page-parts/streamfield.schema.json",
+    },
   ];
 
   public constructor() {}

@@ -17,11 +17,17 @@ const apiEndpoints = [
   },
   {
     name: "/pages/?type=home.HomePage",
-    getUrlFrom: "/api/v2/pages/?type=home.HomePage&format=json",
-    getIdKey: "items.0.id",
-    getDetailUrl: (id: number | string) =>
-      `/api/v2/pages/${id.toString()}/?format=json`,
+    url: "/api/v2/pages/random/?type=home.HomePage&format=json",
+    // getUrlFrom: "/api/v2/pages/?type=home.HomePage&format=json",
+    // getIdKey: "items.0.id",
+    // getDetailUrl: (id: number | string) =>
+    //   `/api/v2/pages/${id.toString()}/?format=json`,
     schema: "pageType:home.HomePage",
+  },
+  {
+    name: "/pages/?type=generic_pages.HubPage",
+    url: "/api/v2/pages/random/?type=generic_pages.HubPage&format=json",
+    schema: "pageType:generic_pages.HubPage",
   },
   {
     name: "/globals/notifications/",
