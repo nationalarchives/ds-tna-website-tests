@@ -91,6 +91,48 @@ const spotCheck: (
       );
     });
   });
+
+  await test.describe("check for missing resources", async () => {
+    urls.forEach((url) => {
+      test(
+        `${url.url}`,
+        { tag: [...globalTags, ...(url.tags || [])] },
+        async ({ page, context }) => {
+          await context.route("**", async (route) => {
+            route.request().response().then(async (response) => {
+              await expect(route.request().url()).toBeTruthy();
+              await expect(response?.ok()).toBeTruthy();
+              console.debug(
+                `Resource: ${route.request().url()} - Status: ${response?.status()}`,
+              );
+            });
+              route.continue();
+          });
+          const response = await page.goto(url.url);
+        },
+      );
+    });
+
+    devUrls.forEach((url) => {
+      test(
+        `${url.url}`,
+        { tag: [...globalTags, ...(url.tags || []), "@wip"] },
+        async ({ page, context }) => {
+          await context.route("**", async (route) => {
+            route.request().response().then(async (response) => {
+              await expect(route.request().url()).toBeTruthy();
+              await expect(response?.ok()).toBeTruthy();
+              console.debug(
+                `Resource: ${route.request().url()} - Status: ${response?.status()}`,
+              );
+            });
+              route.continue();
+          });
+          const response = await page.goto(url.url);
+        },
+      );
+    });
+  });
 };
 
 export default spotCheck;
