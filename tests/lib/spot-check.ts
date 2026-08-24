@@ -103,11 +103,13 @@ const spotCheck: (
               .request()
               .response()
               .then(async (response) => {
-                await expect(route.request().url()).toBeTruthy();
-                await expect(response?.ok()).toBeTruthy();
-                console.debug(
-                  `Resource: ${route.request().url()} - Status: ${response?.status()}`,
-                );
+                const ok = await response?.ok();
+                if (!ok) {
+                  console.error(
+                    `Resource: ${route.request().url()} - Status: ${response?.status()}`,
+                  );
+                }
+                await expect(ok).toBeTruthy();
               });
             route.continue();
           });
@@ -126,11 +128,13 @@ const spotCheck: (
               .request()
               .response()
               .then(async (response) => {
-                await expect(route.request().url()).toBeTruthy();
-                await expect(response?.ok()).toBeTruthy();
-                console.debug(
-                  `Resource: ${route.request().url()} - Status: ${response?.status()}`,
-                );
+                const ok = await response?.ok();
+                if (!ok) {
+                  console.error(
+                    `Resource: ${route.request().url()} - Status: ${response?.status()}`,
+                  );
+                }
+                await expect(ok).toBeTruthy();
               });
             route.continue();
           });
