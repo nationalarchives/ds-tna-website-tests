@@ -3,6 +3,10 @@ import { SpotCheck } from "../../lib/types";
 
 const urlsToTest: SpotCheck[] = [
   {
+    url: "/",
+    tags: ["@service:ds-frontend", "@service:ds-wagtail"],
+  },
+  {
     url: "/explore-the-collection/",
     tags: ["@service:ds-frontend", "@service:ds-wagtail"],
   },
