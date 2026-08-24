@@ -99,14 +99,17 @@ const spotCheck: (
         { tag: [...globalTags, ...(url.tags || [])] },
         async ({ page, context }) => {
           await context.route("**", async (route) => {
-            route.request().response().then(async (response) => {
-              await expect(route.request().url()).toBeTruthy();
-              await expect(response?.ok()).toBeTruthy();
-              console.debug(
-                `Resource: ${route.request().url()} - Status: ${response?.status()}`,
-              );
-            });
-              route.continue();
+            route
+              .request()
+              .response()
+              .then(async (response) => {
+                await expect(route.request().url()).toBeTruthy();
+                await expect(response?.ok()).toBeTruthy();
+                console.debug(
+                  `Resource: ${route.request().url()} - Status: ${response?.status()}`,
+                );
+              });
+            route.continue();
           });
           const response = await page.goto(url.url);
         },
@@ -119,14 +122,17 @@ const spotCheck: (
         { tag: [...globalTags, ...(url.tags || []), "@wip"] },
         async ({ page, context }) => {
           await context.route("**", async (route) => {
-            route.request().response().then(async (response) => {
-              await expect(route.request().url()).toBeTruthy();
-              await expect(response?.ok()).toBeTruthy();
-              console.debug(
-                `Resource: ${route.request().url()} - Status: ${response?.status()}`,
-              );
-            });
-              route.continue();
+            route
+              .request()
+              .response()
+              .then(async (response) => {
+                await expect(route.request().url()).toBeTruthy();
+                await expect(response?.ok()).toBeTruthy();
+                console.debug(
+                  `Resource: ${route.request().url()} - Status: ${response?.status()}`,
+                );
+              });
+            route.continue();
           });
           const response = await page.goto(url.url);
         },
