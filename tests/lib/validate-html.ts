@@ -1,8 +1,10 @@
 import { test, expect, Page } from "@playwright/test";
 import { HtmlValidate, ConfigData } from "html-validate";
+import NiceCheckersPlugin from "@fulldecent/nice-checkers-plugin"
 
 const defaultHtmlvalidateConfig: ConfigData = {
-  extends: ["html-validate:recommended"],
+  plugins: [NiceCheckersPlugin],
+  extends: ["html-validate:recommended", "nice-checkers-plugin:recommended"],
   rules: {
     "attribute-empty-style": ["off", { style: "omit" }],
     "attribute-boolean-style": ["off", { style: "omit" }],
@@ -10,6 +12,9 @@ const defaultHtmlvalidateConfig: ConfigData = {
     "no-trailing-whitespace": "off",
     "prefer-native-element": "warn", // video.js
     "script-type": "off", // GTM
+    "nice-checkers/internal-links": "off",
+    "nice-checkers/external-links": "off",
+    "nice-checkers/mailto-awesome": "off"
   },
 };
 

@@ -2,6 +2,7 @@
 .env
 .idea
 .vscode
+cache
 node_modules
 test-results
 test-results.json
