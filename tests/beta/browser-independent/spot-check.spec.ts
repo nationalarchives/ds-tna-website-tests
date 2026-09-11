@@ -6,7 +6,6 @@ const urlsToTest: SpotCheck[] = [
     url: "/catalogue/",
     tags: ["@service:ds-catalogue"],
   },
-  // TODO: Re-enable these tests
   {
     url: "/search/",
     tags: ["@service:ds-sitemap-search"],
