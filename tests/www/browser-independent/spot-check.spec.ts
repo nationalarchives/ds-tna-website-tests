@@ -61,7 +61,7 @@ const urlsToTest: SpotCheck[] = [
     url: "/blogs/feeds/",
     tags: ["@service:ds-frontend", "@service:ds-wagtail"],
   },
-  { url: "/merlin/", tags: ["@service:ds-frontend"] },
+  // { url: "/merlin/", tags: ["@service:ds-bulk-download"] },  // TODO: Re-enable this test when staging is fixed
   { url: "/whats-on/", tags: ["@service:ds-frontend", "@service:ds-wagtail"] },
   {
     url: "/whats-on/events/",
