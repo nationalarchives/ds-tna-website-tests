@@ -16,15 +16,12 @@ npm run test:develop
 
 ### Test configurations
 
-| Test script            | Domain                                       |
-| ---------------------- | -------------------------------------------- |
-| `test:localhost`       | https://localhost                            |
-| `test:beta:develop`    | https://dev-beta.nationalarchives.gov.uk     |
-| `test:beta:staging`    | https://staging-beta.nationalarchives.gov.uk |
-| `test:beta:production` | https://beta.nationalarchives.gov.uk         |
-| `test:www:develop`     | https://dev-www.nationalarchives.gov.uk      |
-| `test:www:staging`     | https://staging-www.nationalarchives.gov.uk  |
-| `test:www:production`  | https://www.nationalarchives.gov.uk          |
+| Test script       | Domain(s)                                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `test:localhost`  | `localhost`                                                                                                              |
+| `test:develop`    | `dev-www.nationalarchives.gov.uk`, `dev-beta.nationalarchives.gov.uk`, `dev-wagtail.nationalarchives.gov.uk`             |
+| `test:staging`    | `staging-www.nationalarchives.gov.uk`, `staging-beta.nationalarchives.gov.uk`, `staging-wagtail.nationalarchives.gov.uk` |
+| `test:production` | `www.nationalarchives.gov.uk`, `beta.nationalarchives.gov.uk`, `wagtail.nationalarchives.gov.uk`                         |
 
 ## Writing tests
 
