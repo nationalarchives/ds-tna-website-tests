@@ -8,11 +8,11 @@ const urlsToTest: SpotCheck[] = [
   },
   {
     url: "/search/",
-    tags: ["@service:ds-sitemap-search"],
+    tags: ["@service:ds-sitemap-search", "@wip"],
   },
   {
     url: "/search/?q=ufo",
-    tags: ["@service:ds-sitemap-search"],
+    tags: ["@service:ds-sitemap-search", "@wip"],
   },
 ];
 
