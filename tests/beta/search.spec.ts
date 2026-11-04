@@ -5,7 +5,7 @@ acceptAllCookies();
 
 test(
   "search for a page",
-  { tag: ["@site:beta", "@service:ds-sitemap-search"] },
+  { tag: ["@site:beta", "@service:ds-sitemap-search", "@wip"] },
   async ({ page }) => {
     test.slow();
 
