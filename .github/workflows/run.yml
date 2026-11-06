@@ -77,16 +77,16 @@ jobs:
           DESCRIPTION: ${{ inputs.description }}
       - name: Install Node dependencies
         run: npm ci
-      - name: Cache Playwright browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
-        id: playwright-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
       - name: Install Playwright and Dependencies
         run: npx playwright install --with-deps --only-shell
+      # - name: Cache Playwright browsers
+      #   uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+      #   id: playwright-cache
+      #   with:
+      #     path: ~/.cache/ms-playwright
+      #     key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-playwright-
       - name: Run tests
         run: ENVIRONMENT="${ENVIRONMENT}" TEST_ACCESS_HEADER="${TEST_ACCESS_HEADER}" TEST_WAGTAIL_API_TOKEN="${TEST_WAGTAIL_API_TOKEN}" CI=true npx playwright test --grep "${INCLUDED_TESTS}" --grep-invert "${EXCLUDED_TESTS}${EXCLUDED_TESTS:+|}@wip"
         env:
