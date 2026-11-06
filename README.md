@@ -7,12 +7,22 @@
 ```sh
 # Install dependencies
 npm install
+# Install Playwright and its dependencies
+npx playwright install --with-deps
 
 # Run the tests for www.nationalarchives.gov.uk
 npm run test:production
 # ...or dev-www.nationalarchives.gov.uk
 npm run test:develop
 ```
+
+### Rate limiting
+
+The National Archives website may enforce rate limiting to prevent abuse. If you encounter rate limiting during tests, copy the `.env.example` file to `.env` and fill in the `TEST_ACCESS_HEADER` for your environment.
+
+### Wagtail API key
+
+The Wagtail API key is required to authenticate requests to the Wagtail subdomain of The National Archives website. Copy the `.env.example` file to `.env` and fill in the `TEST_WAGTAIL_API_TOKEN` with the appropriate value for your environment.
 
 ### Test configurations
 
