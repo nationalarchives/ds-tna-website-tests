@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "postinstall": "npx playwright install --with-deps",
     "lint:fix": "npx prettier --write .",
     "test:localhost": "ENVIRONMENT=localhost NODE_TLS_REJECT_UNAUTHORIZED=0 npx playwright test --ui --grep-invert \"@service:wordpress @requires:aws\"",
     "test:develop": "ENVIRONMENT=develop npx playwright test --ui --grep-invert \"@wip\"",
