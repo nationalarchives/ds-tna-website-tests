@@ -69,6 +69,14 @@ npm install @playwright/test@latest
 npx playwright install --with-deps
 ```
 
+## Continuous integration
+
+Both test workflows run inside Microsoft's official Playwright Docker image.
+
+The shared `playwright-image.yml` workflow reads the exact `@playwright/test` version from `package-lock.json` and selects the matching `mcr.microsoft.com/playwright:v<version>-noble` image.
+
+The image includes Chromium, Firefox, WebKit and their OS dependencies, so CI does not install browsers or system packages. Project dependencies are still installed with `npm ci`, using the npm download cache provided by `actions/setup-node`.
+
 ## Running these tests from another repo
 
 [Create a PAT](https://github.com/settings/personal-access-tokens) with access to this repository (nationalarchives/ds-tna-website-tests).
