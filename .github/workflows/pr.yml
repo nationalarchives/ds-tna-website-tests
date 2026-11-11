@@ -42,6 +42,4 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
       - name: Run tests
-        run: ENVIRONMENT="develop" TEST_ACCESS_HEADER="${TEST_ACCESS_HEADER}" TEST_WAGTAIL_API_TOKEN="${TEST_WAGTAIL_API_TOKEN}" CI=true npx playwright test --grep-invert "@wip"
-        env:
-          HOME: /root
+        run: HOME=/root ENVIRONMENT="develop" TEST_ACCESS_HEADER="${TEST_ACCESS_HEADER}" TEST_WAGTAIL_API_TOKEN="${TEST_WAGTAIL_API_TOKEN}" CI=true npx playwright test --grep-invert "@wip"
