@@ -1,0 +1,31 @@
+name: Resolve Playwright image
+
+on:
+  workflow_call:
+    outputs:
+      image:
+        description: Microsoft Playwright image matching package-lock.json
+        value: ${{ jobs.resolve.outputs.image }}
+
+permissions:
+  contents: read
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.image.outputs.image }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Read locked Playwright version
+        id: image
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const lock = require("./package-lock.json");
+          const version = lock.packages["node_modules/@playwright/test"].version;
+          if (!/^\d+\.\d+\.\d+$/.test(version)) {
+            throw new Error(`Unsupported Playwright image version: ${version}`);
+          }
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `image=mcr.microsoft.com/playwright:v${version}-noble\n`);
+          NODE
