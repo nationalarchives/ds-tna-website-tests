@@ -91,6 +91,7 @@ jobs:
       - name: Run tests
         run: ENVIRONMENT="${ENVIRONMENT}" TEST_ACCESS_HEADER="${TEST_ACCESS_HEADER}" TEST_WAGTAIL_API_TOKEN="${TEST_WAGTAIL_API_TOKEN}" CI=true npx playwright test --grep "${INCLUDED_TESTS}" --grep-invert "${EXCLUDED_TESTS}${EXCLUDED_TESTS:+|}@wip"
         env:
+          HOME: /root
           ENVIRONMENT: ${{ inputs.environment }}
           INCLUDED_TESTS: ${{ inputs.include-tests }}
           EXCLUDED_TESTS: ${{ inputs.exclude-tests }}
