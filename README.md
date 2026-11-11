@@ -77,7 +77,7 @@ The shared `playwright-image.yml` workflow reads the exact `@playwright/test` ve
 
 The image includes Chromium, Firefox, WebKit and their OS dependencies, so CI does not install browsers or system packages. Project dependencies are still installed with `npm ci`, using the npm download cache provided by `actions/setup-node`.
 
-The test steps set `HOME=/root` to match the container user; Firefox cannot launch with GitHub Actions' default home directory owned by a different user.
+The Playwright commands set `HOME=/root` to match the container user; Firefox cannot launch with GitHub Actions' default home directory owned by a different user. This override is applied inside the shell, not via step-level `env`, so the runner's Docker client retains its own home directory.
 
 ## Running these tests from another repo
 
