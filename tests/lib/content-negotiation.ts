@@ -7,6 +7,7 @@ const checkResponseIsHtml = async (response: get) => {
   const body = await response.text();
   expect(body).toContain("<html");
   expect(body).toContain("</html>");
+  return body;
 };
 
 const checkResponseIsMarkdown = async (response: get) => {
@@ -14,19 +15,46 @@ const checkResponseIsMarkdown = async (response: get) => {
   expect(response.headers()["content-type"]).toContain("text/markdown");
   expect(response.headers()["vary"]).toContain("Accept");
   const body = await response.text();
+  expect(body.trim()).not.toBe("");
   expect(body).not.toContain("<html");
   expect(body).not.toContain("</html>");
+  return body;
 };
 
 const contentNegotiation = (
   suiteName: string,
   path: string,
+  contentMarker: string,
   tags: string[],
 ) => {
   test.describe(suiteName, { tag: tags }, () => {
-    test("html", async ({ request }) => {
-      const response = await request.get(path);
+    test("empty accept header", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "",
+        },
+      });
       await checkResponseIsHtml(response);
+    });
+
+    test("html", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/html",
+        },
+      });
+      await checkResponseIsHtml(response);
+    });
+
+    test("html and markdown contain the same resource", async ({ request }) => {
+      const [htmlResponse, markdownResponse] = await Promise.all([
+        request.get(path, { headers: { accept: "text/html" } }),
+        request.get(path, { headers: { accept: "text/markdown" } }),
+      ]);
+      const htmlBody = await checkResponseIsHtml(htmlResponse);
+      const markdownBody = await checkResponseIsMarkdown(markdownResponse);
+      expect(htmlBody).toContain(contentMarker);
+      expect(markdownBody).toContain(contentMarker);
     });
 
     test("markdown", async ({ request }) => {
@@ -77,6 +105,43 @@ const contentNegotiation = (
       await checkResponseIsHtml(response);
     });
 
+    test("markdown + html with equal q", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/markdown;q=0.8, text/html;q=0.8",
+        },
+      });
+      await checkResponseIsHtml(response);
+    });
+
+    test("html excluded with markdown preferred", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/html;q=0, text/markdown;q=1",
+        },
+      });
+      await checkResponseIsMarkdown(response);
+    });
+
+    test("markdown excluded with html preferred", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/markdown;q=0, text/html;q=1",
+        },
+      });
+      await checkResponseIsHtml(response);
+    });
+
+    test("all formats excluded", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/html;q=0, text/markdown;q=0",
+        },
+      });
+      expect(response.status()).toBe(406);
+      expect(response.headers()["vary"]).toContain("Accept");
+    });
+
     test("no accept header", async ({ request }) => {
       const response = await request.get(path);
       expect(response.status()).toBe(200);
@@ -93,6 +158,15 @@ const contentNegotiation = (
       await checkResponseIsHtml(response);
     });
 
+    test("text wildcard accept header", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/*",
+        },
+      });
+      await checkResponseIsHtml(response);
+    });
+
     test("markdown wildcard with q", async ({ request }) => {
       const response = await request.get(path, {
         headers: {
@@ -101,6 +175,85 @@ const contentNegotiation = (
       });
       expect(response.status()).toBe(200);
       await checkResponseIsHtml(response);
+    });
+
+    test("markdown exclusion with wildcard accept header", async ({
+      request,
+    }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/markdown;q=0, */*;q=1",
+        },
+      });
+      await checkResponseIsHtml(response);
+    });
+
+    test("html exclusion with wildcard accept header", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/html;q=0, */*;q=1",
+        },
+      });
+      await checkResponseIsMarkdown(response);
+    });
+
+    test("specific markdown preference overrides text wildcard", async ({
+      request,
+    }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/markdown;q=0.8, text/*;q=0.9",
+        },
+      });
+      await checkResponseIsHtml(response);
+    });
+
+    test("markdown with minimum positive q", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/markdown;q=0.001",
+        },
+      });
+      await checkResponseIsMarkdown(response);
+    });
+
+    test("markdown with q=1", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/markdown;q=1",
+        },
+      });
+      await checkResponseIsMarkdown(response);
+    });
+
+    test("markdown with q=0", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/markdown;q=0",
+        },
+      });
+      expect(response.status()).toBe(406);
+      expect(response.headers()["vary"]).toContain("Accept");
+    });
+
+    test("markdown with invalid q", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/markdown;q=abc",
+        },
+      });
+      expect(response.status()).toBe(406);
+      expect(response.headers()["vary"]).toContain("Accept");
+    });
+
+    test("markdown with out-of-range q", async ({ request }) => {
+      const response = await request.get(path, {
+        headers: {
+          accept: "text/markdown;q=1.1",
+        },
+      });
+      expect(response.status()).toBe(406);
+      expect(response.headers()["vary"]).toContain("Accept");
     });
 
     test("invalid and valid headers", async ({ request }) => {
