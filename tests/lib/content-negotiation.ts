@@ -1,4 +1,22 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, get } from "@playwright/test";
+
+const checkResponseIsHtml = async (response: get) => {
+  expect(response.status()).toBe(200);
+  expect(response.headers()["content-type"]).toContain("text/html");
+  expect(response.headers()["vary"]).toContain("Accept");
+  const body = await response.text();
+  expect(body).toContain("<html");
+  expect(body).toContain("</html>");
+};
+
+const checkResponseIsMarkdown = async (response: get) => {
+  expect(response.status()).toBe(200);
+  expect(response.headers()["content-type"]).toContain("text/markdown");
+  expect(response.headers()["vary"]).toContain("Accept");
+  const body = await response.text();
+  expect(body).not.toContain("<html");
+  expect(body).not.toContain("</html>");
+};
 
 const contentNegotiation = (
   suiteName: string,
@@ -8,9 +26,7 @@ const contentNegotiation = (
   test.describe(suiteName, { tag: tags }, () => {
     test("html", async ({ request }) => {
       const response = await request.get(path);
-      expect(response.status()).toBe(200);
-      expect(response.headers()["content-type"]).toContain("text/html");
-      expect(response.headers()["vary"]).toContain("Accept");
+      await checkResponseIsHtml(response);
     });
 
     test("markdown", async ({ request }) => {
@@ -19,9 +35,7 @@ const contentNegotiation = (
           accept: "text/markdown",
         },
       });
-      expect(response.status()).toBe(200);
-      expect(response.headers()["content-type"]).toContain("text/markdown");
-      expect(response.headers()["vary"]).toContain("Accept");
+      await checkResponseIsMarkdown(response);
     });
 
     test("invalid", async ({ request }) => {
@@ -41,8 +55,7 @@ const contentNegotiation = (
         },
       });
       expect(response.status()).toBe(200);
-      expect(response.headers()["content-type"]).toContain("text/html");
-      expect(response.headers()["vary"]).toContain("Accept");
+      await checkResponseIsHtml(response);
     });
 
     test("html + markdown with q", async ({ request }) => {
@@ -51,9 +64,7 @@ const contentNegotiation = (
           accept: "text/html;q=0.8, text/markdown;q=0.9",
         },
       });
-      expect(response.status()).toBe(200);
-      expect(response.headers()["content-type"]).toContain("text/markdown");
-      expect(response.headers()["vary"]).toContain("Accept");
+      await checkResponseIsMarkdown(response);
     });
 
     test("markdown + html with q", async ({ request }) => {
@@ -63,15 +74,13 @@ const contentNegotiation = (
         },
       });
       expect(response.status()).toBe(200);
-      expect(response.headers()["content-type"]).toContain("text/html");
-      expect(response.headers()["vary"]).toContain("Accept");
+      await checkResponseIsHtml(response);
     });
 
     test("no accept header", async ({ request }) => {
       const response = await request.get(path);
       expect(response.status()).toBe(200);
-      expect(response.headers()["content-type"]).toContain("text/html");
-      expect(response.headers()["vary"]).toContain("Accept");
+      await checkResponseIsHtml(response);
     });
 
     test("wildcard accept header", async ({ request }) => {
@@ -81,8 +90,7 @@ const contentNegotiation = (
         },
       });
       expect(response.status()).toBe(200);
-      expect(response.headers()["content-type"]).toContain("text/html");
-      expect(response.headers()["vary"]).toContain("Accept");
+      await checkResponseIsHtml(response);
     });
 
     test("markdown wildcard with q", async ({ request }) => {
@@ -92,8 +100,7 @@ const contentNegotiation = (
         },
       });
       expect(response.status()).toBe(200);
-      expect(response.headers()["content-type"]).toContain("text/html");
-      expect(response.headers()["vary"]).toContain("Accept");
+      await checkResponseIsHtml(response);
     });
 
     test("invalid and valid headers", async ({ request }) => {
@@ -103,19 +110,17 @@ const contentNegotiation = (
         },
       });
       expect(response.status()).toBe(200);
-      expect(response.headers()["content-type"]).toContain("text/html");
-      expect(response.headers()["vary"]).toContain("Accept");
+      await checkResponseIsHtml(response);
     });
 
     test("invalid and valid headers with q", async ({ request }) => {
       const response = await request.get(path, {
         headers: {
-          accept: "invalid/type;q=1, text/html;q=0.9",
+          accept: "invalid/type;q=1, text/markdown;q=0.9",
         },
       });
       expect(response.status()).toBe(200);
-      expect(response.headers()["content-type"]).toContain("text/html");
-      expect(response.headers()["vary"]).toContain("Accept");
+      await checkResponseIsMarkdown(response);
     });
   });
 };
