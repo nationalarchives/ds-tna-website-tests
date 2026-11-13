@@ -1,23 +1,37 @@
 import { expect, test, get } from "@playwright/test";
 
-const checkResponseIsHtml = async (response: get) => {
+export const checkResponseIsHtml = async (
+  response: get,
+  expectVaryHeader: boolean = false,
+) => {
   expect(response.status()).toBe(200);
   expect(response.headers()["content-type"]).toContain("text/html");
-  expect(response.headers()["vary"]).toContain("Accept");
+  if (expectVaryHeader) {
+    expect(response.headers()["vary"]).toContain("Accept");
+  }
   const body = await response.text();
   expect(body).toContain("<html");
   expect(body).toContain("</html>");
+  expect(body).toContain("<body");
+  expect(body).toContain("</body>");
   return body;
 };
 
-const checkResponseIsMarkdown = async (response: get) => {
+export const checkResponseIsMarkdown = async (
+  response: get,
+  expectVaryHeader: boolean = false,
+) => {
   expect(response.status()).toBe(200);
   expect(response.headers()["content-type"]).toContain("text/markdown");
-  expect(response.headers()["vary"]).toContain("Accept");
+  if (expectVaryHeader) {
+    expect(response.headers()["vary"]).toContain("Accept");
+  }
   const body = await response.text();
   expect(body.trim()).not.toBe("");
   expect(body).not.toContain("<html");
   expect(body).not.toContain("</html>");
+  expect(body).not.toContain("<body");
+  expect(body).not.toContain("</body>");
   return body;
 };
 
@@ -34,7 +48,7 @@ const contentNegotiation = (
           accept: "",
         },
       });
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("html", async ({ request }) => {
@@ -43,7 +57,7 @@ const contentNegotiation = (
           accept: "text/html",
         },
       });
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("html and markdown contain the same resource", async ({ request }) => {
@@ -51,8 +65,11 @@ const contentNegotiation = (
         request.get(path, { headers: { accept: "text/html" } }),
         request.get(path, { headers: { accept: "text/markdown" } }),
       ]);
-      const htmlBody = await checkResponseIsHtml(htmlResponse);
-      const markdownBody = await checkResponseIsMarkdown(markdownResponse);
+      const htmlBody = await checkResponseIsHtml(htmlResponse, true);
+      const markdownBody = await checkResponseIsMarkdown(
+        markdownResponse,
+        true,
+      );
       expect(htmlBody).toContain(contentMarker);
       expect(markdownBody).toContain(contentMarker);
     });
@@ -63,7 +80,7 @@ const contentNegotiation = (
           accept: "text/markdown",
         },
       });
-      await checkResponseIsMarkdown(response);
+      await checkResponseIsMarkdown(response, true);
     });
 
     test("invalid", async ({ request }) => {
@@ -83,7 +100,7 @@ const contentNegotiation = (
         },
       });
       expect(response.status()).toBe(200);
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("html + markdown with q", async ({ request }) => {
@@ -92,7 +109,7 @@ const contentNegotiation = (
           accept: "text/html;q=0.8, text/markdown;q=0.9",
         },
       });
-      await checkResponseIsMarkdown(response);
+      await checkResponseIsMarkdown(response, true);
     });
 
     test("markdown + html with q", async ({ request }) => {
@@ -102,7 +119,7 @@ const contentNegotiation = (
         },
       });
       expect(response.status()).toBe(200);
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("markdown + html with equal q", async ({ request }) => {
@@ -111,7 +128,7 @@ const contentNegotiation = (
           accept: "text/markdown;q=0.8, text/html;q=0.8",
         },
       });
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("html excluded with markdown preferred", async ({ request }) => {
@@ -120,7 +137,7 @@ const contentNegotiation = (
           accept: "text/html;q=0, text/markdown;q=1",
         },
       });
-      await checkResponseIsMarkdown(response);
+      await checkResponseIsMarkdown(response, true);
     });
 
     test("markdown excluded with html preferred", async ({ request }) => {
@@ -129,7 +146,7 @@ const contentNegotiation = (
           accept: "text/markdown;q=0, text/html;q=1",
         },
       });
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("all formats excluded", async ({ request }) => {
@@ -145,7 +162,7 @@ const contentNegotiation = (
     test("no accept header", async ({ request }) => {
       const response = await request.get(path);
       expect(response.status()).toBe(200);
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("wildcard accept header", async ({ request }) => {
@@ -155,7 +172,7 @@ const contentNegotiation = (
         },
       });
       expect(response.status()).toBe(200);
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("text wildcard accept header", async ({ request }) => {
@@ -164,7 +181,7 @@ const contentNegotiation = (
           accept: "text/*",
         },
       });
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("markdown wildcard with q", async ({ request }) => {
@@ -174,7 +191,7 @@ const contentNegotiation = (
         },
       });
       expect(response.status()).toBe(200);
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("markdown exclusion with wildcard accept header", async ({
@@ -185,7 +202,7 @@ const contentNegotiation = (
           accept: "text/markdown;q=0, */*;q=1",
         },
       });
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("html exclusion with wildcard accept header", async ({ request }) => {
@@ -194,7 +211,7 @@ const contentNegotiation = (
           accept: "text/html;q=0, */*;q=1",
         },
       });
-      await checkResponseIsMarkdown(response);
+      await checkResponseIsMarkdown(response, true);
     });
 
     test("specific markdown preference overrides text wildcard", async ({
@@ -205,7 +222,7 @@ const contentNegotiation = (
           accept: "text/markdown;q=0.8, text/*;q=0.9",
         },
       });
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("markdown with minimum positive q", async ({ request }) => {
@@ -214,7 +231,7 @@ const contentNegotiation = (
           accept: "text/markdown;q=0.001",
         },
       });
-      await checkResponseIsMarkdown(response);
+      await checkResponseIsMarkdown(response, true);
     });
 
     test("markdown with q=1", async ({ request }) => {
@@ -223,7 +240,7 @@ const contentNegotiation = (
           accept: "text/markdown;q=1",
         },
       });
-      await checkResponseIsMarkdown(response);
+      await checkResponseIsMarkdown(response, true);
     });
 
     test("markdown with q=0", async ({ request }) => {
@@ -263,7 +280,7 @@ const contentNegotiation = (
         },
       });
       expect(response.status()).toBe(200);
-      await checkResponseIsHtml(response);
+      await checkResponseIsHtml(response, true);
     });
 
     test("invalid and valid headers with q", async ({ request }) => {
@@ -273,7 +290,7 @@ const contentNegotiation = (
         },
       });
       expect(response.status()).toBe(200);
-      await checkResponseIsMarkdown(response);
+      await checkResponseIsMarkdown(response, true);
     });
   });
 };
